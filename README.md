@@ -24,12 +24,20 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+This is still evolving quite a bit. If you want to use it, you
+should probably talk to me directly.
+
+## Roadmap
+- Add theme/plugin include tag (probably named embed)
+- Add support for fonts, images and misc asset.
+- Write an example theme
+- Write an example plugin
+- Add support for Sass (probably a separate plugin).
+- Add support for compiling and stitching javascript/coffeescript.
+- Ensure Guard Jekyll Plus handles assets properly.
+- 
 
 ## Contributing
 
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+For right now. Talk to me directly. I'd love help thinking
+through some of this stuff. Pretty soon, build a theme or a plugin and tell me what's broken.
