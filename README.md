@@ -3,7 +3,7 @@
 Use Themekit to help you build themes and plugins for Jekyll.
 
 ### Features
-- Installing ThemeKit plugins is easy. [See how](#user_installation).
+- Installing ThemeKit plugins is easy.
 - Users won't need to install or managae plugin assets.
 - Jekyll will read your plugin's layouts, javascripts, stylesheets and more directly from your gem.
 - ThemeKit allows users to modify a theme/plugin by adding their modified version to _themes directory.
@@ -12,7 +12,7 @@ Use Themekit to help you build themes and plugins for Jekyll.
 
 Add this line to your application's Gemfile:
 
-    gem 'themebase'
+    gem 'octopress-themekit'
 
 And then execute:
 
@@ -20,7 +20,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install themebase
+    $ gem install octopress-themekit
 
 ## Usage
 
