@@ -1,13 +1,14 @@
 
 module ThemeKit
-  class Theme
+  class Plugin
     class << self
       attr_accessor :assets_path
       attr_accessor :stylesheets
       attr_accessor :stylesheets_dir
     end
 
-    def initialize
+    def initialize(name)
+      @name = name
       @images_dir      = 'images'
       @fonts_dir       = 'fonts'
       @layouts_dir     = 'layouts'
@@ -18,21 +19,29 @@ module ThemeKit
       @layouts     = []
       @embeds      = []
       @files       = []
+      @stylesheets = Asset.new(@assets_path, @name, 'stylesheets')
+      @javascripts = Asset.new(@assets_path, @name, 'javascripts')
       add_assets
     end
 
     def add_layouts
-      @layouts = Asset.new(@assets_path, 'layouts')
+      @layouts = Asset.new(@assets_path, @name, 'layouts')
     end
 
     def add_stylesheet(file, media=nil)
-      @stylesheets ||= Asset.new(@assets_path, 'stylesheets')
       @stylesheets.add Stylesheet.new(file, media)
     end
 
+    def add_stylesheets(files, media=nil)
+      files.each { |file| @stylesheets.add Stylesheet.new(file, media) }
+    end
+
     def add_javascript(file)
-      @javascripts ||= Asset.new(@assets_path, 'javascripts')
       @javascripts.add Javascript.new(file)
+    end
+
+    def add_javascripts(files)
+      files.each { |file| @javascripts.add Javascript.new(file) }
     end
 
     def stylesheets(site)

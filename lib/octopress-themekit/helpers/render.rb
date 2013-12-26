@@ -17,7 +17,7 @@ module ThemeKit
 
     def self.read(file, site)
       file += '.html' unless file =~ /\.html$/
-      content = Template.theme.layout(file, site).read
+      content = Plugins.theme.layout(file, site).read
       if content =~ YAML_HEADER
         layout = YAML.safe_load($1.strip)['layout']
         content = $2.strip

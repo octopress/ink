@@ -3,15 +3,17 @@ require 'jekyll-page-hooks'
 
 require 'octopress-themekit/generators/stylesheets'
 require 'octopress-themekit/generators/javascripts'
+require 'pry-debugger'
 
 module ThemeKit
-  THEME_DIR = "_theme"
+  CUSTOM_DIR = "_custom"
 
-  autoload :Asset,         'octopress-themekit/asset'
-  autoload :Theme,         'octopress-themekit/theme'
-  autoload :Template,      'octopress-themekit/template'
-  autoload :Stylesheet,    'octopress-themekit/stylesheet'
-  autoload :Javascript,    'octopress-themekit/javascript'
+  autoload :Plugins,       'octopress-themekit/plugins'
+  autoload :Asset,         'octopress-themekit/assets/asset'
+  autoload :Plugin,        'octopress-themekit/plugins/plugin'
+  autoload :Theme,         'octopress-themekit/plugins/theme'
+  autoload :Stylesheet,    'octopress-themekit/assets/stylesheet'
+  autoload :Javascript,    'octopress-themekit/assets/javascript'
   autoload :LayoutTag,     'octopress-themekit/tags/layout'
   autoload :DoLayoutTag,   'octopress-themekit/tags/do_layout'
   autoload :JavascriptTag, 'octopress-themekit/tags/javascript'

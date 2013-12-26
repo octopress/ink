@@ -4,7 +4,7 @@ module ThemeKit
       super
     end
     def render(context)
-      Template.theme.javascript_tags(context.registers[:site])
+      Plugins.javascript_tags(context.registers[:site])
     end
   end
 end

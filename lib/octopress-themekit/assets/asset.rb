@@ -2,15 +2,16 @@ module ThemeKit
   class Asset
     attr_accessor :assets
 
-    def initialize(assets_path, dir)
+    def initialize(assets_path, name, type)
       @assets_path = assets_path
-      @dir = dir
+      @name = name
+      @dir = File.join(@name, type)
       @files = []
       @exists = {}
     end
 
     def theme_dir(site)
-      site.config['theme'] || THEME_DIR
+      site.config['custom'] || CUSTOM_DIR
     end
 
     def add(file)
@@ -30,16 +31,16 @@ module ThemeKit
 
     def add_static_file(path, site)
       if exists? user_path(path, site)
-        site.static_files << Jekyll::StaticFile.new(site, site.source, File.join(theme_dir(site), @dir), path)
-      elsif exists? theme_path(path, site)
-        site.static_files << Jekyll::StaticFile.new(site, @assets_path, File.join(theme_dir(site), @dir), path)
+        site.static_files << Jekyll::StaticFile.new(site, File.join(site.source, theme_dir(site)), @dir, path)
+      elsif exists? plugin_path(path, site)
+        site.static_files << Jekyll::StaticFile.new(site, @assets_path, @dir, path)
       else
-        raise IOError.new "Could not find #{File.basename(path)}"
+        raise IOError.new "Could not find #{File.basename(path)} at #{path}"
       end
     end
 
-    def theme_path(file, site)
-      File.join @assets_path, theme_dir(site), @dir, file
+    def plugin_path(file, site)
+      File.join @assets_path, @dir, file
     end
 
     def user_path(file, site)
@@ -51,7 +52,7 @@ module ThemeKit
       paths = []
       @files.each do |file|
         if file_path(file.path, site)
-          paths << file.tag(File.join(theme_dir(site), @dir))
+          paths << file.tag(@dir) if file.respond_to?(:tag)
         end
       end
       paths
@@ -59,7 +60,7 @@ module ThemeKit
 
     def file_path(file, site)
       path = user_path(file, site)
-      path = theme_path(file, site) unless exists?(path)
+      path = plugin_path(file, site) unless exists?(path)
 
       unless exists?(path)
         raise IOError.new "Could not find #{File.basename(path)} at #{path}"

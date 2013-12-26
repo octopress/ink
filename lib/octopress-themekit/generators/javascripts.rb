@@ -1,7 +1,7 @@
 module ThemeKit
   class Javascripts < Jekyll::Generator
     def generate(site)
-      Template.theme.javascripts(site)
+      Plugins.javascripts(site)
     end
   end
 end
