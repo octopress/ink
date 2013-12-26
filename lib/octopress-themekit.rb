@@ -1,40 +1,21 @@
 require 'jekyll'
 require 'jekyll-page-hooks'
-require 'pry-debugger'
-require 'octopress-themekit/tags/layout'
-require 'octopress-themekit/tags/javascript'
-require 'octopress-themekit/tags/stylesheet'
+
 require 'octopress-themekit/generators/stylesheets'
 require 'octopress-themekit/generators/javascripts'
 
 module ThemeKit
-  autoload :Stylesheet,    'octopress-themekit/stylesheet'
+  THEME_DIR = "_theme"
+
+  autoload :Asset,         'octopress-themekit/asset'
   autoload :Theme,         'octopress-themekit/theme'
-  class Template
-    class << self
-      attr_accessor :theme
-    end
-
-    def initialize
-      @plugins = {}
-    end
-
-    def self.register_theme(name, theme)
-      @theme = theme.new()
-    end
-    
-    def self.register_plugin(name, plugin)
-      @plugins[name] = plugin.new()
-    end
-
-    def self.all_stylesheets
-      css = []
-      plugins.each do |plugin| 
-        css.concat plugin.stylesheets
-      end
-      css
-    end
-  end
+  autoload :Template,      'octopress-themekit/template'
+  autoload :Stylesheet,    'octopress-themekit/stylesheet'
+  autoload :Javascript,    'octopress-themekit/javascript'
+  autoload :LayoutTag,     'octopress-themekit/tags/layout'
+  autoload :DoLayoutTag,   'octopress-themekit/tags/do_layout'
+  autoload :JavascriptTag, 'octopress-themekit/tags/javascript'
+  autoload :StylesheetTag, 'octopress-themekit/tags/stylesheet'
 end
 
 Liquid::Template.register_tag('layout', ThemeKit::LayoutTag)

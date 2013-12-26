@@ -5,9 +5,14 @@ rescue LoadError
 end
 
 class ClassicTheme < ThemeKit::Theme
+  def initialize
+    @assets_path = File.expand_path(File.join(__FILE__, '../../../assets'))
+    super
+  end
+
   def add_assets
-    add_assets_path File.expand_path(File.join(__FILE__, '../../../assets'))
-    add_stylesheet 'site.css'
+    add_layouts
+    add_stylesheet 'site.css', 'screen'
     add_javascript 'foo.js'
   end
 end

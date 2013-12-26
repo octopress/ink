@@ -4,7 +4,7 @@ module ThemeKit
       super
     end
     def render(context)
-      Template.theme.stylesheet_tag(context.registers[:site])
+      Template.theme.stylesheet_tags(context.registers[:site])
     end
   end
 end
