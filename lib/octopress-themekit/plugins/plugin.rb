@@ -4,7 +4,6 @@ module ThemeKit
     class << self
       attr_accessor :assets_path
       attr_accessor :stylesheets
-      attr_accessor :stylesheets_dir
     end
 
     def initialize(name)
@@ -19,13 +18,17 @@ module ThemeKit
       @layouts     = []
       @embeds      = []
       @files       = []
-      @stylesheets = Asset.new(@assets_path, @name, 'stylesheets')
-      @javascripts = Asset.new(@assets_path, @name, 'javascripts')
+      @stylesheets = Asset.new(@assets_path, @name, Plugins::STYLESHEETS_DIR)
+      @javascripts = Asset.new(@assets_path, @name, Plugins::JAVASCRIPTS_DIR)
       add_assets
     end
 
     def add_layouts
-      @layouts = Asset.new(@assets_path, @name, 'layouts')
+      @layouts = Asset.new(@assets_path, @name, Plugins::LAYOUTS_DIR)
+    end
+
+    def name
+      @name
     end
 
     def add_stylesheet(file, media=nil)
@@ -33,7 +36,7 @@ module ThemeKit
     end
 
     def add_stylesheets(files, media=nil)
-      files.each { |file| @stylesheets.add Stylesheet.new(file, media) }
+      files.each { |file| add_stylesheet(file, media) }
     end
 
     def add_javascript(file)
@@ -41,23 +44,23 @@ module ThemeKit
     end
 
     def add_javascripts(files)
-      files.each { |file| @javascripts.add Javascript.new(file) }
+      files.each { |file| add_javascript(file) }
     end
 
-    def stylesheets(site)
-      @stylesheets.files(site)
+    def javascript_paths(site)
+      @javascripts.file_paths(site)
     end
 
-    def javascripts(site)
-      @javascripts.files(site)
+    def stylesheet_paths(site)
+      @stylesheets.file_paths(site)
     end
 
-    def stylesheet_tags(site)
-      @stylesheets.tags(site)
+    def stylesheet_tags
+      @stylesheets.tags
     end
 
-    def javascript_tags(site)
-      @javascripts.tags(site)
+    def javascript_tags
+      @javascripts.tags
     end
 
     def layout(file, site)

@@ -4,7 +4,12 @@ module ThemeKit
       super
     end
     def render(context)
-      Plugins.stylesheet_tags(context.registers[:site])
+      site = context.registers[:site]
+      if site.config['octopress'] && site.config['octopress']['combine_stylesheets'] != false
+        Plugins.stylesheet_tags
+      else
+        Plugins.combined_stylesheet_tag
+      end
     end
   end
 end

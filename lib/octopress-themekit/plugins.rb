@@ -1,8 +1,23 @@
 module ThemeKit
   class Plugins
+    LAYOUTS_DIR = 'layouts'
+    JAVASCRIPTS_DIR = 'javascripts'
+    STYLESHEETS_DIR = 'stylesheets'
 
     def self.theme
-      @plugins['theme']
+      plugin('theme')
+    end
+
+    def self.plugin(name)
+      if @plugins[name]
+        @plugins[name]
+      else
+        raise IOError.new "No layout such layout #{name} for #{name}."
+      end
+    end
+
+    def self.layout(name, file, site)
+      plugin(name).layout(file, site)
     end
     
     def self.register_theme(theme)
@@ -14,36 +29,109 @@ module ThemeKit
       @plugins[name] = plugin.new(name)
     end
 
-    def self.stylesheets(site)
-      css = []
-      @plugins.values.each do |plugin| 
-        css.concat plugin.stylesheets(site)
+    def self.theme_dir(site)
+      site.config['custom'] || CUSTOM_DIR
+    end
+
+    def self.fingerprint(paths)
+      paths = [paths] unless paths.is_a? Array
+      Digest::MD5.hexdigest(paths.dup.map! { |path| "#{File.mtime(path).to_i}" }.join)
+    end
+    
+    def self.combined_stylesheet_path
+      print = @stylesheet_fingerprint || ''
+      File.join(STYLESHEETS_DIR, "site-theme-#{print}.css")
+    end
+
+    def self.combined_javascript_path
+      print = @javascript_fingerprint || ''
+      File.join(JAVASCRIPTS_DIR, "site-#{print}.js")
+    end
+
+    def self.write_files(site, source, dest)
+      site.static_files << ThemeKit::StaticFileContent.new(source, dest)
+    end
+
+    def self.copy_files(site, source, dest)
+      site.static_files << ThemeKit::StaticFile.new(source, dest)
+    end
+
+    def self.write_combined_stylesheet(site)
+      write_files(site, combine_stylesheets(site), combined_stylesheet_path) 
+    end
+
+    def self.write_combined_javascript(site)
+      write_files(site, combine_javascripts(site), combined_javascript_path) 
+    end
+
+    def self.combine_stylesheets(site)
+      css = ''
+      @plugins.values.each do |plugin|
+        paths = plugin.stylesheet_paths(site)
+        @stylesheet_fingerprint = fingerprint(paths)
+        paths.each do |file|
+          css.concat Pathname.new(file).read
+        end
       end
       css
     end
 
-    def self.stylesheet_tags(site)
+    def self.combine_javascripts(site)
+      js = ''
+      @plugins.values.each do |plugin| 
+        paths = plugin.javascript_paths(site)
+        @javascript_fingerprint = fingerprint(paths)
+        paths.each do |file|
+          js.concat Pathname.new(file).read
+        end
+      end
+      js
+    end
+
+    def self.combined_stylesheet_tag
+      "<link href='/#{combined_stylesheet_path}' media='all' rel='stylesheet' type='text/css'>"
+    end
+
+    def self.combined_javascript_tag
+      "<link href='/#{combined_javascript_path}' media='all' rel='stylesheet' type='text/css'>"
+    end
+
+    def self.stylesheet_tags
       css = []
       @plugins.values.each do |plugin| 
-        css.concat plugin.stylesheet_tags(site)
+        css.concat plugin.stylesheet_tags
       end
       css
     end
 
-    def self.javascripts(site)
-      css = []
+    def self.javascript_tags
+      js = []
       @plugins.values.each do |plugin| 
-        css.concat plugin.javascripts(site)
+        js.concat plugin.javascript_tags
       end
-      css
+      js
     end
 
-    def self.javascript_tags(site)
-      css = []
-      @plugins.values.each do |plugin| 
-        css.concat plugin.javascript_tags(site)
+
+    def self.copy_javascripts(site)
+      @plugins.keys.each do |name| 
+        @plugins[name].javascript_paths(site).each do |path|
+          copy_files(site, path, dest_path(@plugins[name], path.to_s, JAVASCRIPTS_DIR))
+        end
       end
-      css
+    end
+
+    def self.copy_stylesheets(site)
+      @plugins.keys.each do |name| 
+        @plugins[name].stylesheet_paths(site).each do |path|
+          copy_files(site, path, dest_path(@plugins[name], path.to_s, STYLESHEETS_DIR))
+        end
+      end
+    end
+
+    def self.dest_path(plugin, path, dir)
+      sub_path = path.split(dir)[1]
+      File.join(plugin.name, dir, sub_path)
     end
 
   end
