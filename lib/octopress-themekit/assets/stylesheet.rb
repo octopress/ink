@@ -1,14 +1,19 @@
 module ThemeKit
-  class Stylesheet
-    attr_accessor :path
-
-    def initialize(path, media)
-      @path = path
+  class Stylesheet < Asset
+    def initialize(plugin, type, file, media)
+      @file = file
+      @root = plugin.assets_path
+      @dir = File.join(plugin.name, type)
       @media = media || 'all'
+      @exists = {}
     end
 
-    def tag(base_url)
-      "<link href='/#{File.join(base_url, path)}' media='#{@media}' rel='stylesheet' type='text/css'>"
+    def media
+      @media
+    end
+
+    def tag
+      "<link href='/#{File.join(@dir, @file)}' media='#{@media}' rel='stylesheet' type='text/css'>"
     end
   end
 end

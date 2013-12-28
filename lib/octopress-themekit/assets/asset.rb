@@ -1,63 +1,39 @@
 module ThemeKit
   class Asset
-    attr_accessor :assets
 
-    def initialize(assets_path, name, asset_type)
-      @assets_path = assets_path
-      @name = name
-      @dir = File.join(@name, asset_type)
-      @files = []
+    def initialize(plugin, type, file)
+      @file = file
+      @root = plugin.assets_path
+      @dir = File.join(plugin.name, type)
       @exists = {}
     end
 
-    def add(file)
-      @files << file
+    def path(site)
+      @path ||= Pathname.new(file_path(site))
+      @path
     end
 
-    def file_paths(site)
-      files = []
-      @files.each do |file|
-        path = file.respond_to?(:path) ? file.path : file
-        files << file_path(path, site)
+    def file_path(site)
+      if exists? file = user_path(site)
+        file
+      elsif exists? file = plugin_path
+        file
+      else
+        raise IOError.new "Could not find #{File.basename(file)} at #{file}"
       end
-      files
     end
 
-    def file(file, site)
-      file_path(file, site)
+    def plugin_path
+      File.join @root, @dir, @file
     end
 
-    def plugin_path(file, site)
-      File.join @assets_path, @dir, file
+    def user_path(site)
+      File.join site.source, Plugins.theme_dir(site), @dir, @file
     end
 
-    def user_path(file, site)
-      source_path = site.source
-      File.join source_path, Plugins.theme_dir(site), @dir, file
-    end
-
-    def tags
-      paths = []
-      @files.each do |file|
-        paths << file.tag(@dir)
-      end
-      paths
-    end
-
-    def file_path(file, site)
-      path = user_path(file, site)
-      path = plugin_path(file, site) unless exists?(path)
-
-      unless exists?(path)
-        raise IOError.new "Could not find #{File.basename(path)} at #{path}"
-      end
-
-      Pathname.new(path)
-    end
-
-    def exists?(path)
-      @exists[path] ||= File.exists?(path)
-      @exists[path]
+    def exists?(file)
+      @exists[file] ||= File.exists?(file)
+      @exists[file]
     end
   end
 end

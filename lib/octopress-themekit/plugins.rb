@@ -38,9 +38,8 @@ module ThemeKit
       Digest::MD5.hexdigest(paths.dup.map! { |path| "#{File.mtime(path).to_i}" }.join)
     end
     
-    def self.combined_stylesheet_path
-      print = @stylesheet_fingerprint || ''
-      File.join(STYLESHEETS_DIR, "site-theme-#{print}.css")
+    def self.combined_stylesheet_path(media)
+      File.join(STYLESHEETS_DIR, "site-#{media}-#{@combined_stylesheets[media][:fingerprint]}.css")
     end
 
     def self.combined_javascript_path
@@ -57,7 +56,10 @@ module ThemeKit
     end
 
     def self.write_combined_stylesheet(site)
-      write_files(site, combine_stylesheets(site), combined_stylesheet_path) 
+      css = combine_stylesheets(site)
+      css.keys.each do |media|
+        write_files(site, css[media][:contents], combined_stylesheet_path(media)) 
+      end
     end
 
     def self.write_combined_javascript(site)
@@ -65,15 +67,28 @@ module ThemeKit
     end
 
     def self.combine_stylesheets(site)
-      css = ''
-      @plugins.values.each do |plugin|
-        paths = plugin.stylesheet_paths(site)
-        @stylesheet_fingerprint = fingerprint(paths)
-        paths.each do |file|
-          css.concat Pathname.new(file).read
+      unless @combined_stylesheets
+        css = {}
+        @plugins.values.each do |plugin|
+          plugin.stylesheets.each do |file|
+            css[file.media] ||= []
+            css[file.media] << file.path(site)
+          end
         end
+
+        files = {}
+        css.keys.each do |media|
+          paths = css[media]
+          combined = ''
+          paths.each { |p| combined.concat Pathname.new(p).read }
+          files[media] = {
+            contents: combined,
+            fingerprint: fingerprint(paths)
+          }
+        end
+        @combined_stylesheets = files
       end
-      css
+      @combined_stylesheets
     end
 
     def self.combine_javascripts(site)
@@ -88,12 +103,16 @@ module ThemeKit
       js
     end
 
-    def self.combined_stylesheet_tag
-      "<link href='/#{combined_stylesheet_path}' media='all' rel='stylesheet' type='text/css'>"
+    def self.combined_stylesheet_tag(site)
+      tags = ''
+      combine_stylesheets(site).keys.each do |media|
+        tags.concat "<link href='/#{combined_stylesheet_path(media)}' media='#{media}' rel='stylesheet' type='text/css'>"
+      end
+      tags
     end
 
     def self.combined_javascript_tag
-      "<link href='/#{combined_javascript_path}' media='all' rel='stylesheet' type='text/css'>"
+      "<script src='/#{combined_javascript_path}'></script>"
     end
 
     def self.stylesheet_tags

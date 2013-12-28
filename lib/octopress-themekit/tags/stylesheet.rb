@@ -8,7 +8,7 @@ module ThemeKit
       if site.config['octopress'] && site.config['octopress']['combine_stylesheets'] != false
         Plugins.stylesheet_tags
       else
-        Plugins.combined_stylesheet_tag
+        Plugins.combined_stylesheet_tag(site)
       end
     end
   end

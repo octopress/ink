@@ -12,7 +12,8 @@ class ClassicTheme < ThemeKit::Theme
 
   def add_assets
     add_layouts
-    add_stylesheets ['site.css', 'foo.css']
+    add_stylesheets ['site.css','foo.css'], 'all'
+    add_stylesheet 'print.css', 'print'
     add_javascripts ['foo.js', 'bar.js']
   end
 end
