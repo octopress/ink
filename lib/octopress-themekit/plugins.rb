@@ -1,6 +1,7 @@
 module ThemeKit
   class Plugins
-    LAYOUTS_DIR = 'layouts'
+    LAYOUTS_DIR     = 'layouts'
+    EMBEDS_DIR      = 'embeds'
     JAVASCRIPTS_DIR = 'javascripts'
     STYLESHEETS_DIR = 'stylesheets'
 
@@ -18,6 +19,10 @@ module ThemeKit
 
     def self.layout(name, file, site)
       plugin(name).layout(file, site)
+    end
+
+    def self.embed(name, file, site)
+      plugin(name).embed(file, site)
     end
     
     def self.register_theme(theme)

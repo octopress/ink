@@ -28,7 +28,6 @@ This is still evolving quite a bit. If you want to use it, you
 should probably talk to me directly.
 
 ## Roadmap
-- Add theme/plugin include tag (probably named embed)
 - Add support for fonts, images and misc asset.
 - Write an example theme
 - Write an example plugin

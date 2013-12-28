@@ -4,19 +4,16 @@ module ThemeKit
 
     def initialize(name)
       @name = name
-      @images_dir      = 'images'
-      @fonts_dir       = 'fonts'
-      @layouts_dir     = 'layouts'
-      @embeds_dir      = 'embeds'
-      @files_dir       = 'files'
-      @images      = []
-      @fonts       = []
       @layouts     = []
       @embeds      = []
-      @files       = []
       @stylesheets = []
       @javascripts = []
+      @images      = []
+      @fonts       = []
+      @files       = []
       add_assets
+      add_layouts
+      add_embeds
     end
 
     def name
@@ -44,7 +41,11 @@ module ThemeKit
     end
 
     def add_layouts
-      @layouts = Layout.new(self, Plugins::LAYOUTS_DIR)
+      @layouts = Template.new(self, Plugins::LAYOUTS_DIR)
+    end
+
+    def add_embeds
+      @embeds = Template.new(self, Plugins::EMBEDS_DIR)
     end
 
     def stylesheet_paths(site)
@@ -77,6 +78,10 @@ module ThemeKit
 
     def get_tags(files)
       files.dup.map { |f| f.tag }
+    end
+
+    def embed(file, site)
+      @embeds.file(file, site)
     end
 
     def layout(file, site)

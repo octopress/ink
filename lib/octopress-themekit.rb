@@ -10,7 +10,7 @@ module ThemeKit
   CUSTOM_DIR = "_custom"
 
   autoload :Asset,                'octopress-themekit/assets/asset'
-  autoload :Layout,               'octopress-themekit/assets/layout'
+  autoload :Template,             'octopress-themekit/assets/template'
   autoload :Stylesheet,           'octopress-themekit/assets/stylesheet'
   autoload :Javascript,           'octopress-themekit/assets/javascript'
 
@@ -21,11 +21,13 @@ module ThemeKit
   autoload :Plugin,               'octopress-themekit/plugins/plugin'
   autoload :Theme,                'octopress-themekit/plugins/theme'
 
+  autoload :EmbedTag,             'octopress-themekit/tags/embed'
   autoload :DoLayoutTag,          'octopress-themekit/tags/do_layout'
   autoload :JavascriptTag,        'octopress-themekit/tags/javascript'
   autoload :StylesheetTag,        'octopress-themekit/tags/stylesheet'
 end
 
+Liquid::Template.register_tag('embed', ThemeKit::EmbedTag)
 Liquid::Template.register_tag('do_layout', ThemeKit::DoLayoutTag)
 Liquid::Template.register_tag('theme_js', ThemeKit::JavascriptTag)
 Liquid::Template.register_tag('theme_css', ThemeKit::StylesheetTag)
