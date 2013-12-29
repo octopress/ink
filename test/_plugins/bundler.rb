@@ -14,6 +14,7 @@ class ClassicTheme < ThemeKit::Theme
     add_stylesheets ['site.css','foo.css'], 'all'
     add_stylesheet 'print.css', 'print'
     add_javascripts ['foo.js', 'bar.js']
+    add_sass 'bar.scss'
     add_file 'test.html'
   end
 end

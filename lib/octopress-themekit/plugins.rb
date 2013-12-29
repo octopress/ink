@@ -42,6 +42,10 @@ module ThemeKit
       File.join(Plugin::STYLESHEETS_DIR, "site-#{media}-#{@combined_stylesheets[media][:fingerprint]}.css")
     end
 
+    def self.combined_sass_path(media)
+      File.join(Plugin::STYLESHEETS_DIR, "site-#{media}-#{@combined_sass[media][:fingerprint]}.css")
+    end
+
     def self.combined_javascript_path
       print = @javascript_fingerprint || ''
       File.join(Plugin::JAVASCRIPTS_DIR, "site-#{print}.js")
@@ -51,14 +55,17 @@ module ThemeKit
       site.static_files << ThemeKit::StaticFileContent.new(source, dest)
     end
 
-    def self.copy_files(site, source, dest)
-      site.static_files << ThemeKit::StaticFile.new(source, dest)
-    end
-
     def self.write_combined_stylesheet(site)
       css = combine_stylesheets(site)
       css.keys.each do |media|
         write_files(site, css[media][:contents], combined_stylesheet_path(media)) 
+      end
+    end
+
+    def self.write_combined_sass(site)
+      css = combine_sass(site)
+      css.keys.each do |media|
+        write_files(site, css[media][:contents], combined_sass_path(media)) 
       end
     end
 
@@ -69,26 +76,45 @@ module ThemeKit
     def self.combine_stylesheets(site)
       unless @combined_stylesheets
         css = {}
+        paths = {}
         @plugins.values.each do |plugin|
           plugin.stylesheets.each do |file|
-            css[file.media] ||= []
-            css[file.media] << file.path(site)
+            css[file.media] ||= {}
+            css[file.media][:contents] ||= ''
+            css[file.media][:paths] ||= []
+            css[file.media][:contents].concat file.path(site).read
+            css[file.media][:paths] << file.path(site)
           end
         end
 
-        files = {}
         css.keys.each do |media|
-          paths = css[media]
-          combined = ''
-          paths.each { |p| combined.concat Pathname.new(p).read }
-          files[media] = {
-            contents: combined,
-            fingerprint: fingerprint(paths)
-          }
+          css[media][:fingerprint] = fingerprint(css[media][:paths])
         end
-        @combined_stylesheets = files
+        @combined_stylesheets = css
       end
       @combined_stylesheets
+    end
+
+    def self.combine_sass(site)
+      unless @combined_sass
+        css = {}
+        paths = {}
+        @plugins.values.each do |plugin|
+          plugin.sass.each do |file|
+            css[file.media] ||= {}
+            css[file.media][:contents] ||= ''
+            css[file.media][:paths] ||= []
+            css[file.media][:contents].concat file.compile(site)
+            css[file.media][:paths] << file.path(site)
+          end
+        end
+
+        css.keys.each do |media|
+          css[media][:fingerprint] = fingerprint(css[media][:paths])
+        end
+        @combined_sass = css
+      end
+      @combined_sass
     end
 
     def self.combine_javascripts(site)
@@ -143,6 +169,18 @@ module ThemeKit
       end
     end
 
+    def self.copy_sass(site)
+      @plugins.each do |name, plugin| 
+        copy(plugin.stylesheets, site)
+      end
+    end
+
+    def self.copy_files(site)
+      @plugins.each do |name, plugin| 
+        copy(plugin.files, site)
+      end
+    end
+
     def self.copy_images(site)
       @plugins.each do |name, plugin| 
         copy(plugin.images, site)
@@ -152,12 +190,6 @@ module ThemeKit
     def self.copy_fonts(site)
       @plugins.each do |name, plugin| 
         copy(plugin.fonts, site)
-      end
-    end
-
-    def self.copy_files(site)
-      @plugins.each do |name, plugin| 
-        copy(plugin.files, site)
       end
     end
 

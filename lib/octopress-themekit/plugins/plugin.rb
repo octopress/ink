@@ -17,6 +17,7 @@ module ThemeKit
       @stylesheets = []
       @javascripts = []
       @images      = []
+      @sass        = []
       @fonts       = []
       @files       = []
       add_assets
@@ -34,6 +35,10 @@ module ThemeKit
 
     def add_stylesheet(file, media=nil)
       @stylesheets << Stylesheet.new(self, STYLESHEETS_DIR, file, media)
+    end
+
+    def add_sass(file, media=nil)
+      @sass << Sass.new(self, STYLESHEETS_DIR, file, media)
     end
 
     def add_javascript(file)
@@ -64,6 +69,10 @@ module ThemeKit
       files.each { |f| add_stylesheet(f, media) }
     end
 
+    def add_sass_files(files, media=nil)
+      files.each { |f| add_sass(f, media) }
+    end
+
     def add_javascripts(files)
       files.each { |f| add_javascript(f) }
     end
@@ -86,6 +95,10 @@ module ThemeKit
 
     def stylesheets
       @stylesheets
+    end
+
+    def sass
+      @sass
     end
 
     def javascripts

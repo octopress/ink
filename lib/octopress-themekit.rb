@@ -1,5 +1,6 @@
 require 'jekyll'
 require 'jekyll-page-hooks'
+require 'sass'
 
 require 'octopress-themekit/generators/plugin_assets'
 require 'pry-debugger'
@@ -12,6 +13,7 @@ module ThemeKit
   autoload :Template,             'octopress-themekit/assets/template'
   autoload :Stylesheet,           'octopress-themekit/assets/stylesheet'
   autoload :Javascript,           'octopress-themekit/assets/javascript'
+  autoload :Sass,                 'octopress-themekit/assets/sass'
 
   autoload :StaticFile,           'octopress-themekit/assets/static_file'
   autoload :StaticFileContent,    'octopress-themekit/assets/static_file_content'
