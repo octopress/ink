@@ -4,8 +4,8 @@ begin
 rescue LoadError
 end
 
-class ClassicTheme < ThemeKit::Theme
-  def initialize(name)
+class ClassicTheme < ThemeKit::Plugin
+  def initialize(name, type)
     @assets_path = File.expand_path(File.dirname(__FILE__))
     super
   end
@@ -19,4 +19,4 @@ class ClassicTheme < ThemeKit::Theme
   end
 end
 
-ThemeKit::Plugins.register_theme(ClassicTheme)
+ThemeKit::Plugins.register_theme(ClassicTheme, 'classic')

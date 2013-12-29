@@ -10,8 +10,9 @@ module ThemeKit
     JAVASCRIPTS_DIR = 'javascripts'
     STYLESHEETS_DIR = 'stylesheets'
 
-    def initialize(name)
-      @name = name
+    def initialize(name, type)
+      @name        = name
+      @type        = type
       @layouts     = []
       @embeds      = []
       @stylesheets = []
@@ -25,8 +26,16 @@ module ThemeKit
       add_embeds
     end
 
+    def name_space
+      @type == 'theme' ? @type : @name
+    end
+
     def name
       @name
+    end
+
+    def type
+      @type
     end
 
     def assets_path
@@ -38,6 +47,11 @@ module ThemeKit
     end
 
     def add_sass(file, media=nil)
+      begin
+        require 'sass'
+      rescue LoadError
+        raise IOError.new "The #{@name} #{@type} uses the Sass gem. You'll need to add it to your Gemfile or run `gem install sass`"
+      end
       @sass << Sass.new(self, STYLESHEETS_DIR, file, media)
     end
 
@@ -123,6 +137,10 @@ module ThemeKit
 
     def stylesheet_tags
       get_tags(@stylesheets)
+    end
+
+    def sass_tags
+      get_tags(@sass)
     end
 
     def javascript_tags

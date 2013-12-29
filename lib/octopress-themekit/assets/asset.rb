@@ -4,7 +4,7 @@ module ThemeKit
     def initialize(plugin, type, file)
       @file = file
       @root = plugin.assets_path
-      @dir = File.join(plugin.name, type)
+      @dir = File.join(plugin.name_space, type)
       @exists = {}
     end
 

@@ -1,6 +1,5 @@
 require 'jekyll'
 require 'jekyll-page-hooks'
-require 'sass'
 
 require 'octopress-themekit/generators/plugin_assets'
 require 'pry-debugger'
@@ -20,7 +19,6 @@ module ThemeKit
 
   autoload :Plugins,              'octopress-themekit/plugins'
   autoload :Plugin,               'octopress-themekit/plugins/plugin'
-  autoload :Theme,                'octopress-themekit/plugins/theme'
 
   autoload :EmbedTag,             'octopress-themekit/tags/embed'
   autoload :DoLayoutTag,          'octopress-themekit/tags/do_layout'

@@ -3,7 +3,7 @@ module ThemeKit
     def initialize(plugin, type, file, media)
       @file = file
       @root = plugin.assets_path
-      @dir = File.join(plugin.name, type)
+      @dir = File.join(plugin.name_space, type)
       @media = media || 'all'
       @exists = {}
     end

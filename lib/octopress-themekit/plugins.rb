@@ -1,15 +1,23 @@
 module ThemeKit
   class Plugins
+    @plugins = {}
+
     def self.theme
-      plugin('theme')
+      @theme
     end
 
     def self.plugin(name)
       if @plugins[name]
         @plugins[name]
+      elsif @theme.name_space == name
+        @theme
       else
         raise IOError.new "No layout such layout #{name} for #{name}."
       end
+    end
+
+    def self.plugins
+      @plugins.dup.values.unshift @theme
     end
 
     def self.layout(name, file, site)
@@ -20,13 +28,12 @@ module ThemeKit
       plugin(name).embed(file, site)
     end
     
-    def self.register_theme(theme)
-      register_plugin 'theme', theme
+    def self.register_theme(plugin, name, type='theme')
+      @theme = plugin.new(name, type)
     end
 
-    def self.register_plugin(name, plugin)
-      @plugins ||= {}
-      @plugins[name] = plugin.new(name)
+    def self.register_plugin(plugin, name, type='plugin')
+      @plugins[name] = plugin.new(name, type)
     end
 
     def self.theme_dir(site)
@@ -77,7 +84,7 @@ module ThemeKit
       unless @combined_stylesheets
         css = {}
         paths = {}
-        @plugins.values.each do |plugin|
+        plugins.each do |plugin|
           plugin.stylesheets.each do |file|
             css[file.media] ||= {}
             css[file.media][:contents] ||= ''
@@ -99,7 +106,7 @@ module ThemeKit
       unless @combined_sass
         css = {}
         paths = {}
-        @plugins.values.each do |plugin|
+        plugins.each do |plugin|
           plugin.sass.each do |file|
             css[file.media] ||= {}
             css[file.media][:contents] ||= ''
@@ -119,7 +126,7 @@ module ThemeKit
 
     def self.combine_javascripts(site)
       js = ''
-      @plugins.values.each do |plugin| 
+      plugins.each do |plugin| 
         paths = plugin.javascript_paths(site)
         @javascript_fingerprint = fingerprint(paths)
         paths.each do |file|
@@ -132,7 +139,10 @@ module ThemeKit
     def self.combined_stylesheet_tag(site)
       tags = ''
       combine_stylesheets(site).keys.each do |media|
-        tags.concat "<link href='/#{combined_stylesheet_path(media)}' media='#{media}' rel='stylesheet' type='text/css'>"
+        tags.concat "<link href='/#{combined_stylesheet_path(media)}' media='#{media}' rel='stylesheet' type='text/css'>\n"
+      end
+      combine_sass(site).keys.each do |media|
+        tags.concat "<link href='/#{combined_sass_path(media)}' media='#{media}' rel='stylesheet' type='text/css'>\n"
       end
       tags
     end
@@ -143,52 +153,53 @@ module ThemeKit
 
     def self.stylesheet_tags
       css = []
-      @plugins.values.each do |plugin| 
+      plugins.each do |plugin| 
         css.concat plugin.stylesheet_tags
+        css.concat plugin.sass_tags
       end
       css
     end
 
     def self.javascript_tags
       js = []
-      @plugins.values.each do |plugin| 
+      plugins.each do |plugin| 
         js.concat plugin.javascript_tags
       end
       js
     end
 
     def self.copy_javascripts(site)
-      @plugins.each do |name, plugin| 
+      plugins.each do |plugin| 
         copy(plugin.javascripts, site)
       end
     end
 
     def self.copy_stylesheets(site)
-      @plugins.each do |name, plugin| 
+      plugins.each do |plugin| 
         copy(plugin.stylesheets, site)
       end
     end
 
     def self.copy_sass(site)
-      @plugins.each do |name, plugin| 
+      plugins.each do |plugin| 
         copy(plugin.stylesheets, site)
       end
     end
 
     def self.copy_files(site)
-      @plugins.each do |name, plugin| 
+      plugins.each do |plugin| 
         copy(plugin.files, site)
       end
     end
 
     def self.copy_images(site)
-      @plugins.each do |name, plugin| 
+      plugins.each do |plugin| 
         copy(plugin.images, site)
       end
     end
 
     def self.copy_fonts(site)
-      @plugins.each do |name, plugin| 
+      plugins.each do |plugin| 
         copy(plugin.fonts, site)
       end
     end
