@@ -8,9 +8,26 @@ module ThemeKit
       @exists = {}
     end
 
+    def file
+      @file
+    end
+
     def path(site)
       @path ||= Pathname.new(file_path(site))
       @path
+    end
+
+    def file(file, site)
+      @file = file
+      path(site)
+    end
+
+    def destination
+      File.join(@dir, @file)
+    end
+
+    def copy(site)
+      site.static_files << ThemeKit::StaticFile.new(path(site), destination)
     end
 
     def file_path(site)

@@ -28,13 +28,11 @@ This is still evolving quite a bit. If you want to use it, you
 should probably talk to me directly.
 
 ## Roadmap
-- Add support for fonts, images and misc asset.
 - Write an example theme
 - Write an example plugin
 - Add support for Sass (probably a separate plugin).
 - Add support for compiling and stitching javascript/coffeescript.
 - Ensure Guard Jekyll Plus handles assets properly.
-- 
 
 ## Contributing
 

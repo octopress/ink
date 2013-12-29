@@ -1,8 +1,7 @@
 require 'jekyll'
 require 'jekyll-page-hooks'
 
-require 'octopress-themekit/generators/stylesheets'
-require 'octopress-themekit/generators/javascripts'
+require 'octopress-themekit/generators/plugin_assets'
 require 'pry-debugger'
 require 'digest/md5'
 

@@ -1,10 +1,5 @@
 module ThemeKit
   class Plugins
-    LAYOUTS_DIR     = 'layouts'
-    EMBEDS_DIR      = 'embeds'
-    JAVASCRIPTS_DIR = 'javascripts'
-    STYLESHEETS_DIR = 'stylesheets'
-
     def self.theme
       plugin('theme')
     end
@@ -44,12 +39,12 @@ module ThemeKit
     end
     
     def self.combined_stylesheet_path(media)
-      File.join(STYLESHEETS_DIR, "site-#{media}-#{@combined_stylesheets[media][:fingerprint]}.css")
+      File.join(Plugin::STYLESHEETS_DIR, "site-#{media}-#{@combined_stylesheets[media][:fingerprint]}.css")
     end
 
     def self.combined_javascript_path
       print = @javascript_fingerprint || ''
-      File.join(JAVASCRIPTS_DIR, "site-#{print}.js")
+      File.join(Plugin::JAVASCRIPTS_DIR, "site-#{print}.js")
     end
 
     def self.write_files(site, source, dest)
@@ -136,27 +131,38 @@ module ThemeKit
       js
     end
 
-
     def self.copy_javascripts(site)
-      @plugins.keys.each do |name| 
-        @plugins[name].javascript_paths(site).each do |path|
-          copy_files(site, path, dest_path(@plugins[name], path.to_s, JAVASCRIPTS_DIR))
-        end
+      @plugins.each do |name, plugin| 
+        copy(plugin.javascripts, site)
       end
     end
 
     def self.copy_stylesheets(site)
-      @plugins.keys.each do |name| 
-        @plugins[name].stylesheet_paths(site).each do |path|
-          copy_files(site, path, dest_path(@plugins[name], path.to_s, STYLESHEETS_DIR))
-        end
+      @plugins.each do |name, plugin| 
+        copy(plugin.stylesheets, site)
       end
     end
 
-    def self.dest_path(plugin, path, dir)
-      sub_path = path.split(dir)[1]
-      File.join(plugin.name, dir, sub_path)
+    def self.copy_images(site)
+      @plugins.each do |name, plugin| 
+        copy(plugin.images, site)
+      end
     end
 
+    def self.copy_fonts(site)
+      @plugins.each do |name, plugin| 
+        copy(plugin.fonts, site)
+      end
+    end
+
+    def self.copy_files(site)
+      @plugins.each do |name, plugin| 
+        copy(plugin.files, site)
+      end
+    end
+
+    def self.copy(files, site)
+      files.each { |f| f.copy(site) }
+    end
   end
 end
