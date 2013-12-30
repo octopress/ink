@@ -3,8 +3,9 @@ module ThemeKit
 
     def initialize(plugin, type, file)
       @file = file
+      @plugin_type = plugin.type
       @root = plugin.assets_path
-      @dir = File.join(plugin.name_space, type)
+      @dir = File.join(plugin.namespace, type)
       @exists = {}
     end
 
@@ -13,8 +14,16 @@ module ThemeKit
     end
 
     def path(site)
-      @path ||= Pathname.new(file_path(site))
-      @path
+      file = user_path(site)
+
+      if !exists?(file) && @plugin_type != 'local_plugin'
+        file = plugin_path 
+      end
+
+      unless exists? file
+        raise IOError.new "Could not find #{File.basename(file)} at #{file}"
+      end
+      Pathname.new file
     end
 
     def file(file, site)
@@ -30,22 +39,16 @@ module ThemeKit
       site.static_files << ThemeKit::StaticFile.new(path(site), destination)
     end
 
-    def file_path(site)
-      if exists? file = user_path(site)
-        file
-      elsif exists? file = plugin_path
-        file
-      else
-        raise IOError.new "Could not find #{File.basename(file)} at #{file}"
-      end
-    end
-
     def plugin_path
       File.join @root, @dir, @file
     end
 
     def user_path(site)
-      File.join site.source, Plugins.theme_dir(site), @dir, @file
+      if @plugin_type == 'local_plugin'
+        File.join site.source, @dir, @file
+      else
+        File.join site.source, Plugins.theme_dir(site), @dir, @file
+      end
     end
 
     def exists?(file)

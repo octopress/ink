@@ -18,17 +18,9 @@ module ThemeKit
         Plugins.write_combined_javascript(site)
       end
 
-      if site.config['octopress'] && site.config['octopress']['combine_sass'] != false
-        Plugins.copy_sass(site)
-      else
-        Plugins.write_combined_sass(site)
-      end
-
       # Copy other assets
       #
-      Plugins.copy_images(site)
-      Plugins.copy_fonts(site)
-      Plugins.copy_files(site)
+      Plugins.copy_static_files(site)
     end
   end
 end

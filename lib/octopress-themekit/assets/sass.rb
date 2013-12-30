@@ -2,10 +2,11 @@ module ThemeKit
   class Sass < Asset
     def initialize(plugin, type, file, media)
       @file = file
+      @plugin_type = plugin.type
       @root = plugin.assets_path
-      @dir = File.join(plugin.name_space, type)
-      @media = media || 'all'
+      @dir = File.join(plugin.namespace, type)
       @exists = {}
+      @media = media || 'all'
     end
 
     def media
@@ -23,11 +24,28 @@ module ThemeKit
     def theme_load_path
       File.expand_path(File.join(@root, @dir))
     end
+
+    # Remove sass files from Jekyll's static_files array so it doesn't end up in the
+    # compiled site directory. 
+    #
+    def remove_static_file(site)
+      site.static_files.clone.each do |sf|
+        if sf.kind_of?(Jekyll::StaticFile) && sf.path == path(site).to_s
+          site.static_files.delete(sf)
+        end
+      end
+    end
     
     def compile(site)
       unless @compiled
-        ENV['SASS_PATH'] = user_load_path(site) + ':' + theme_load_path
-        @compiled = ::Sass.compile_file(file_path(site))
+        if @plugin_type == 'local_plugin'
+          remove_static_file(site)   
+        else
+          # If the plugin isn't a local plugin, add source paths to allow overrieds on @imports.
+          #
+          ENV['SASS_PATH'] = user_load_path(site) + ':' + theme_load_path
+        end
+        @compiled = ::Sass.compile_file(path(site).to_s)
       end
       @compiled
     end

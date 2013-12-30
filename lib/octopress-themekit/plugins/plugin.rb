@@ -1,49 +1,43 @@
 
 module ThemeKit
   class Plugin
-
-    LAYOUTS_DIR     = 'layouts'
-    FILES_DIR       = 'files'
-    FONTS_DIR       = 'fonts'
-    IMAGES_DIR      = 'images'
-    EMBEDS_DIR      = 'embeds'
-    JAVASCRIPTS_DIR = 'javascripts'
-    STYLESHEETS_DIR = 'stylesheets'
+    attr_accessor :name, :type, :asset_override, :assets_path,
+                  :layouts_dir, :stylesheets_dir, :javascripts_dir, :files_dir, :embeds_dir, :images_dir,
+                  :layouts, :embeds, :stylesheets, :javascripts, :images, :sass, :fonts, :files
 
     def initialize(name, type)
-      @name        = name
-      @type        = type
-      @layouts     = []
-      @embeds      = []
-      @stylesheets = []
-      @javascripts = []
-      @images      = []
-      @sass        = []
-      @fonts       = []
-      @files       = []
+      @layouts_dir       = 'layouts'
+      @files_dir         = 'files'
+      @fonts_dir         = 'fonts'
+      @images_dir        = 'images'
+      @embeds_dir        = 'embeds'
+      @javascripts_dir   = 'javascripts'
+      @stylesheets_dir   = 'stylesheets'
+      @name              = name
+      @type              = type
+      @layouts           = []
+      @embeds            = []
+      @stylesheets       = []
+      @javascripts       = []
+      @images            = []
+      @sass              = []
+      @fonts             = []
+      @files             = []
       add_assets
       add_layouts
       add_embeds
     end
 
-    def name_space
-      @type == 'theme' ? @type : @name
-    end
-
-    def name
-      @name
-    end
-
-    def type
-      @type
-    end
-
-    def assets_path
-      @assets_path
+    def namespace
+      if @type == 'local_plugin'
+        ''
+      else
+        @type == 'theme' ? @type : @name
+      end
     end
 
     def add_stylesheet(file, media=nil)
-      @stylesheets << Stylesheet.new(self, STYLESHEETS_DIR, file, media)
+      @stylesheets << Stylesheet.new(self, @stylesheets_dir, file, media)
     end
 
     def add_sass(file, media=nil)
@@ -52,31 +46,31 @@ module ThemeKit
       rescue LoadError
         raise IOError.new "The #{@name} #{@type} uses the Sass gem. You'll need to add it to your Gemfile or run `gem install sass`"
       end
-      @sass << Sass.new(self, STYLESHEETS_DIR, file, media)
+      @sass << Sass.new(self, @stylesheets_dir, file, media)
     end
 
     def add_javascript(file)
-      @javascripts << Javascript.new(self, JAVASCRIPTS_DIR, file)
+      @javascripts << Javascript.new(self, @javascripts_dir, file)
     end
 
     def add_layouts
-      @layouts = Template.new(self, LAYOUTS_DIR)
+      @layouts = Template.new(self, @layouts_dir)
     end
 
     def add_embeds
-      @embeds = Template.new(self, EMBEDS_DIR)
+      @embeds = Template.new(self, @embeds_dir)
     end
 
     def add_image(file)
-      @images << Asset.new(self, IMAGES_DIR, file)
+      @images << Asset.new(self, @images_dir, file)
     end
 
     def add_font(file)
-      @images << Asset.new(self, FONTS_DIR, file)
+      @images << Asset.new(self, @fonts_dir, file)
     end
 
     def add_file(file)
-      @images << Asset.new(self, FILES_DIR, file)
+      @images << Asset.new(self, @files_dir, file)
     end
 
     def add_stylesheets(files, media=nil)
@@ -105,30 +99,6 @@ module ThemeKit
 
     def stylesheet_paths(site)
       get_paths(@stylesheets, site)
-    end
-
-    def stylesheets
-      @stylesheets
-    end
-
-    def sass
-      @sass
-    end
-
-    def javascripts
-      @javascripts
-    end
-
-    def images
-      @images
-    end
-
-    def fonts
-      @fonts
-    end
-
-    def files
-      @files
     end
 
     def javascript_paths(site)

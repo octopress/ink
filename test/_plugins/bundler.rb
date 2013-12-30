@@ -19,4 +19,17 @@ class ClassicTheme < ThemeKit::Plugin
   end
 end
 
-ThemeKit::Plugins.register_theme(ClassicTheme, 'classic')
+ThemeKit::Plugins.register_plugin(ClassicTheme, 'classic', 'theme')
+
+class SassPlugin < ThemeKit::Plugin
+  def initialize(name, type)
+    @assets_path = File.expand_path(File.join(File.dirname(__FILE__), '../'))
+    super
+  end
+
+  def add_assets
+    add_sass 'site.scss'
+  end
+end
+
+ThemeKit::Plugins.register_plugin(SassPlugin, 'sass', 'local_plugin')

@@ -9,6 +9,10 @@ module ThemeKit
       File.join(dest, @dest)
     end
 
+    def path
+      @source
+    end
+
     def write(dest)
       dest_path = destination(dest)
 
