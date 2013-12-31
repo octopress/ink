@@ -61,10 +61,37 @@ module ThemeKit
       site.static_files << ThemeKit::StaticFileContent.new(source, dest)
     end
 
+    def self.compile_sass_file(path, options)
+      ::Sass.compile_file(path, options)
+    end
+
+    def self.compile_sass(contents, options)
+      ::Sass.compile(contents, options)
+    end
+
+    def self.sass_config(site, item, default)
+      if site.config['sass'] && site.config['sass'][item]
+        site.config['sass'][item]
+      else
+        default
+      end
+    end
+    
+    def self.sass_options(site)
+      options = {
+        style:        sass_config(site, 'output_style', 'compressed').to_sym,
+        trace:        sass_config(site, 'trace', false),
+        line_numbers: sass_config(site, 'line_numbers', false)
+      }
+    end
+
     def self.write_combined_stylesheet(site)
       css = combine_stylesheets(site)
       css.keys.each do |media|
-        write_files(site, css[media][:contents], combined_stylesheet_path(media)) 
+        options = sass_options(site)
+        options[:line_numbers] = false
+        contents = compile_sass(css[media][:contents], options)
+        write_files(site, contents, combined_stylesheet_path(media)) 
       end
     end
 
@@ -77,17 +104,22 @@ module ThemeKit
         css = {}
         paths = {}
         plugins.each do |plugin|
+          plugin_header = "/* #{plugin.name} #{plugin.type} */\n"
           stylesheets = plugin.stylesheets.clone.concat plugin.sass
           stylesheets.each do |file|
             css[file.media] ||= {}
             css[file.media][:contents] ||= ''
+            css[file.media][:contents] << plugin_header
             css[file.media][:paths] ||= []
+            
+            # Add Sass files
             if file.respond_to? :compile
               css[file.media][:contents].concat file.compile(site)
             else
-              css[file.media][:contents].concat file.path(site).read
+              css[file.media][:contents].concat file.path(site).read.strip
             end
             css[file.media][:paths] << file.path(site)
+            plugin_header = ''
           end
         end
 
@@ -114,7 +146,7 @@ module ThemeKit
     def self.combined_stylesheet_tag(site)
       tags = ''
       combine_stylesheets(site).keys.each do |media|
-        tags.concat "<link href='/#{combined_stylesheet_path(media)}' media='#{media}' rel='stylesheet' type='text/css'>\n"
+        tags.concat "<link href='/#{combined_stylesheet_path(media)}' media='#{media}' rel='stylesheet' type='text/css'>"
       end
       tags
     end

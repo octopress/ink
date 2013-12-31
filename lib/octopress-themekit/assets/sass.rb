@@ -35,18 +35,21 @@ module ThemeKit
         end
       end
     end
-    
+
     def compile(site)
       unless @compiled
+        options = Plugins.sass_options(site)
         if @plugin_type == 'local_plugin'
-          remove_static_file(site)   
+          remove_static_file(site)
+          @compiled = Plugins.compile_sass_file(path(site).to_s, options)
         else
           # If the plugin isn't a local plugin, add source paths to allow overrieds on @imports.
           #
-          ENV['SASS_PATH'] = user_load_path(site) + ':' + theme_load_path
+          options[:load_paths] = [user_load_path(site), theme_load_path]
+          @compiled = Plugins.compile_sass_file(path(site).to_s, options)
         end
-        @compiled = ::Sass.compile_file(path(site).to_s)
       end
+
       @compiled
     end
 
