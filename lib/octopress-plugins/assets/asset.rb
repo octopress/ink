@@ -5,6 +5,7 @@ module Octopress
       def initialize(plugin, type, file)
         @file = file
         @type = type
+        @plugin = plugin
         @plugin_type = plugin.type
         @root = plugin.assets_path
         @dir = File.join(plugin.namespace, type)
@@ -41,15 +42,23 @@ module Octopress
         site.static_files << StaticFile.new(path(site), destination)
       end
 
+      def plugin_dir
+        File.join @root, @type
+      end
+
       def plugin_path
-        File.join @root, @type, @file
+        File.join plugin_dir, @file
+      end
+
+      def user_dir(site)
+        File.join site.source, Plugins.custom_dir(site), @dir
       end
 
       def user_path(site)
         if @plugin_type == 'local_plugin'
           File.join site.source, @dir, @file
         else
-          File.join site.source, Plugins.theme_dir(site), @dir, @file
+          File.join user_dir(site), @file
         end
       end
 

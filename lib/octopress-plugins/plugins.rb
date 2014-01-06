@@ -21,10 +21,6 @@ module Octopress
       [@theme].concat(@plugins).concat(@local_plugins).compact
     end
 
-    def self.layout(name, file, site)
-      plugin(name).layout(file, site)
-    end
-
     def self.embed(name, file, site)
       plugin(name).embed(file, site)
     end
@@ -41,7 +37,13 @@ module Octopress
       end
     end
 
-    def self.theme_dir(site)
+    def self.register_layouts(site)
+      plugins.each do |p|
+        p.layouts.clone.each { |layout| layout.register(site) }
+      end
+    end
+
+    def self.custom_dir(site)
       site.config['custom'] || CUSTOM_DIR
     end
 

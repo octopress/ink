@@ -5,5 +5,6 @@ module Octopress
     autoload :Stylesheet,           'octopress-plugins/assets/stylesheet'
     autoload :Sass,                 'octopress-plugins/assets/sass'
     autoload :Template,             'octopress-plugins/assets/template'
+    autoload :Layout,               'octopress-plugins/assets/layout'
   end
 end

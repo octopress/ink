@@ -57,7 +57,14 @@ module Octopress
     end
 
     def add_layouts
-      @layouts = Assets::Template.new(self, @layouts_dir)
+      if @assets_path
+        base = File.join(@assets_path, @layouts_dir)
+        entries = []
+        Dir.chdir(base) { entries = Dir['**/*.*'] }
+        entries.each do |file|
+          @layouts << Assets::Layout.new(self, @layouts_dir, file)
+        end
+      end
     end
 
     def add_embeds
@@ -130,10 +137,6 @@ module Octopress
 
     def embed(file, site)
       @embeds.file(file, site)
-    end
-
-    def layout(file, site)
-      @layouts.file(file, site)
     end
   end
 end

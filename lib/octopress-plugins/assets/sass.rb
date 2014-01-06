@@ -20,7 +20,7 @@ module Octopress
       end
 
       def user_load_path(site)
-        File.join site.source, Plugins.theme_dir(site), @dir, File.dirname(@file)
+        File.join site.source, Plugins.custom_dir(site), @dir, File.dirname(@file)
       end
 
       def theme_load_path

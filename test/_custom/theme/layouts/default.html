@@ -6,7 +6,12 @@
     <title>{{ page.title }}</title>
     <meta name="viewport" content="width=device-width">
     {% theme_css %}
-    {% theme_js %}
+    {% yield head %}
   </head>
-  <body class="dang">{{ content }}</body>
+  <body class="dang">
+    {{ content }}
+    {% wrap_yield footer %}<footer>{= yield }</footer>{% endwrap_yield %}
+    {% theme_js %}
+    {% yield scripts %}
+  </body>
 </html>
