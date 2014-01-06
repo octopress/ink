@@ -1,16 +1,16 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'octopress-plugins/version'
+require 'octopress-ink/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "octopress-plugins"
-  spec.version       = Octopress::PluginsVersion::VERSION
+  spec.name          = "octopress-ink"
+  spec.version       = Octopress::Ink::VERSION
   spec.authors       = ["Brandon Mathis"]
   spec.email         = ["brandon@imathis.com"]
   spec.description   = %q{A starting point for creating gem-based Jekyll themes and plugins}
   spec.summary       = %q{A starting point for creating gem-based Jekyll themes and plugins}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/octopress/ink"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
@@ -19,9 +19,9 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency "jekyll", "~> 1.3.0"
-  spec.add_runtime_dependency "jekyll-page-hooks", "~> 1.1.0"
   spec.add_runtime_dependency "sass", "~> 3.2.0"
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
 end
+

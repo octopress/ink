@@ -1,18 +1,18 @@
-# Octopress ThemeKit
+# Octopress Ink
 
-Use Themekit to help you build themes and plugins for Jekyll.
+Use Ink to help you build themes and plugins for Jekyll.
 
 ### Features
-- Installing ThemeKit plugins is easy.
+- Installing Ink plugins is easy.
 - Users won't need to install or managae plugin assets.
 - Jekyll will read your plugin's layouts, javascripts, stylesheets and more directly from your gem.
-- ThemeKit allows users to modify a theme/plugin by adding their modified version to _themes directory.
+- Ink allows users to modify a theme or plugin by adding their modified version to _themes directory.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'octopress-themekit'
+    gem 'octopress-ink'
 
 And then execute:
 
@@ -20,7 +20,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install octopress-themekit
+    $ gem install octopress-ink
 
 ## Usage
 
@@ -31,7 +31,6 @@ should probably talk to me directly.
 - Write an example theme
 - Write an example plugin
 - Add support for compiling and stitching javascript/coffeescript.
-- Ensure Guard Jekyll Plus handles assets properly.
 
 ## Contributing
 

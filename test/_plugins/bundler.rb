@@ -21,10 +21,3 @@ end
 
 Octopress.register_plugin(ClassicTheme, 'classic', 'theme')
 
-#class SassPlugin < Octopress::Plugin
-  #def add_assets
-    #add_sass 'site.scss'
-  #end
-#end
-
-#Octopress::Plugins.register_plugin(SassPlugin, 'sass', 'local_plugin')

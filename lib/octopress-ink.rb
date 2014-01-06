@@ -1,23 +1,22 @@
 require 'jekyll'
-require 'jekyll-page-hooks'
 require 'pry-debugger'
 require 'digest/md5'
 
-require 'octopress-plugins/generators/plugin_assets'
-require 'octopress-plugins/jekyll/hooks'
-require 'octopress-plugins/version'
-require 'octopress-plugins/helpers/content_for'
+require 'octopress-ink/generators/plugin_assets'
+require 'octopress-ink/jekyll/hooks'
+require 'octopress-ink/version'
+require 'octopress-ink/helpers/content_for'
 
 module Octopress
   CUSTOM_DIR = "_custom"
 
-  autoload :Assets,               'octopress-plugins/assets'
-  autoload :StaticFile,           'octopress-plugins/assets/static_file'
-  autoload :StaticFileContent,    'octopress-plugins/assets/static_file_content'
-  autoload :Plugins,              'octopress-plugins/plugins'
-  autoload :Plugin,               'octopress-plugins/plugin'
-  autoload :Tags,                 'octopress-plugins/tags'
-  autoload :SassPlugin,           'octopress-plugins/plugins/sass'
+  autoload :Assets,               'octopress-ink/assets'
+  autoload :StaticFile,           'octopress-ink/assets/static_file'
+  autoload :StaticFileContent,    'octopress-ink/assets/static_file_content'
+  autoload :Plugins,              'octopress-ink/plugins'
+  autoload :Plugin,               'octopress-ink/plugin'
+  autoload :Tags,                 'octopress-ink/tags'
+  autoload :SassPlugin,           'octopress-ink/plugins/sass'
 
   def self.register_plugin(plugin, name, type)
     Plugins.register_plugin(plugin, name, type)
