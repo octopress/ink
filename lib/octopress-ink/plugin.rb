@@ -60,9 +60,11 @@ module Octopress
       if @assets_path
         base = File.join(@assets_path, @layouts_dir)
         entries = []
-        Dir.chdir(base) { entries = Dir['**/*.*'] }
-        entries.each do |file|
-          @layouts << Assets::Layout.new(self, @layouts_dir, file)
+        if Dir.exists?(base)
+          Dir.chdir(base) { entries = Dir['**/*.*'] }
+          entries.each do |file|
+            @layouts << Assets::Layout.new(self, @layouts_dir, file)
+          end
         end
       end
     end
