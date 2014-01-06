@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'octopress-themekit/version'
+require 'octopress-plugins/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "octopress-themekit"
-  spec.version       = ThemeKit::VERSION
+  spec.name          = "octopress-plugins"
+  spec.version       = Octopress::PluginsVersion::VERSION
   spec.authors       = ["Brandon Mathis"]
   spec.email         = ["brandon@imathis.com"]
   spec.description   = %q{A starting point for creating gem-based Jekyll themes and plugins}

@@ -1,4 +1,4 @@
-module ThemeKit
+module Octopress
   class StaticFile
     def initialize(source, dest)
       @source = source
@@ -23,3 +23,4 @@ module ThemeKit
     end
   end
 end
+

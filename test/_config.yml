@@ -1,7 +1,14 @@
 name: Your New Jekyll Site
 markdown: redcarpet
 pygments: true
+  
+# Sass configurations 
 sass: 
-  output_style: compact
-  line_numbers: true
+  #output_style: compact
+  #line_numbers: true
+  files:
+    - [site.sass, all]
+
+#gem:
+  #- octopress-plugins
 

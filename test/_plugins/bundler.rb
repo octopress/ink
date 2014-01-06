@@ -4,9 +4,9 @@ begin
 rescue LoadError
 end
 
-class ClassicTheme < ThemeKit::Plugin
+class ClassicTheme < Octopress::Plugin
   def initialize(name, type)
-    @assets_path = File.expand_path(File.dirname(__FILE__))
+    @assets_path = File.expand_path(File.join(File.dirname(__FILE__), 'theme'))
     super
   end
 
@@ -19,17 +19,12 @@ class ClassicTheme < ThemeKit::Plugin
   end
 end
 
-ThemeKit::Plugins.register_plugin(ClassicTheme, 'classic', 'theme')
+Octopress.register_plugin(ClassicTheme, 'classic', 'theme')
 
-class SassPlugin < ThemeKit::Plugin
-  def initialize(name, type)
-    @assets_path = File.expand_path(File.join(File.dirname(__FILE__), '../'))
-    super
-  end
+#class SassPlugin < Octopress::Plugin
+  #def add_assets
+    #add_sass 'site.scss'
+  #end
+#end
 
-  def add_assets
-    add_sass 'site.scss'
-  end
-end
-
-ThemeKit::Plugins.register_plugin(SassPlugin, 'sass', 'local_plugin')
+#Octopress::Plugins.register_plugin(SassPlugin, 'sass', 'local_plugin')

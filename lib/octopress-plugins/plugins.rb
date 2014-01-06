@@ -1,24 +1,24 @@
-module ThemeKit
-  class Plugins
-    @plugins = {}
-    @local_plugins = {}
+module Octopress
+  module Plugins
+    @plugins = []
+    @local_plugins = []
 
     def self.theme
       @theme
     end
 
     def self.plugin(name)
-      if @plugins[name]
-        @plugins[name]
-      elsif @theme.namespace == name
+      if name == 'theme'
         @theme
       else
-        raise IOError.new "No layout such layout #{name} for #{name}."
+        @plugins.concat(@local_plugins).each do |p|
+          return p if p.name == name
+        end
       end
     end
 
     def self.plugins
-      [@theme].concat(@plugins.values).concat(@local_plugins.values)
+      [@theme].concat(@plugins).concat(@local_plugins).compact
     end
 
     def self.layout(name, file, site)
@@ -30,12 +30,14 @@ module ThemeKit
     end
 
     def self.register_plugin(plugin, name, type='plugin')
+      new_plugin = plugin.new(name, type)
+
       if type == 'theme'
-        @theme = plugin.new(name, type)
+        @theme = new_plugin
       elsif type == 'local_plugin'
-        @plugins[name] = plugin.new(name, type)
+        @plugins << new_plugin
       else
-        @local_plugins[name] = plugin.new(name, type)
+        @local_plugins << new_plugin
       end
     end
 
@@ -58,7 +60,7 @@ module ThemeKit
     end
 
     def self.write_files(site, source, dest)
-      site.static_files << ThemeKit::StaticFileContent.new(source, dest)
+      site.static_files << StaticFileContent.new(source, dest)
     end
 
     def self.compile_sass_file(path, options)
@@ -104,7 +106,7 @@ module ThemeKit
         css = {}
         paths = {}
         plugins.each do |plugin|
-          plugin_header = "/* #{plugin.name} #{plugin.type} */\n"
+          plugin_header = "/* #{name} #{plugin.type} */\n"
           stylesheets = plugin.stylesheets.clone.concat plugin.sass
           stylesheets.each do |file|
             css[file.media] ||= {}
@@ -185,6 +187,33 @@ module ThemeKit
       end
     end
 
+    def self.add_static_files(site)
+     
+      if site.config['sass'] and site.config['sass']['files']
+        plugin('sass').add_files site.config['sass']['files']
+      end
+ 
+      # Copy/Generate Stylesheets
+      #
+      if site.config['octopress'] && site.config['octopress']['combine_stylesheets'] != false
+        copy_stylesheets(site)
+      else
+        write_combined_stylesheet(site)
+      end
+
+      # Copy/Generate Javascripts
+      #
+      if site.config['octopress'] && site.config['octopress']['combine_javascripts'] != false
+        copy_javascripts(site)
+      else
+        write_combined_javascript(site)
+      end
+
+      # Copy other assets
+      #
+      copy_static_files(site)
+    end
+
     def self.copy_static_files(site)
       plugins.each do |plugin| 
         copy(plugin.files, site)
@@ -198,3 +227,4 @@ module ThemeKit
     end
   end
 end
+

@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 # Specify your gem's dependencies in jekyll-markdown-block.gemspec
 group :jekyll_plugins do
-  gem "octopress-themekit", path: "../"
+  gem "octopress-plugins", path: "../"
 end
 
 gem "pry-debugger"

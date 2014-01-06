@@ -1,4 +1,4 @@
-module ThemeKit
+module Octopress
   class StaticFileContent < StaticFile
     def write(dest)
       dest_path = destination(dest)
@@ -10,3 +10,4 @@ module ThemeKit
     end
   end
 end
+

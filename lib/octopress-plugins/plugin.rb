@@ -1,5 +1,4 @@
-
-module ThemeKit
+module Octopress
   class Plugin
     attr_accessor :name, :type, :asset_override, :assets_path,
                   :layouts_dir, :stylesheets_dir, :javascripts_dir, :files_dir, :embeds_dir, :images_dir,
@@ -28,6 +27,10 @@ module ThemeKit
       add_embeds
     end
 
+    def add_assets
+      
+    end
+
     def namespace
       if @type == 'local_plugin'
         ''
@@ -37,7 +40,7 @@ module ThemeKit
     end
 
     def add_stylesheet(file, media=nil)
-      @stylesheets << Stylesheet.new(self, @stylesheets_dir, file, media)
+      @stylesheets << Assets::Stylesheet.new(self, @stylesheets_dir, file, media)
     end
 
     def add_sass(file, media=nil)
@@ -46,31 +49,31 @@ module ThemeKit
       rescue LoadError
         raise IOError.new "The #{@name} #{@type} uses the Sass gem. You'll need to add it to your Gemfile or run `gem install sass`"
       end
-      @sass << Sass.new(self, @stylesheets_dir, file, media)
+      @sass << Assets::Sass.new(self, @stylesheets_dir, file, media)
     end
 
     def add_javascript(file)
-      @javascripts << Javascript.new(self, @javascripts_dir, file)
+      @javascripts << Assets::Javascript.new(self, @javascripts_dir, file)
     end
 
     def add_layouts
-      @layouts = Template.new(self, @layouts_dir)
+      @layouts = Assets::Template.new(self, @layouts_dir)
     end
 
     def add_embeds
-      @embeds = Template.new(self, @embeds_dir)
+      @embeds = Assets::Template.new(self, @embeds_dir)
     end
 
     def add_image(file)
-      @images << Asset.new(self, @images_dir, file)
+      @images << Assets::Asset.new(self, @images_dir, file)
     end
 
     def add_font(file)
-      @images << Asset.new(self, @fonts_dir, file)
+      @fonts << Assets::Asset.new(self, @fonts_dir, file)
     end
 
     def add_file(file)
-      @images << Asset.new(self, @files_dir, file)
+      @files << Assets::Asset.new(self, @files_dir, file)
     end
 
     def add_stylesheets(files, media=nil)
