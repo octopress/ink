@@ -100,7 +100,8 @@ module Octopress
     end
 
     def self.write_combined_javascript(site)
-      write_files(site, combine_javascripts(site), combined_javascript_path) 
+      js = combine_javascripts(site)
+      write_files(site, js, combined_javascript_path) unless js == ''
     end
 
     def self.combine_stylesheets(site)
@@ -136,15 +137,18 @@ module Octopress
     end
 
     def self.combine_javascripts(site)
-      js = ''
-      plugins.each do |plugin| 
-        paths = plugin.javascript_paths(site)
-        @javascript_fingerprint = fingerprint(paths)
-        paths.each do |file|
-          js.concat Pathname.new(file).read
+      unless @combined_javascripts
+        js = ''
+        plugins.each do |plugin| 
+          paths = plugin.javascript_paths(site)
+          @javascript_fingerprint = fingerprint(paths)
+          paths.each do |file|
+            js.concat Pathname.new(file).read
+          end
         end
+        @combined_javascripts = js
       end
-      js
+      @combined_javascripts
     end
 
     def self.combined_stylesheet_tag(site)
@@ -155,8 +159,10 @@ module Octopress
       tags
     end
 
-    def self.combined_javascript_tag
-      "<script src='/#{combined_javascript_path}'></script>"
+    def self.combined_javascript_tag(site)
+      unless combine_javascripts(site) == ''
+        "<script src='/#{combined_javascript_path}'></script>"
+      end
     end
 
     def self.stylesheet_tags

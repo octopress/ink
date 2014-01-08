@@ -1,5 +1,4 @@
 require 'jekyll'
-require 'pry-debugger'
 require 'digest/md5'
 
 require 'octopress-ink/generators/plugin_assets'

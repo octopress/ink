@@ -9,7 +9,7 @@ module Octopress
         if site.config['octopress'] && site.config['octopress']['combine_javascripts'] != false
           Plugins.javascript_tags
         else
-          Plugins.combined_javascript_tag
+          Plugins.combined_javascript_tag(site)
         end
       end
     end
