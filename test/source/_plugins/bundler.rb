@@ -1,8 +1,4 @@
-begin
-  require "bundler/setup"
-  Bundler.require(:jekyll_plugins)
-rescue LoadError
-end
+require 'octopress-ink'
 
 class ClassicTheme < Octopress::Plugin
   def initialize(name, type)

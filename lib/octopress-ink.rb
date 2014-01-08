@@ -5,6 +5,7 @@ require 'octopress-ink/generators/plugin_assets'
 require 'octopress-ink/jekyll/hooks'
 require 'octopress-ink/version'
 require 'octopress-ink/helpers/content_for'
+require 'pry-debugger'
 
 module Octopress
   CUSTOM_DIR = "_custom"
@@ -17,12 +18,12 @@ module Octopress
   autoload :Tags,                 'octopress-ink/tags'
   autoload :SassPlugin,           'octopress-ink/plugins/sass'
 
-  def self.register_plugin(plugin, name, type)
+  def self.register_plugin(plugin, name, type='plugin')
     Plugins.register_plugin(plugin, name, type)
   end
 end
 
-Liquid::Template.register_tag('embed', Octopress::Tags::EmbedTag)
+Liquid::Template.register_tag('include', Octopress::Tags::IncludeTag)
 Liquid::Template.register_tag('octopress_js', Octopress::Tags::JavascriptTag)
 Liquid::Template.register_tag('octopress_css', Octopress::Tags::StylesheetTag)
 Liquid::Template.register_tag('content_for', Octopress::Tags::ContentForBlock)

@@ -1,6 +1,6 @@
 module Octopress
   module Assets
-    class Template < Asset
+    class Include < Asset
 
       def initialize(plugin, type)
         @plugin_type = plugin.type

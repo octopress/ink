@@ -6,11 +6,7 @@ module Octopress
       end
       def render(context)
         site = context.registers[:site]
-        if site.config['octopress'] && site.config['octopress']['combine_javascripts'] != false
-          Plugins.javascript_tags
-        else
-          Plugins.combined_javascript_tag(site)
-        end
+        Plugins.javascript_tags(site)
       end
     end
   end

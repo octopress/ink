@@ -4,7 +4,7 @@ module Octopress
     autoload :Javascript,           'octopress-ink/assets/javascript'
     autoload :Stylesheet,           'octopress-ink/assets/stylesheet'
     autoload :Sass,                 'octopress-ink/assets/sass'
-    autoload :Template,             'octopress-ink/assets/template'
+    autoload :Include,              'octopress-ink/assets/include'
     autoload :Layout,               'octopress-ink/assets/layout'
   end
 end

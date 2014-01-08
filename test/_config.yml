@@ -1,13 +1,20 @@
 name: Your New Jekyll Site
 markdown: redcarpet
 pygments: true
+source: source
+destination: site
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - test.rb
   
 # Sass configurations 
-sass: 
-  #output_style: compact
-  #line_numbers: true
-  files:
-    - [site.sass, all]
+octopress:
+  sass: 
+    #output_style: compact
+    #line_numbers: true
+    files:
+      - [site.sass, all]
 
 #gem:
   #- octopress-plugins

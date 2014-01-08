@@ -1,21 +1,21 @@
 module Octopress
   class Plugin
     attr_accessor :name, :type, :asset_override, :assets_path,
-                  :layouts_dir, :stylesheets_dir, :javascripts_dir, :files_dir, :embeds_dir, :images_dir,
-                  :layouts, :embeds, :stylesheets, :javascripts, :images, :sass, :fonts, :files
+                  :layouts_dir, :stylesheets_dir, :javascripts_dir, :files_dir, :includes_dir, :images_dir,
+                  :layouts, :includes, :stylesheets, :javascripts, :images, :sass, :fonts, :files
 
     def initialize(name, type)
       @layouts_dir       = 'layouts'
       @files_dir         = 'files'
       @fonts_dir         = 'fonts'
       @images_dir        = 'images'
-      @embeds_dir        = 'embeds'
+      @includes_dir      = 'includes'
       @javascripts_dir   = 'javascripts'
       @stylesheets_dir   = 'stylesheets'
       @name              = name
       @type              = type
       @layouts           = []
-      @embeds            = []
+      @includes          = []
       @stylesheets       = []
       @javascripts       = []
       @images            = []
@@ -24,7 +24,7 @@ module Octopress
       @files             = []
       add_assets
       add_layouts
-      add_embeds
+      add_includes
     end
 
     def add_assets
@@ -69,8 +69,8 @@ module Octopress
       end
     end
 
-    def add_embeds
-      @embeds = Assets::Template.new(self, @embeds_dir)
+    def add_includes
+      @includes = Assets::Include.new(self, @includes_dir)
     end
 
     def add_image(file)
@@ -137,8 +137,8 @@ module Octopress
       files.dup.map { |f| f.tag }
     end
 
-    def embed(file, site)
-      @embeds.file(file, site)
+    def include(file, site)
+      @includes.file(file, site)
     end
   end
 end

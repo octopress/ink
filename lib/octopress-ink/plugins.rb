@@ -21,8 +21,8 @@ module Octopress
       [@theme].concat(@plugins).concat(@local_plugins).compact
     end
 
-    def self.embed(name, file, site)
-      plugin(name).embed(file, site)
+    def self.include(name, file, site)
+      plugin(name).include(file, site)
     end
 
     def self.register_plugin(plugin, name, type='plugin')
@@ -53,12 +53,12 @@ module Octopress
     end
     
     def self.combined_stylesheet_path(media)
-      File.join('stylesheets', "site-#{media}-#{@combined_stylesheets[media][:fingerprint]}.css")
+      File.join('stylesheets', "#{media}-#{@combined_stylesheets[media][:fingerprint]}.css")
     end
 
     def self.combined_javascript_path
       print = @javascript_fingerprint || ''
-      File.join('javascripts', "site-#{print}.js")
+      File.join('javascripts', "#{print}.js")
     end
 
     def self.write_files(site, source, dest)
@@ -165,21 +165,37 @@ module Octopress
       end
     end
 
-    def self.stylesheet_tags
-      css = []
-      plugins.each do |plugin| 
-        css.concat plugin.stylesheet_tags
-        css.concat plugin.sass_tags
+    def self.stylesheet_tags(site)
+      if concat_css(site)
+        combined_stylesheet_tag(site)
+      else
+        css = []
+        plugins.each do |plugin| 
+          css.concat plugin.stylesheet_tags
+          css.concat plugin.sass_tags
+        end
+        css
       end
-      css
     end
 
-    def self.javascript_tags
-      js = []
-      plugins.each do |plugin| 
-        js.concat plugin.javascript_tags
+    def self.concat_css(site)
+      site.config['octopress'] && site.config['octopress']['concat_css'] != false
+    end
+
+    def self.concat_js(site)
+      site.config['octopress'] && site.config['octopress']['concat_js'] != false
+    end
+
+    def self.javascript_tags(site)
+      if concat_js(site)
+        combined_javascript_tag(site)
+      else
+        js = []
+        plugins.each do |plugin| 
+          js.concat plugin.javascript_tags
+        end
+        js
       end
-      js
     end
 
     def self.copy_javascripts(site)
@@ -197,24 +213,24 @@ module Octopress
 
     def self.add_static_files(site)
      
-      if site.config['sass'] and site.config['sass']['files']
-        plugin('sass').add_files site.config['sass']['files']
+      if site.config['octopress'] && site.config['octopress']['sass'] && site.config['octopress']['sass']['files']
+        plugin('sass').add_files site.config['octopress']['sass']['files']
       end
  
       # Copy/Generate Stylesheets
       #
-      if site.config['octopress'] && site.config['octopress']['combine_stylesheets'] != false
-        copy_stylesheets(site)
-      else
+      if concat_css(site)
         write_combined_stylesheet(site)
+      else
+        copy_stylesheets(site)
       end
 
       # Copy/Generate Javascripts
       #
-      if site.config['octopress'] && site.config['octopress']['combine_javascripts'] != false
-        copy_javascripts(site)
-      else
+      if concat_js(site)
         write_combined_javascript(site)
+      else
+        copy_javascripts(site)
       end
 
       # Copy other assets
