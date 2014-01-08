@@ -23,8 +23,8 @@ module Octopress
 end
 
 Liquid::Template.register_tag('embed', Octopress::Tags::EmbedTag)
-Liquid::Template.register_tag('theme_js', Octopress::Tags::JavascriptTag)
-Liquid::Template.register_tag('theme_css', Octopress::Tags::StylesheetTag)
+Liquid::Template.register_tag('octopress_js', Octopress::Tags::JavascriptTag)
+Liquid::Template.register_tag('octopress_css', Octopress::Tags::StylesheetTag)
 Liquid::Template.register_tag('content_for', Octopress::Tags::ContentForBlock)
 Liquid::Template.register_tag('head', Octopress::Tags::HeadBlock)
 Liquid::Template.register_tag('footer', Octopress::Tags::FooterBlock)

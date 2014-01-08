@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>{{ page.title }}</title>
     <meta name="viewport" content="width=device-width">
-    {% theme_css %}
+    {% octopress_css %}
     {% yield head %}
   </head>
   <body>
     {{ content }}
     <footer>{% yield footer %}</footer>
     {% yield scripts %}
-    {% theme_js %}
+    {% octopress_js %}
     {% yield scripts %}
   </body>
 </html>
