@@ -15,5 +15,13 @@ class ClassicTheme < Octopress::Plugin
   end
 end
 
+class AwesomeSauce < Octopress::Plugin
+  def initialize(name, type)
+    @assets_path = File.expand_path(File.join(File.dirname(__FILE__), 'awesome-sauce'))
+    super
+  end
+end
+
 Octopress.register_plugin(ClassicTheme, 'classic', 'theme')
+Octopress.register_plugin(AwesomeSauce, 'awesome-sauce')
 

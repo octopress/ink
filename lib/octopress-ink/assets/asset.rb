@@ -17,16 +17,18 @@ module Octopress
       end
 
       def path(site)
-        file = user_path(site)
+        unless @found_file
+          files = []
+          files << user_path(site)
+          files << plugin_path unless @plugin_type == 'local_plugin'
+          files = files.flatten.reject { |f| !exists? f }
 
-        if !exists?(file) && @plugin_type != 'local_plugin'
-          file = plugin_path 
+          unless files.size
+            raise IOError.new "Could not find #{File.basename(@file)} at #{file}"
+          end
+          @found_file = Pathname.new files[0]
         end
-
-        unless exists? file
-          raise IOError.new "Could not find #{File.basename(file)} at #{file}"
-        end
-        Pathname.new file
+        @found_file
       end
 
       def file(file, site)
@@ -54,12 +56,26 @@ module Octopress
         File.join site.source, Plugins.custom_dir(site), @dir
       end
 
+      def local_plugin_path(site)
+        File.join site.source, @dir, @file
+      end
+
+      def user_override_path(site)
+        File.join user_dir(site), @file
+      end
+
       def user_path(site)
         if @plugin_type == 'local_plugin'
-          File.join site.source, @dir, @file
+          local_plugin_path(site)
         else
-          File.join user_dir(site), @file
+          user_override_path(site)
         end
+      end
+
+      def alt_syntax_file
+        ext = File.extname(@file)
+        alt_ext = ext == 'scss' ? 'sass' : 'scss'
+        @file.sub(/\.#{ext}/, ".#{alt_ext}")
       end
 
       def exists?(file)

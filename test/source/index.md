@@ -1,5 +1,5 @@
 ---
-layout: theme:default
+layout: theme:test
 title: Your New Jekyll Site
 ---
 

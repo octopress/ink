@@ -6,8 +6,10 @@ module Octopress
     def add_files(files)
       files = [files] unless files.is_a? Array
       files.each do |file|
+        # accept ['file', 'media_type']
         if file.is_a? Array
           add_sass file.first, file.last
+        # accept 'file'
         else
           add_sass file
         end

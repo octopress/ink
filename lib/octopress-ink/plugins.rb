@@ -211,11 +211,19 @@ module Octopress
       end
     end
 
+    def self.local_sass_files(site)
+      if site.config['octopress'] && site.config['octopress']['sass'] && site.config['octopress']['sass']['files']
+        sass_files = site.config['octopress']['sass']['files'] || []
+      else
+        files = Dir.glob(File.join(site.source, 'stylesheets', '**/*.s[ca]ss')).reject { |f| File.basename(f) =~ /^_/ }
+        sass_files = files.map { |f| f.split('stylesheets/').last}
+      end
+      sass_files
+    end
+
     def self.add_static_files(site)
      
-      if site.config['octopress'] && site.config['octopress']['sass'] && site.config['octopress']['sass']['files']
-        plugin('sass').add_files site.config['octopress']['sass']['files']
-      end
+      plugin('sass').add_files(local_sass_files(site))
  
       # Copy/Generate Stylesheets
       #

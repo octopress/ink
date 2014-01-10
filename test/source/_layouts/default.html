@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    {% yield head %}
+  </head>
+  <body>
+    {% yield foo %}
+    {% wrap_yield footer %}<footer>{= yield }</footer>{% endwrap_yield %}
+    {% yield scripts %}
+  </body>
+</html>

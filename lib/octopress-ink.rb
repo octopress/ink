@@ -1,6 +1,7 @@
 require 'jekyll'
 require 'digest/md5'
 
+require 'octopress-ink/version'
 require 'octopress-ink/generators/plugin_assets'
 require 'octopress-ink/jekyll/hooks'
 require 'octopress-ink/version'

@@ -1,20 +1,5 @@
 require 'colorator'
 
-`rm -rf _site; bundle exec jekyll build --trace`
-
-diff = `diff expected.html site/test.html`
-
-if diff.size == 0 and File.exist?('site/test.html')
-  puts "passed".green
-else
-  puts "failed".red
-  puts diff
-  abort
-end
-
-
-require 'colorator'
-
 has_failed   = false
 config       = File.read("_config.yml")
 disabled     = "#{config}minify_html: false"
@@ -22,23 +7,21 @@ minify       = "#{config}env: production"
 override_off = "#{config}env: production\nminify_html: false"
 override_on  = "#{config}env: development\nminify_html: true"
 
-def test(type, version)
-  build
-  if diff = diff_file(type)
-    puts "Failed #{type}".red
+def test(file)
+  if diff = diff_file(file)
+    puts "Failed #{file}".red
     puts diff
     has_failed = true
   else
-    puts "Passed #{type}".green
+    puts "Passed #{file}".green
   end
 end
 
 def build
-  #ENV['BUNDLE_GEMFILE'] = "jekyll-#{version}/Gemfile"
   `rm -rf site && bundle exec jekyll build --trace`
 end
 
-def diff_file(file, version)
+def diff_file(file)
   diff = `diff expected/#{file} site/#{file}`
   if diff.size > 0 && File.exist?("site/#{file}")
     diff
@@ -47,17 +30,13 @@ def diff_file(file, version)
   end
 end
 
-## Test default
-puts "Testing with no configuration"
-test('compressed')
+build
 
-#puts "Testing with env: production and minify_html: false"
-#File.open("_config.yml", "w") { |f| f.write(override_on) }
+tags = %w{content_for footer head include include_plugin include_theme include_theme_override scripts}
+tags.each { |tag| test("tag_tests/#{tag}.html") }
 
-# Reset original config without compression enabled
-File.open("_config.yml", "w") do |f|
-  f.write(config)
-end
+layouts = %w{local plugin_layout theme theme_override}
+layouts.each { |tag| test("layout_tests/#{tag}.html") }
 
 abort if has_failed
 
