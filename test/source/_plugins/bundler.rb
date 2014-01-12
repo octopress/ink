@@ -1,27 +1,29 @@
 require 'octopress-ink'
 
-class ClassicTheme < Octopress::Plugin
+class TestTheme < Octopress::Plugin
   def initialize(name, type)
-    @assets_path = File.expand_path(File.join(File.dirname(__FILE__), 'theme'))
+    @assets_path = File.expand_path(File.join(File.dirname(__FILE__), 'test-theme'))
     super
   end
-
   def add_assets
-    add_stylesheets ['site.css','foo.css'], 'all'
-    add_stylesheet 'print.css', 'print'
-    add_javascripts ['foo.js', 'bar.js']
-    add_sass 'bar.scss'
-    add_file 'test.html'
+    add_stylesheets ['theme-test.css', 'theme-test2.css']
+    add_stylesheet 'theme-media-test.css', 'print'
   end
 end
 
-class AwesomeSauce < Octopress::Plugin
+class TestPlugin < Octopress::Plugin
   def initialize(name, type)
     @assets_path = File.expand_path(File.join(File.dirname(__FILE__), 'awesome-sauce'))
     super
   end
+
+  def add_assets
+    add_stylesheet 'plugin-test.css'
+    add_stylesheet 'plugin-media-test.css', 'print'
+    super
+  end
 end
 
-Octopress.register_plugin(ClassicTheme, 'classic', 'theme')
-Octopress.register_plugin(AwesomeSauce, 'awesome-sauce')
+Octopress.register_plugin(TestTheme, 'classic', 'theme')
+Octopress.register_plugin(TestPlugin, 'awesome-sauce')
 

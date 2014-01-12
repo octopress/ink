@@ -44,11 +44,6 @@ module Octopress
     end
 
     def add_sass(file, media=nil)
-      begin
-        require 'sass'
-      rescue LoadError
-        raise IOError.new "The #{@name} #{@type} uses the Sass gem. You'll need to add it to your Gemfile or run `gem install sass`"
-      end
       @sass << Assets::Sass.new(self, @stylesheets_dir, file, media)
     end
 
@@ -67,6 +62,10 @@ module Octopress
           end
         end
       end
+    end
+
+    def remove_jekyll_assets(files, site)
+      files.each {|f| f.remove_jekyll_asset(site) }
     end
 
     def add_includes

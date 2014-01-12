@@ -6,7 +6,6 @@ module Octopress
         @file = file
         @type = type
         @plugin = plugin
-        @plugin_type = plugin.type
         @root = plugin.assets_path
         @dir = File.join(plugin.namespace, type)
         @exists = {}
@@ -20,7 +19,7 @@ module Octopress
         unless @found_file
           files = []
           files << user_path(site)
-          files << plugin_path unless @plugin_type == 'local_plugin'
+          files << plugin_path unless @plugin.type == 'local_plugin'
           files = files.flatten.reject { |f| !exists? f }
 
           unless files.size
@@ -65,7 +64,7 @@ module Octopress
       end
 
       def user_path(site)
-        if @plugin_type == 'local_plugin'
+        if @plugin.type == 'local_plugin'
           local_plugin_path(site)
         else
           user_override_path(site)
@@ -77,6 +76,18 @@ module Octopress
         alt_ext = ext == 'scss' ? 'sass' : 'scss'
         @file.sub(/\.#{ext}/, ".#{alt_ext}")
       end
+      
+      # Remove files from Jekyll's static_files array so it doesn't end up in the
+      # compiled site directory. 
+      #
+      def remove_jekyll_asset(site)
+        site.static_files.clone.each do |sf|
+          if sf.kind_of?(Jekyll::StaticFile) && sf.path == path(site).to_s
+            site.static_files.delete(sf)
+          end
+        end
+      end
+
 
       def exists?(file)
         @exists[file] ||= File.exists?(file)

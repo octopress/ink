@@ -4,9 +4,9 @@ module Octopress
       def initialize(plugin, type, file, media)
         @file = file
         @type = type
+        @plugin = plugin
         @root = plugin.assets_path
         @dir = File.join(plugin.namespace, type)
-        @plugin_type = plugin.type
         @media = media || 'all'
         @exists = {}
       end

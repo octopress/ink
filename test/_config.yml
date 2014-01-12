@@ -10,9 +10,10 @@ exclude:
   
 # Sass configurations 
 octopress:
+  concat_css: true
   sass: 
-    #output_style: compact
-    #line_numbers: true
+    output_style: compact
+    line_numbers: true
     files:
       - [site.sass, all]
 

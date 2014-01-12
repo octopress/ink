@@ -11,9 +11,11 @@ module Octopress
       if name == 'theme'
         @theme
       else
-        @plugins.concat(@local_plugins).each do |p|
-          return p if p.name == name
+        found = plugins.reject { |p| p.name != name }
+        if found.empty?
+          raise IOError.new "No Theme or Plugin with the name '#{name}' was found."
         end
+        found.first
       end
     end
 
@@ -22,18 +24,20 @@ module Octopress
     end
 
     def self.include(name, file, site)
-      plugin(name).include(file, site)
+      p = plugin(name)
+      p.include(file, site)
     end
 
     def self.register_plugin(plugin, name, type='plugin')
       new_plugin = plugin.new(name, type)
 
-      if type == 'theme'
+      case type
+      when 'theme'
         @theme = new_plugin
-      elsif type == 'local_plugin'
-        @plugins << new_plugin
-      else
+      when 'local_plugin'
         @local_plugins << new_plugin
+      else
+        @plugins << new_plugin
       end
     end
 
@@ -74,8 +78,8 @@ module Octopress
     end
 
     def self.sass_config(site, item, default)
-      if site.config['sass'] && site.config['sass'][item]
-        site.config['sass'][item]
+      if site.config['octopress'] && site.config['octopress']['sass'] && site.config['octopress']['sass'][item]
+        site.config['octopress']['sass'][item]
       else
         default
       end
@@ -109,7 +113,11 @@ module Octopress
         css = {}
         paths = {}
         plugins.each do |plugin|
-          plugin_header = "/* #{name} #{plugin.type} */\n"
+          if plugin.type == 'theme'
+            plugin_header = "/* Theme: #{plugin.name} */\n"
+          else
+            plugin_header = "/* Plugin: #{plugin.name} */\n"
+          end
           stylesheets = plugin.stylesheets.clone.concat plugin.sass
           stylesheets.each do |file|
             css[file.media] ||= {}
@@ -205,25 +213,16 @@ module Octopress
     end
 
     def self.copy_stylesheets(site)
-      plugins.each do |plugin| 
-        stylesheets = plugin.stylesheets.clone.concat plugin.sass
-        copy(stylesheets, site)
-      end
-    end
-
-    def self.local_sass_files(site)
-      if site.config['octopress'] && site.config['octopress']['sass'] && site.config['octopress']['sass']['files']
-        sass_files = site.config['octopress']['sass']['files'] || []
-      else
-        files = Dir.glob(File.join(site.source, 'stylesheets', '**/*.s[ca]ss')).reject { |f| File.basename(f) =~ /^_/ }
-        sass_files = files.map { |f| f.split('stylesheets/').last}
-      end
-      sass_files
+      stylesheets = plugins.clone.map { 
+        |p| p.stylesheets.clone.concat(p.sass) 
+      }.flatten
+      copy(stylesheets, site)
     end
 
     def self.add_static_files(site)
      
-      plugin('sass').add_files(local_sass_files(site))
+      plugin('sass').add_files(site)
+      plugin('css').add_files(site)
  
       # Copy/Generate Stylesheets
       #
