@@ -15,6 +15,7 @@ module Octopress
           add_sass file
         end
       end
+      remove_jekyll_assets(@sass, site)
     end
     
     def local_sass_files(site)
@@ -25,7 +26,6 @@ module Octopress
         files.map { |f| f.split('stylesheets/').last}
       end
     end
-
   end
 end
 

@@ -1,12 +1,3 @@
-/* Theme: classic */
-body { margin: 0; padding: 0; }
-
-.main { color: #444; }
-
-/* Plugin: awesome-sauce */
-.plugin-widget { background: red; color: #fff; }
-
-/* Plugin: sass */
 /* line 1, /Users/imathis/workspace/octodev/ink/test/source/stylesheets/_foo.scss */
 body { display: table; }
 
@@ -15,6 +6,3 @@ body { background: #aaa111; }
 
 /* line 6, /Users/imathis/workspace/octodev/ink/test/source/stylesheets/site.sass */
 div { display: table; }
-
-/* Plugin: css */
-.css-plugin { background: #fed; }

@@ -16,7 +16,7 @@ module Octopress
         end
       end
       if Plugins.concat_css(site)
-        remove_jekyll_assets(@stylesheets, site)
+        remove_jekyll_assets(files, site)
       end
     end
 
@@ -24,7 +24,6 @@ module Octopress
       files = Dir.glob(File.join(site.source, 'stylesheets', '**/*.css'))
       files.map { |f| f.split('stylesheets/').last }
     end
-
   end
 end
 

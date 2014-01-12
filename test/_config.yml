@@ -10,7 +10,7 @@ exclude:
   
 # Sass configurations 
 octopress:
-  concat_css: true
+  concat_css: false
   sass: 
     output_style: compact
     line_numbers: true

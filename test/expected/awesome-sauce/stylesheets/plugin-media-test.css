@@ -1,0 +1,3 @@
+article a:after {
+  content: attr(href);
+}

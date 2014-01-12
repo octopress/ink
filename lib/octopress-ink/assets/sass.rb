@@ -32,7 +32,6 @@ module Octopress
         unless @compiled
           options = Plugins.sass_options(site)
           if @plugin.type == 'local_plugin'
-            remove_jekyll_asset(site)
             @compiled = Plugins.compile_sass_file(path(site).to_s, options)
           else
             # If the plugin isn't a local plugin, add source paths to allow overrieds on @imports.

@@ -1,0 +1,8 @@
+/* line 1, /Users/imathis/workspace/octodev/ink/test/source/stylesheets/_foo.scss */
+body { display: table; }
+
+/* line 4, /Users/imathis/workspace/octodev/ink/test/source/stylesheets/site.sass */
+body { background: #aaa111; }
+
+/* line 6, /Users/imathis/workspace/octodev/ink/test/source/stylesheets/site.sass */
+div { display: table; }

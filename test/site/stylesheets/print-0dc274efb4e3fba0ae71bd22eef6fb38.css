@@ -1,3 +1,0 @@
-* { background: none; color: #000; }
-
-article a:after { content: attr(href); }
