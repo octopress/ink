@@ -1,5 +1,4 @@
 require 'colorator'
-require 'pry-debugger'
 
 has_failed = false
 
