@@ -18,7 +18,11 @@ body {
   color: #fff;
 }
 
-/* Plugin: sass */
+/* Plugin: user stylesheets */
+.css-plugin {
+  background: #fed;
+}
+
 body {
   display: table;
 }
@@ -29,9 +33,4 @@ body {
 
 div {
   display: table;
-}
-
-/* Plugin: css */
-.css-plugin {
-  background: #fed;
 }

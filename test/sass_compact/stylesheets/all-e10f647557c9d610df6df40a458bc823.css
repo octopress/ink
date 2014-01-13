@@ -9,7 +9,9 @@ body { background: black; }
 /* Plugin: awesome-sauce */
 .plugin-widget { background: red; color: #fff; }
 
-/* Plugin: sass */
+/* Plugin: user stylesheets */
+.css-plugin { background: #fed; }
+
 /* line 1, /Users/imathis/workspace/octodev/ink/test/source/stylesheets/_foo.scss */
 body { display: table; }
 
@@ -18,6 +20,3 @@ body { background: #aaa111; }
 
 /* line 6, /Users/imathis/workspace/octodev/ink/test/source/stylesheets/site.sass */
 div { display: table; }
-
-/* Plugin: css */
-.css-plugin { background: #fed; }

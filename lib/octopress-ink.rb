@@ -18,8 +18,7 @@ module Octopress
   autoload :Plugins,              'octopress-ink/plugins'
   autoload :Plugin,               'octopress-ink/plugin'
   autoload :Tags,                 'octopress-ink/tags'
-  autoload :SassPlugin,           'octopress-ink/plugins/sass'
-  autoload :CSSPlugin,            'octopress-ink/plugins/css'
+  autoload :StylesheetsPlugin,    'octopress-ink/plugins/stylesheets'
 
   def self.register_plugin(plugin, name, type='plugin')
     Plugins.register_plugin(plugin, name, type)
@@ -36,6 +35,5 @@ Liquid::Template.register_tag('scripts', Octopress::Tags::ScriptsBlock)
 Liquid::Template.register_tag('yield', Octopress::Tags::YieldTag)
 Liquid::Template.register_tag('wrap_yield', Octopress::Tags::WrapYieldBlock)
 
-Octopress.register_plugin(Octopress::SassPlugin, 'sass', 'local_plugin')
-Octopress.register_plugin(Octopress::CSSPlugin, 'css', 'local_plugin')
+Octopress.register_plugin(Octopress::StylesheetsPlugin, 'user stylesheets', 'local_plugin')
 

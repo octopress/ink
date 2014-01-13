@@ -229,8 +229,7 @@ module Octopress
 
     def self.add_static_files(site)
      
-      plugin('sass').add_files(site)
-      plugin('css').add_files(site)
+      plugin('user stylesheets').add_files(site)
  
       # Copy/Generate Stylesheets
       #
