@@ -1,7 +1,10 @@
 /* Theme: classic */
-body { margin: 0; padding: 0; }
+body { margin: 2px; padding: 2px; }
 
 .main { color: #444; }
+
+/* line 2 */
+body { background: black; }
 
 /* Plugin: awesome-sauce */
 .plugin-widget { background: red; color: #fff; }

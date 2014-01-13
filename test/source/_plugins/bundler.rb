@@ -8,6 +8,7 @@ class TestTheme < Octopress::Plugin
   def add_assets
     add_stylesheets ['theme-test.css', 'theme-test2.css']
     add_stylesheet 'theme-media-test.css', 'print'
+    add_sass 'main.scss'
   end
 end
 
