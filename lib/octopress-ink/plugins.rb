@@ -187,11 +187,19 @@ module Octopress
     end
 
     def self.concat_css(site)
-      site.config['octopress'] && site.config['octopress']['concat_css'] != false
+      if site.config['octopress'] && !site.config['octopress']['concat_css'].nil?
+        site.config['octopress']['concat_css'] != false
+      else
+        true
+      end
     end
 
     def self.concat_js(site)
-      site.config['octopress'] && site.config['octopress']['concat_js'] != false
+      if site.config['octopress'] && !site.config['octopress']['concat_js'].nil?
+        site.config['octopress']['concat_js'] != false
+      else
+        true
+      end
     end
 
     def self.javascript_tags(site)

@@ -3,20 +3,3 @@ markdown: redcarpet
 pygments: true
 source: source
 destination: site
-exclude:
-  - Gemfile
-  - Gemfile.lock
-  - test.rb
-  
-# Sass configurations 
-octopress:
-  concat_css: false
-  sass: 
-    output_style: compact
-    line_numbers: true
-    files:
-      - [site.sass, all]
-
-#gem:
-  #- octopress-plugins
-

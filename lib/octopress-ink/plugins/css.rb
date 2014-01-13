@@ -16,7 +16,7 @@ module Octopress
         end
       end
       if Plugins.concat_css(site)
-        remove_jekyll_assets(files, site)
+        remove_jekyll_assets(@stylesheets, site)
       end
     end
 

@@ -1,0 +1,33 @@
+/* Theme: classic */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.main {
+  color: #444;
+}
+
+/* Plugin: awesome-sauce */
+.plugin-widget {
+  background: red;
+  color: #fff;
+}
+
+/* Plugin: sass */
+body {
+  display: table;
+}
+
+body {
+  background: #aaa111;
+}
+
+div {
+  display: table;
+}
+
+/* Plugin: css */
+.css-plugin {
+  background: #fed;
+}

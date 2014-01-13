@@ -1,0 +1,3 @@
+# Sass configurations 
+octopress:
+  concat_css: false
