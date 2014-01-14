@@ -7,7 +7,6 @@ require 'octopress-ink/generators/plugin_assets'
 require 'octopress-ink/jekyll/hooks'
 require 'octopress-ink/version'
 require 'octopress-ink/helpers/content_for'
-require 'pry-debugger'
 
 module Octopress
   CUSTOM_DIR = "_custom"
