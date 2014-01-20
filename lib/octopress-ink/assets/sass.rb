@@ -17,7 +17,7 @@ module Octopress
 
       # TODO: choose user path before local path.
       def user_load_path(site)
-        File.join(site.source, Plugins.custom_dir(site), @dir, File.dirname(@file)).sub /\/\.$/, ''
+        File.join(site.source, Plugins.custom_dir(site.config), @dir, File.dirname(@file)).sub /\/\.$/, ''
       end
 
       def theme_load_path

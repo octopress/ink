@@ -1,6 +1,6 @@
 module Octopress
   class Plugin
-    attr_accessor :name, :type, :asset_override, :assets_path,
+    attr_accessor :name, :type, :asset_override, :assets_path, :config,
                   :layouts_dir, :stylesheets_dir, :javascripts_dir, :files_dir, :includes_dir, :images_dir,
                   :layouts, :includes, :stylesheets, :javascripts, :images, :sass, :fonts, :files
 
@@ -12,6 +12,7 @@ module Octopress
       @includes_dir      = 'includes'
       @javascripts_dir   = 'javascripts'
       @stylesheets_dir   = 'stylesheets'
+      @config_file       = 'config.yml'
       @name              = name
       @type              = type
       @layouts           = []
@@ -25,10 +26,15 @@ module Octopress
       add_assets
       add_layouts
       add_includes
+      add_config
     end
 
     def add_assets
       
+    end
+
+    def add_config
+      @config = Assets::Config.new(self, @config_file)
     end
 
     def namespace
@@ -138,6 +144,10 @@ module Octopress
 
     def include(file, site)
       @includes.file(file, site)
+    end
+
+    def configs(site)
+      @config.read(site)
     end
   end
 end

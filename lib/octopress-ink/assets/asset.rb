@@ -16,7 +16,9 @@ module Octopress
       end
 
       def path(site)
-        unless @found_file
+        if @found_file and !@no_cache
+          @found_file
+        else
           files = []
           files << user_path(site)
           files << plugin_path unless @plugin.type == 'local_plugin'
@@ -27,7 +29,6 @@ module Octopress
           end
           @found_file = Pathname.new files[0]
         end
-        @found_file
       end
 
       def file(file, site)
@@ -52,7 +53,7 @@ module Octopress
       end
 
       def user_dir(site)
-        File.join site.source, Plugins.custom_dir(site), @dir
+        File.join site.source, Plugins.custom_dir(site.config), @dir
       end
 
       def local_plugin_path(site)

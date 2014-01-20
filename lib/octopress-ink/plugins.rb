@@ -23,6 +23,25 @@ module Octopress
       [@theme].concat(@plugins).concat(@local_plugins).compact
     end
 
+    def self.config(site)
+      if @config
+        @config
+      else
+        @config            = {}
+        @config['plugins'] = {}
+        @config['theme']   = @theme.configs(site)
+
+
+        plugins.each do |p| 
+          unless p == @theme
+            @config['plugins'][p.name] = p.configs(site)
+          end
+        end
+
+        @config
+      end
+    end
+
     def self.include(name, file, site)
       p = plugin(name)
       p.include(file, site)
@@ -47,8 +66,12 @@ module Octopress
       end
     end
 
-    def self.custom_dir(site)
-      site.config['custom'] || CUSTOM_DIR
+    def self.custom_dir(config)
+      if config['octopress'] and config['octopress']['custom']
+        config['octopress']['custom']
+      else
+        CUSTOM_DIR
+      end
     end
 
     def self.fingerprint(paths)

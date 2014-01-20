@@ -16,12 +16,12 @@ module Octopress
       end
 
       def self.render(context, block)
-        content = get_block(context, block).map { |b| b.strip }.join
+        content = get_block(context, block).map { |b| b }.join
       end
 
       def self.append_to_block(context, block, content)
         converter = context.environments.first['converter']
-        content = converter.convert(content.strip).strip
+        content = converter.convert(content).lstrip
         get_block(context, block) << content
       end
     end

@@ -9,7 +9,7 @@ module Octopress
       end
 
       def render(context)
-        Helpers::ContentFor.append_to_block(context, @block_name, super.strip)
+        Helpers::ContentFor.append_to_block(context, @block_name, super)
         ''
       end
     end

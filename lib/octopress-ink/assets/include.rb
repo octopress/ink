@@ -7,12 +7,8 @@ module Octopress
         @type = type
         @plugin = plugin
         @dir = File.join(plugin.namespace, type)
+        @no_cache = true
         @exists = {}
-      end
-
-      def file(file, site)
-        @file = file
-        path(site)
       end
     end
   end

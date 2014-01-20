@@ -13,9 +13,9 @@ module Octopress
 
         # If markup references a plugin e.g. plugin-name:include-file.html
         if @markup.strip =~ PLUGIN_SYNTAX
-          @plugin = $1
-          @path = $2
-          content = Plugins.include(@plugin, @path, context.registers[:site]).read
+          plugin = $1
+          path = $2
+          content = Plugins.include(plugin, path, context.registers[:site]).read
           partial = Liquid::Template.parse(content)
           context.stack {
             context['include'] = include_tag.parse_params(context)

@@ -42,6 +42,11 @@ def test_layouts(dir)
   layouts.each { |file| test("layout_tests/#{file}.html", dir) }
 end
 
+def test_configs(dir)
+  configs = %w{plugin_config theme_config}
+  configs.each { |file| test("test_config/#{file}.html", dir) }
+end
+
 def test_stylesheets(dir, concat_css=true)
   if concat_css
     stylesheets = %w{all-* print-*}
@@ -61,6 +66,7 @@ end
 test_tags('expected')
 test_layouts('expected')
 test_stylesheets('concat_css')
+test_configs('expected')
 
 build '_concat_css_false.yml'
 test_stylesheets('concat_css_false', false)

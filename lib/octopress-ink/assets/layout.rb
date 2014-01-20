@@ -2,10 +2,6 @@ module Octopress
   module Assets
     class Layout < Asset
 
-      def file(file, site)
-        @file = file
-      end
-
       def register(site)
         name = "#{@plugin.namespace}:#{@file}"
         name = name.split(".")[0..-2].join(".")
