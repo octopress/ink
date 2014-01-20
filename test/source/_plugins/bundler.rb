@@ -9,6 +9,7 @@ class TestTheme < Octopress::Plugin
     add_stylesheets ['theme-test.css', 'theme-test2.css']
     add_stylesheet 'theme-media-test@print.css'
     add_sass 'main.scss'
+    add_root_files ['favicon.ico', 'favicon.png']
   end
 end
 
@@ -21,6 +22,7 @@ class TestPlugin < Octopress::Plugin
   def add_assets
     add_stylesheet 'plugin-test.css'
     add_stylesheet 'plugin-media-test.css', 'print'
+    add_root_file 'robots.txt'
     super
   end
 end

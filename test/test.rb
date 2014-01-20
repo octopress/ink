@@ -1,14 +1,20 @@
 require 'colorator'
 
-has_failed = false
+@has_failed = false
+@failures = {}
+
+def pout(str)
+  print str
+  $stdout.flush
+end
 
 def test(file, dir)
   if diff = diff_file(file, dir)
-    puts "Failed #{file}".red
-    puts diff
-    has_failed = true
+    @failures[file] = diff
+    pout "F".red
+    @has_failed = true
   else
-    puts "Passed #{file}".green
+    pout ".".green
   end
 end
 
@@ -63,10 +69,31 @@ def test_stylesheets(dir, concat_css=true)
   end
 end
 
+def test_root_assets(dir)
+  root_assets = %w{favicon.ico favicon.png robots.txt}
+  root_assets.each { |file| test(file, dir) }
+end
+
+def print_failures
+  puts "\n"
+  if @has_failed
+    @failures.each do |name, diff|
+      puts "Failure in #{name}:".red
+      puts "---------"
+      puts diff
+      puts "---------"
+    end
+    abort
+  else
+    puts "All passed!".green
+  end
+end
+
 test_tags('expected')
 test_layouts('expected')
 test_stylesheets('concat_css')
 test_configs('expected')
+test_root_assets('expected')
 
 build '_concat_css_false.yml'
 test_stylesheets('concat_css_false', false)
@@ -77,5 +104,5 @@ test_stylesheets('sass_compact')
 build '_sass_expanded.yml'
 test_stylesheets('sass_expanded')
 
-abort if has_failed
+print_failures
 

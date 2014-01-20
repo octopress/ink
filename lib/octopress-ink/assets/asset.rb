@@ -9,6 +9,7 @@ module Octopress
         @root = plugin.assets_path
         @dir = File.join(plugin.namespace, type)
         @exists = {}
+        file_check
       end
 
       def file
@@ -25,7 +26,7 @@ module Octopress
           files = files.flatten.reject { |f| !exists? f }
 
           unless files.size
-            raise IOError.new "Could not find #{File.basename(@file)} at #{file}"
+            raise IOError.new "Could not find #{File.basename(@file)} at #{@file}"
           end
           @found_file = Pathname.new files[0]
         end
@@ -89,6 +90,11 @@ module Octopress
         end
       end
 
+      def file_check
+        if @plugin.type != 'local_plugin' and !exists? plugin_path
+          raise "\nPlugin: #{@plugin.name}: Could not find #{File.basename(@file)} at #{plugin_path}".red
+        end
+      end
 
       def exists?(file)
         @exists[file] ||= File.exists?(file)

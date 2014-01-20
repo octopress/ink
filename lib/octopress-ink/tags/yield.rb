@@ -11,7 +11,7 @@ module Octopress
       def render(context)
         content = Helpers::ContentFor.render(context, @block_name)
         if @block_name == 'head'
-          content = "<meta name='generator' content='Octopress #{Octopress::Ink::VERSION}'>\n" + content
+          content.insert 0, "<meta name='generator' content='Octopress #{Octopress::Ink::VERSION}'>\n"
         end
         content
       end

@@ -1,6 +1,6 @@
 module Octopress
   class Plugin
-    attr_accessor :name, :type, :asset_override, :assets_path, :config,
+    attr_accessor :name, :type, :asset_override, :assets_path,
                   :layouts_dir, :stylesheets_dir, :javascripts_dir, :files_dir, :includes_dir, :images_dir,
                   :layouts, :includes, :stylesheets, :javascripts, :images, :sass, :fonts, :files
 
@@ -20,6 +20,7 @@ module Octopress
       @stylesheets       = []
       @javascripts       = []
       @images            = []
+      @root_files        = []
       @sass              = []
       @fonts             = []
       @files             = []
@@ -34,7 +35,7 @@ module Octopress
     end
 
     def add_config
-      @config = Assets::Config.new(self, @config_file)
+      @configs = Assets::Config.new(self, @config_file)
     end
 
     def namespace
@@ -80,6 +81,14 @@ module Octopress
 
     def add_image(file)
       @images << Assets::Asset.new(self, @images_dir, file)
+    end
+
+    def add_root_files(files)
+      files.each { |f| add_root_file(f) }
+    end
+
+    def add_root_file(file)
+      @files << Assets::RootAsset.new(self, @files_dir, file)
     end
 
     def add_font(file)
@@ -147,7 +156,8 @@ module Octopress
     end
 
     def configs(site)
-      @config.read(site)
+      @config ||= @configs.read(site)
+      @config
     end
   end
 end

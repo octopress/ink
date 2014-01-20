@@ -9,6 +9,7 @@ module Octopress
         @root = plugin.assets_path
         @dir = File.join(plugin.namespace, type)
         @exists = {}
+        file_check
       end
 
       def tag

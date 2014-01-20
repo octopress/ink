@@ -2,6 +2,7 @@ module Octopress
   module Assets
     autoload :Asset,                'octopress-ink/assets/asset'
     autoload :Config,               'octopress-ink/assets/config'
+    autoload :RootAsset,            'octopress-ink/assets/root'
     autoload :Javascript,           'octopress-ink/assets/javascript'
     autoload :Stylesheet,           'octopress-ink/assets/stylesheet'
     autoload :Sass,                 'octopress-ink/assets/sass'
