@@ -1,0 +1,21 @@
+---
+layout: nil
+---
+{% assign some_bool = true %}
+
+## Testing a simple wrap
+[- Testing Include -] → {% wrap foo.html %}[- {=yield} -]{% endwrap %}
+
+## Local var passing
+[- Testing Include var_test -] → {% wrap foo.html some_var="var_test" %}[- {=yield} -]{% endwrap %}
+
+## Conditional wrap
+'' → '{% wrap foo.html unless true %}[- {=yield} -]{% endwrap %}'
+'' → '{% wrap foo.html unless some_bool %}[- {=yield} -]{% endwrap %}'
+[- Testing Include -] → {% wrap foo.html if true %}[- {=yield} -]{% endwrap %}
+[- Testing Include -] → {% wrap foo.html if some_bool %}[- {=yield} -]{% endwrap %}
+
+## Plugin wraps
+[- include from plugin -] → {% wrap awesome-sauce:some-include.html %}[- {=yield} -]{% endwrap %}
+[- Yo Dawg, I heard you like includes. -] → {% wrap theme:greet.html greeting="Yo Dawg" %}[- {=yield} -]{% endwrap %}
+

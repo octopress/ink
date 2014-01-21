@@ -10,7 +10,7 @@ module Octopress
     autoload :FooterBlock,          'octopress-ink/tags/footer'
     autoload :YieldTag,             'octopress-ink/tags/yield'
     autoload :ScriptsBlock,         'octopress-ink/tags/scripts'
-    autoload :WrapYieldBlock,       'octopress-ink/tags/wrap_yield'
+    autoload :WrapTag,              'octopress-ink/tags/wrap_yield'
   end
 end
 

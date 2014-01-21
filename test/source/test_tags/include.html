@@ -1,3 +1,28 @@
 ---
+layout: nil
 ---
-{% include foo.html some_var="var_test" %}
+{% assign some_bool = true %}
+
+## Testing a simple include
+Testing Include → {% include foo.html %}
+
+## Local var passing
+Testing Include var_test → {% include foo.html some_var="var_test" %}
+
+## Conditional Include
+'' → '{% include foo.html unless true %}'
+'' → '{% include foo.html unless some_bool %}'
+'' → '{% include foo.html unless site.name == 'Your New Jekyll Site' %}'
+Testing Include → {% include foo.html if true %}
+Testing Include → {% include foo.html if site.name == 'Your New Jekyll Site' %}
+Testing Include var_test → {% include foo.html some_var="var_test" if some_bool %}
+
+## Plugin wraps
+include from plugin → {% include awesome-sauce:some-include.html %}
+Yo Dawg, I heard you like includes. → {% include theme:greet.html greeting="Yo Dawg" %}
+'' → '{% include theme:greet.html greeting="Yo Dawg" unless some_bool %}'
+Yo Dawg, I heard you like includes. → {% include theme:greet.html greeting="Yo Dawg" if some_bool %}
+
+## Theme Include override
+include from theme override → {% include theme:bar.html %}
+

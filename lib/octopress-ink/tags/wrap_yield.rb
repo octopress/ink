@@ -2,11 +2,11 @@
 #
 module Octopress
   module Tags
-    class WrapYieldBlock < Liquid::Block
+    class WrapTag < Liquid::Block
       HAS_YIELD = /(.*?)({=\s*yield\s*})(.*)/im
       def initialize(tag_name, markup, tokens)
         super
-        @markup = markup
+        @og_markup = @markup = markup
         @tag_name = tag_name
       end
 
@@ -15,17 +15,32 @@ module Octopress
           return unless Helpers::Conditional.parse(@markup, context)
           @markup = $1
         end
-
-        @block_name = Helpers::ContentFor.get_block_name(@tag_name, @markup)
+        case @tag_name
+        when 'wrap_yield'
+          content = content_for(context)
+        when 'wrap'
+          begin
+            content = include_tag = Octopress::Tags::IncludeTag.new('include', @markup, []).render(context)
+          rescue => error
+            error.message
+            message = "Wrap failed: {% #{@tag_name} #{@og_markup}%}."
+            message << $1 if error.message =~ /%}\.(.+)/
+            raise IOError.new message
+          end
+        end
 
         wrap = super.strip
-        content = Helpers::ContentFor.render(context, @block_name).strip
 
         if wrap =~ HAS_YIELD && content != ''
           $1 + content + $3
         else
           ''
         end
+      end
+
+      def content_for(context)
+        @block_name = Helpers::ContentFor.get_block_name(@tag_name, @markup)
+        Helpers::ContentFor.render(context, @block_name).strip
       end
     end
   end

@@ -25,7 +25,7 @@ module Octopress
           files << plugin_path unless @plugin.type == 'local_plugin'
           files = files.flatten.reject { |f| !exists? f }
 
-          unless files.size
+          if files.empty?
             raise IOError.new "Could not find #{File.basename(@file)} at #{@file}"
           end
           @found_file = Pathname.new files[0]

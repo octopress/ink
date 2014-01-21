@@ -5,7 +5,7 @@ module Octopress
 
       def initialize(tag_name, markup, tokens)
         super
-        @markup = markup
+        @og_markup = @markup = markup
       end
 
       def render(context)
@@ -20,7 +20,11 @@ module Octopress
         if @markup.strip =~ PLUGIN_SYNTAX
           plugin = $1
           path = $2
-          content = Plugins.include(plugin, path, context.registers[:site]).read
+          begin
+            content = Plugins.include(plugin, path, context.registers[:site]).read
+          rescue => error
+            raise IOError.new "Include failed: {% #{@tag_name} #{@og_markup}%}. The plugin '#{plugin}' does not have an include named '#{path}'."
+          end
           partial = Liquid::Template.parse(content)
           context.stack {
             context['include'] = include_tag.parse_params(context)
@@ -28,7 +32,7 @@ module Octopress
           }.strip
         # Otherwise, use Jekyll's default include tag
         else
-          include_tag.render(context)
+          include_tag.render(context).strip
         end
       end
     end
