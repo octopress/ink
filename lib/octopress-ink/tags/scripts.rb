@@ -3,6 +3,7 @@ module Octopress
     class ScriptsBlock < ContentForBlock
       def initialize(tag_name, markup, tokens)
         @block_name = 'scripts'
+        @markup = markup
         super
       end
     end

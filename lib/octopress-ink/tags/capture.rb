@@ -9,12 +9,10 @@ module Octopress
       end
 
       def render(context)
-        if @markup =~ Helpers::Conditional::SYNTAX
-          return unless Helpers::Conditional.parse(@markup, context)
-          @markup = $1
-        end
+        markup = Helpers::Conditional.parse(@markup, context)
+        return unless markup
 
-        if @markup =~ SYNTAX
+        if markup =~ SYNTAX
           var      = $1
           operator = $2
           value = super.lstrip

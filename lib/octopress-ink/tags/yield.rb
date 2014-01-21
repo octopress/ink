@@ -9,10 +9,8 @@ module Octopress
       end
 
       def render(context)
-        if @markup =~ Helpers::Conditional::SYNTAX
-          return unless Helpers::Conditional.parse(@markup, context)
-          @markup = $1
-        end
+        markup = Helpers::Conditional.parse(@markup, context)
+        return unless markup
 
         content = Helpers::ContentFor.render(context, @block_name)
         if @block_name == 'head'

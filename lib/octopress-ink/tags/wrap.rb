@@ -11,16 +11,15 @@ module Octopress
       end
 
       def render(context)
-        if @markup =~ Helpers::Conditional::SYNTAX
-          return unless Helpers::Conditional.parse(@markup, context)
-          @markup = $1
-        end
+        markup = Helpers::Conditional.parse(@markup, context)
+        return unless markup
+
         case @tag_name
         when 'wrap_yield'
-          content = content_for(context)
+          content = content_for(markup, context)
         when 'wrap'
           begin
-            content = include_tag = Octopress::Tags::IncludeTag.new('include', @markup, []).render(context)
+            content = include_tag = Octopress::Tags::IncludeTag.new('include', markup, []).render(context)
           rescue => error
             error.message
             message = "Wrap failed: {% #{@tag_name} #{@og_markup}%}."
@@ -38,8 +37,8 @@ module Octopress
         end
       end
 
-      def content_for(context)
-        @block_name = Helpers::ContentFor.get_block_name(@tag_name, @markup)
+      def content_for(markup, context)
+        @block_name = Helpers::ContentFor.get_block_name(@tag_name, markup)
         Helpers::ContentFor.render(context, @block_name).strip
       end
     end

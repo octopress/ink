@@ -4,3 +4,4 @@ pygments: true
 source: source
 destination: site
 include_test: foo.html
+timezone: America/Chicago

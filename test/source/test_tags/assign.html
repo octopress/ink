@@ -18,8 +18,9 @@ foo → {% assign var7 = baz || 'foo' %}{{ var7 }}
 
 ## Additive assign
 yepyep → {% assign var1 += 'yep' %}{{ var1 }}
+## Complex assignment
 
 ## Complex assignment
-awesome → {% assign var9 = 'awesome' %}{{ var9 }}
+awesome → {% assign var9 = (page.layout == 'nil' ? 'awesome' : 'lame' ) %}{{ var9 }}
 AWESOME → {% assign var10 = var9 | upcase %}{{ var10 }}
 
