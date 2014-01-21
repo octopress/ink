@@ -5,10 +5,17 @@ module Octopress
 
       def initialize(tag_name, markup, tokens)
         super
-        @block_name ||= Helpers::ContentFor.get_block_name(tag_name, markup)
+        @tag_name = tag_name
+        @markup   = markup
       end
 
       def render(context)
+        if @markup =~ Helpers::Conditional::SYNTAX
+          return unless Helpers::Conditional.parse(@markup, context)
+          @markup = $1
+        end
+
+        @block_name ||= Helpers::ContentFor.get_block_name(@tag_name, @markup)
         Helpers::ContentFor.append_to_block(context, @block_name, super)
         ''
       end

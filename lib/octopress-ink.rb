@@ -6,11 +6,11 @@ require 'octopress-ink/version'
 require 'octopress-ink/generators/plugin_assets'
 require 'octopress-ink/jekyll/hooks'
 require 'octopress-ink/version'
-require 'octopress-ink/helpers/content_for'
 
 module Octopress
   CUSTOM_DIR = "_custom"
 
+  autoload :Helpers,              'octopress-ink/helpers'
   autoload :Assets,               'octopress-ink/assets'
   autoload :StaticFile,           'octopress-ink/assets/static_file'
   autoload :StaticFileContent,    'octopress-ink/assets/static_file_content'

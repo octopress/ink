@@ -9,6 +9,11 @@ module Octopress
       end
 
       def render(context)
+        if @markup =~ Helpers::Conditional::SYNTAX
+          return unless Helpers::Conditional.parse(@markup, context)
+          @markup = $1
+        end
+
         content = Helpers::ContentFor.render(context, @block_name)
         if @block_name == 'head'
           content.insert 0, "<meta name='generator' content='Octopress #{Octopress::Ink::VERSION}'>\n"

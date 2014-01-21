@@ -9,6 +9,11 @@ module Octopress
       end
 
       def render(context)
+        if @markup =~ Helpers::Conditional::SYNTAX
+          return unless Helpers::Conditional.parse(@markup, context)
+          @markup = Helpers::Path.parse($1, context)
+        end
+
         include_tag = Jekyll::Tags::IncludeTag.new('include', @markup, [])
 
         # If markup references a plugin e.g. plugin-name:include-file.html

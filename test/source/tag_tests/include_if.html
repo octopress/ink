@@ -1,0 +1,6 @@
+---
+---
+{% include foo.html some_var="var_test" if site.name == 'Your New Jekyll Site' %}
+{% include site.include_test some_var="var_test" if site.name != 'Your New Jekyll Site' %}
+{% include site.include_test some_var="var_test" unless site.name == 'Your New Jekyll Site' %}
+{% include site.include_test some_var="var_test" unless site.name == 'Your Stupid Website' %}

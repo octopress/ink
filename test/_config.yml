@@ -3,3 +3,4 @@ markdown: redcarpet
 pygments: true
 source: source
 destination: site
+include_test: foo.html
