@@ -2,5 +2,4 @@
 octopress:
   sass: 
     output_style: compact
-    line_numbers: true
 
