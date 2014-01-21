@@ -39,13 +39,13 @@ end
 build
 
 def test_tags(dir)
-  tags = %w{content_for footer head include include_plugin include_theme include_theme_override scripts include_if}
-  tags.each { |file| test("tag_tests/#{file}.html", dir) }
+  tags = %w{content_for footer head include include_plugin include_theme include_theme_override scripts include_if assign capture}
+  tags.each { |file| test("test_tags/#{file}.html", dir) }
 end
 
 def test_layouts(dir)
   layouts = %w{local plugin_layout theme theme_override}
-  layouts.each { |file| test("layout_tests/#{file}.html", dir) }
+  layouts.each { |file| test("test_layouts/#{file}.html", dir) }
 end
 
 def test_configs(dir)

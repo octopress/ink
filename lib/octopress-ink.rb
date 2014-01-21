@@ -25,6 +25,8 @@ module Octopress
 end
 
 Liquid::Template.register_tag('include', Octopress::Tags::IncludeTag)
+Liquid::Template.register_tag('assign', Octopress::Tags::AssignTag)
+Liquid::Template.register_tag('capture', Octopress::Tags::CaptureTag)
 Liquid::Template.register_tag('octopress_js', Octopress::Tags::JavascriptTag)
 Liquid::Template.register_tag('octopress_css', Octopress::Tags::StylesheetTag)
 Liquid::Template.register_tag('content_for', Octopress::Tags::ContentForBlock)
