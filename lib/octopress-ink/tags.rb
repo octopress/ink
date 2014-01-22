@@ -3,6 +3,7 @@ module Octopress
     autoload :IncludeTag,           'octopress-ink/tags/include'
     autoload :AssignTag,            'octopress-ink/tags/assign'
     autoload :ReturnTag,            'octopress-ink/tags/return'
+    autoload :RenderTag,            'octopress-ink/tags/render'
     autoload :CaptureTag,           'octopress-ink/tags/capture'
     autoload :JavascriptTag,        'octopress-ink/tags/javascript'
     autoload :StylesheetTag,        'octopress-ink/tags/stylesheet'

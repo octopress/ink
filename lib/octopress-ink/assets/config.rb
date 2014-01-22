@@ -24,12 +24,12 @@ module Octopress
         if @plugin.type != 'local_plugin'
           default = plugin_path
           if exists? default
-            config = YAML::load(File.open(default))
+            config = YAML.safe_load(File.open(default))
           end
         end
         override = user_path(site)
         if exists? override
-          config = config.deep_merge YAML::load(File.open(override))
+          config = config.deep_merge YAML.safe_load(File.open(override))
         end
         config
       end

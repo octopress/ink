@@ -20,9 +20,7 @@ module Octopress
       end
 
       def self.get_value(vars, context)
-        if vars =~ TERNARY
-          vars = $1 + evaluate_ternary($2, $3, $4, context) + $5
-        end
+        vars = evaluate_ternary(vars, context)
         vars = vars.strip.gsub(/ or /, ' || ')
         vars = vars.split(/ \|\| /).map { |v|
           Liquid::Variable.new(v.strip).render(context)
@@ -31,8 +29,12 @@ module Octopress
         vars.empty? ? nil : vars.first
       end
 
-      def self.evaluate_ternary(expression, if_true, if_false, context)
-        Conditional.parse("if #{expression}", context) ? if_true : if_false
+      def self.evaluate_ternary(markup, context)
+        if markup =~ TERNARY
+          $1 + (Conditional.parse("if #{$2}", context) ? $3 : $4) + $5
+        else
+          markup
+        end
       end
 
     end

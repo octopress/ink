@@ -23,6 +23,10 @@ Yo Dawg, I heard you like includes. → {% include theme:greet.html greeting="Yo
 '' → '{% include theme:greet.html greeting="Yo Dawg" unless some_bool %}'
 Yo Dawg, I heard you like includes. → {% include theme:greet.html greeting="Yo Dawg" if some_bool %}
 
+## Ternary include
+, I heard you like includes. → {% include (false ? foo.html : theme:greet.html) %}
+Testing Include → {% include (some_bool ? foo.html : theme:greet.html) %}
+
 ## Theme Include override
 include from theme override → {% include theme:bar.html %}
 

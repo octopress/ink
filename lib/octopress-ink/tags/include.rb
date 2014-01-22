@@ -11,6 +11,7 @@ module Octopress
       def render(context)
         markup = Helpers::Conditional.parse(@markup, context)
         return unless markup
+        markup = Helpers::Var.evaluate_ternary(markup, context)
         markup = Helpers::Path.parse(markup, context)
 
         include_tag = Jekyll::Tags::IncludeTag.new('include', markup, [])
@@ -29,6 +30,7 @@ module Octopress
             context['include'] = include_tag.parse_params(context)
             partial.render!(context)
           }.strip
+          
         # Otherwise, use Jekyll's default include tag
         else
           include_tag.render(context).strip
