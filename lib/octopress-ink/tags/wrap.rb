@@ -17,14 +17,17 @@ module Octopress
         case @tag_name
         when 'wrap_yield'
           content = content_for(markup, context)
+        when 'wrap_render'
+          begin
+            content = include_tag = Octopress::Tags::RenderTag.new('render', markup, []).render(context)
+          rescue => error
+            error_msg error
+          end
         when 'wrap'
           begin
             content = include_tag = Octopress::Tags::IncludeTag.new('include', markup, []).render(context)
           rescue => error
-            error.message
-            message = "Wrap failed: {% #{@tag_name} #{@og_markup}%}."
-            message << $1 if error.message =~ /%}\.(.+)/
-            raise IOError.new message
+            error_msg error
           end
         end
 
@@ -35,6 +38,13 @@ module Octopress
         else
           ''
         end
+      end
+
+      def error_msg(error)
+        error.message
+        message = "Wrap failed: {% #{@tag_name} #{@og_markup}%}."
+        message << $1 if error.message =~ /%}\.(.+)/
+        raise IOError.new message
       end
 
       def content_for(markup, context)

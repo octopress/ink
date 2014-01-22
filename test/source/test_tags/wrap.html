@@ -19,3 +19,6 @@ layout: nil
 [- include from plugin -] → {% wrap awesome-sauce:some-include.html %}[- {=yield} -]{% endwrap %}
 [- Yo Dawg, I heard you like includes. -] → {% wrap theme:greet.html greeting="Yo Dawg" %}[- {=yield} -]{% endwrap %}
 
+## Wrap render
+[- Testing Render -] → {% wrap_render test_render/_f.html %}[- {=yield} -]{% endwrap_render %}
+
