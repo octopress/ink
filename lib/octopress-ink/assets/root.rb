@@ -16,9 +16,9 @@ module Octopress
         file_check
       end
 
-      def copy(site)
-        unless exists? local_plugin_path(site)
-          site.static_files << StaticFile.new(plugin_path, destination)
+      def copy
+        unless exists? local_plugin_path
+          Plugins.site.static_files << StaticFile.new(plugin_path, destination)
         end
       end
 

@@ -10,7 +10,7 @@ module Octopress
         markup = Helpers::Conditional.parse(@markup, context)
         return unless markup
 
-        Helpers::Var.get_value(@markup, context)
+        Helpers::Var.get_value(markup, context)
       end
     end
   end

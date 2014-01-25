@@ -1,10 +1,10 @@
 module Octopress
   module Helpers
     module Path
-      FILE = /(\S+)(\s.*)/
+      FILE = /(\S+)(\s?)(.*)/
       def self.parse(markup, context)
         if markup =~ FILE
-          (context[$1].nil? ? $1 : context[$1]) + $2
+          (context[$1].nil? ? $1 : context[$1]) + ' ' + ($3 || '')
         else
           markup
         end

@@ -11,15 +11,15 @@ module Octopress
         @file = path
       end
 
-      def user_dir(site)
-        File.join site['source'], Plugins.custom_dir(site), @dir
+      def user_dir
+        File.join Plugins.site.source, Plugins.custom_dir, @dir
       end
 
-      def local_plugin_path(site)
-        File.join site['source'], @dir, @file
+      def local_plugin_path
+        File.join Plugins.site.source, @dir, @file
       end
 
-      def read(site)
+      def read
         config = {}
         if @plugin.type != 'local_plugin'
           default = plugin_path
@@ -27,7 +27,7 @@ module Octopress
             config = YAML.safe_load(File.open(default))
           end
         end
-        override = user_path(site)
+        override = user_path
         if exists? override
           config = config.deep_merge YAML.safe_load(File.open(override))
         end

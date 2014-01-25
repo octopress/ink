@@ -16,12 +16,12 @@ module Octopress
         @file
       end
 
-      def path(site)
+      def path
         if @found_file and !@no_cache
           @found_file
         else
           files = []
-          files << user_path(site)
+          files << user_path
           files << plugin_path unless @plugin.type == 'local_plugin'
           files = files.flatten.reject { |f| !exists? f }
 
@@ -32,17 +32,17 @@ module Octopress
         end
       end
 
-      def file(file, site)
+      def file(file)
         @file = file
-        path(site)
+        path
       end
 
       def destination
         File.join(@dir, @file)
       end
 
-      def copy(site)
-        site.static_files << StaticFile.new(path(site), destination)
+      def copy
+        Plugins.site.static_files << StaticFile.new(path, destination)
       end
 
       def plugin_dir
@@ -53,23 +53,23 @@ module Octopress
         File.join plugin_dir, @file
       end
 
-      def user_dir(site)
-        File.join site.source, Plugins.custom_dir(site.config), @dir
+      def user_dir
+        File.join Plugins.site.source, Plugins.custom_dir, @dir
       end
 
-      def local_plugin_path(site)
-        File.join site.source, @dir, @file
+      def local_plugin_path
+        File.join Plugins.site.source, @dir, @file
       end
 
-      def user_override_path(site)
-        File.join user_dir(site), @file
+      def user_override_path
+        File.join user_dir, @file
       end
 
-      def user_path(site)
+      def user_path
         if @plugin.type == 'local_plugin'
-          local_plugin_path(site)
+          local_plugin_path
         else
-          user_override_path(site)
+          user_override_path
         end
       end
 
@@ -82,10 +82,10 @@ module Octopress
       # Remove files from Jekyll's static_files array so it doesn't end up in the
       # compiled site directory. 
       #
-      def remove_jekyll_asset(site)
-        site.static_files.clone.each do |sf|
-          if sf.kind_of?(Jekyll::StaticFile) && sf.path == path(site).to_s
-            site.static_files.delete(sf)
+      def remove_jekyll_asset
+        Plugins.site.static_files.clone.each do |sf|
+          if sf.kind_of?(Jekyll::StaticFile) && sf.path == path.to_s
+            Plugins.site.static_files.delete(sf)
           end
         end
       end

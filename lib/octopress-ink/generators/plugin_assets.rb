@@ -1,8 +1,10 @@
 module Octopress
   class PluginAssets < Jekyll::Generator
     def generate(site)
-      Plugins.register_layouts(site)
-      Plugins.add_static_files(site)
+      Plugins.config(site)
+      Plugins.register_layouts
+      Plugins.add_static_files
+      site = Plugins.site
     end
   end
 end

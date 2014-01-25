@@ -6,11 +6,13 @@ require 'octopress-ink/version'
 require 'octopress-ink/generators/plugin_assets'
 require 'octopress-ink/jekyll/hooks'
 require 'octopress-ink/version'
+require 'octopress-ink/helpers/titlecase'
 
 module Octopress
   CUSTOM_DIR = "_custom"
 
   autoload :Helpers,              'octopress-ink/helpers'
+  autoload :Filters,              'octopress-ink/filters'
   autoload :Assets,               'octopress-ink/assets'
   autoload :StaticFile,           'octopress-ink/assets/static_file'
   autoload :StaticFileContent,    'octopress-ink/assets/static_file_content'
@@ -23,6 +25,8 @@ module Octopress
     Plugins.register_plugin(plugin, name, type)
   end
 end
+
+Liquid::Template.register_filter Octopress::Filters
 
 Liquid::Template.register_tag('include', Octopress::Tags::IncludeTag)
 Liquid::Template.register_tag('assign', Octopress::Tags::AssignTag)

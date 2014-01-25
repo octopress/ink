@@ -21,7 +21,7 @@ module Octopress
           plugin = $1
           path = $2
           begin
-            content = Plugins.include(plugin, path, context.registers[:site]).read
+            content = Plugins.include(plugin, path).read
           rescue => error
             raise IOError.new "Include failed: {% #{@tag_name} #{@og_markup}%}. The plugin '#{plugin}' does not have an include named '#{path}'."
           end

@@ -26,5 +26,5 @@ yep → {% for person in page.people %}{% return 'yep' if person.name == 'Bill' 
 
 ## Returns with filters
 2013-07-21T18:59:00-05:00 → {% return post.date or page.date | datetime | date_to_xmlschema %}
-2013-07-21T18:59:00-05:00 → {% return (post ? post.date : page.date) | datetime | date_to_xmlschema %}
+2013-07-21T18:59:00-05:00 → {% return (false ? post.date : page.date) | datetime | date_to_xmlschema %}
 

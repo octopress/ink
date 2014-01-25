@@ -1,7 +1,9 @@
 module Octopress
   module Plugins
+
     @plugins = []
     @local_plugins = []
+    @site = nil
 
     def self.theme
       @theme
@@ -23,18 +25,23 @@ module Octopress
       [@theme].concat(@plugins).concat(@local_plugins).compact
     end
 
-    def self.config(site)
+    def self.site
+      @site
+    end
+
+    def self.config(site=nil)
+      @site ||= site
       if @config
         @config
       else
         @config            = {}
         @config['plugins'] = {}
-        @config['theme']   = @theme.configs(site)
+        @config['theme']   = @theme.nil? ? {} : @theme.configs
 
 
         plugins.each do |p| 
           unless p == @theme
-            @config['plugins'][p.name] = p.configs(site)
+            @config['plugins'][p.name] = p.configs
           end
         end
 
@@ -42,9 +49,9 @@ module Octopress
       end
     end
 
-    def self.include(name, file, site)
+    def self.include(name, file)
       p = plugin(name)
-      p.include(file, site)
+      p.include(file)
     end
 
     def self.register_plugin(plugin, name, type='plugin')
@@ -60,13 +67,14 @@ module Octopress
       end
     end
 
-    def self.register_layouts(site)
+    def self.register_layouts
       plugins.each do |p|
-        p.layouts.clone.each { |layout| layout.register(site) }
+        p.layouts.clone.each { |layout| layout.register }
       end
     end
 
-    def self.custom_dir(config)
+    def self.custom_dir
+      config = @site.config
       if config['octopress'] and config['octopress']['custom']
         config['octopress']['custom']
       else
@@ -88,8 +96,8 @@ module Octopress
       File.join('javascripts', "#{print}.js")
     end
 
-    def self.write_files(site, source, dest)
-      site.static_files << StaticFileContent.new(source, dest)
+    def self.write_files(source, dest)
+      @site.static_files << StaticFileContent.new(source, dest)
     end
 
     def self.compile_sass_file(path, options)
@@ -100,38 +108,39 @@ module Octopress
       ::Sass.compile(contents, options)
     end
 
-    def self.sass_config(site, item, default)
-      if site.config['octopress'] && site.config['octopress']['sass'] && site.config['octopress']['sass'][item]
-        site.config['octopress']['sass'][item]
+    def self.sass_config(item, default)
+      config = @site.config
+      if config['octopress'] && config['octopress']['sass'] && config['octopress']['sass'][item]
+        config['octopress']['sass'][item]
       else
         default
       end
     end
     
-    def self.sass_options(site)
+    def self.sass_options
       options = {
-        style:        sass_config(site, 'output_style', 'compressed').to_sym,
-        trace:        sass_config(site, 'trace', false),
-        line_numbers: sass_config(site, 'line_numbers', false)
+        style:        sass_config('output_style', 'compressed').to_sym,
+        trace:        sass_config('trace', false),
+        line_numbers: sass_config('line_numbers', false)
       }
     end
 
-    def self.write_combined_stylesheet(site)
-      css = combine_stylesheets(site)
+    def self.write_combined_stylesheet
+      css = combine_stylesheets
       css.keys.each do |media|
-        options = sass_options(site)
+        options = sass_options
         options[:line_numbers] = false
         contents = compile_sass(css[media][:contents], options)
-        write_files(site, contents, combined_stylesheet_path(media)) 
+        write_files(contents, combined_stylesheet_path(media)) 
       end
     end
 
-    def self.write_combined_javascript(site)
-      js = combine_javascripts(site)
-      write_files(site, js, combined_javascript_path) unless js == ''
+    def self.write_combined_javascript
+      js = combine_javascripts
+      write_files(js, combined_javascript_path) unless js == ''
     end
 
-    def self.combine_stylesheets(site)
+    def self.combine_stylesheets
       unless @combined_stylesheets
         css = {}
         paths = {}
@@ -150,11 +159,11 @@ module Octopress
             
             # Add Sass files
             if file.respond_to? :compile
-              css[file.media][:contents].concat file.compile(site)
+              css[file.media][:contents].concat file.compile
             else
-              css[file.media][:contents].concat file.path(site).read.strip
+              css[file.media][:contents].concat file.path.read.strip
             end
-            css[file.media][:paths] << file.path(site)
+            css[file.media][:paths] << file.path
             plugin_header = ''
           end
         end
@@ -167,11 +176,11 @@ module Octopress
       @combined_stylesheets
     end
 
-    def self.combine_javascripts(site)
+    def self.combine_javascripts
       unless @combined_javascripts
         js = ''
         plugins.each do |plugin| 
-          paths = plugin.javascript_paths(site)
+          paths = plugin.javascript_paths
           @javascript_fingerprint = fingerprint(paths)
           paths.each do |file|
             js.concat Pathname.new(file).read
@@ -182,23 +191,23 @@ module Octopress
       @combined_javascripts
     end
 
-    def self.combined_stylesheet_tag(site)
+    def self.combined_stylesheet_tag
       tags = ''
-      combine_stylesheets(site).keys.each do |media|
-        tags.concat "<link href='/#{combined_stylesheet_path(media)}' media='#{media}' rel='stylesheet' type='text/css'>"
+      combine_stylesheets.keys.each do |media|
+        tags.concat "<link href='#{Filters.expand_url(combined_stylesheet_path(media))}' media='#{media}' rel='stylesheet' type='text/css'>"
       end
       tags
     end
 
-    def self.combined_javascript_tag(site)
-      unless combine_javascripts(site) == ''
-        "<script src='/#{combined_javascript_path}'></script>"
+    def self.combined_javascript_tag
+      unless combine_javascripts == ''
+        "<script src='#{Filters.expand_url(combined_javascript_path)}'></script>"
       end
     end
 
-    def self.stylesheet_tags(site)
-      if concat_css(site)
-        combined_stylesheet_tag(site)
+    def self.stylesheet_tags
+      if concat_css
+        combined_stylesheet_tag
       else
         css = []
         plugins.each do |plugin| 
@@ -209,25 +218,27 @@ module Octopress
       end
     end
 
-    def self.concat_css(site)
-      if site.config['octopress'] && !site.config['octopress']['concat_css'].nil?
-        site.config['octopress']['concat_css'] != false
+    def self.concat_css
+      config = @site.config
+      if config['octopress'] && !config['octopress']['concat_css'].nil?
+        config['octopress']['concat_css'] != false
       else
         true
       end
     end
 
-    def self.concat_js(site)
-      if site.config['octopress'] && !site.config['octopress']['concat_js'].nil?
-        site.config['octopress']['concat_js'] != false
+    def self.concat_js
+      config = @site.config
+      if config['octopress'] && !config['octopress']['concat_js'].nil?
+        config['octopress']['concat_js'] != false
       else
         true
       end
     end
 
-    def self.javascript_tags(site)
-      if concat_js(site)
-        combined_javascript_tag(site)
+    def self.javascript_tags
+      if concat_js
+        combined_javascript_tag
       else
         js = []
         plugins.each do |plugin| 
@@ -237,54 +248,54 @@ module Octopress
       end
     end
 
-    def self.copy_javascripts(site)
+    def self.copy_javascripts
       plugins.each do |plugin| 
-        copy(plugin.javascripts, site)
+        copy plugin.javascripts
       end
     end
 
-    def self.copy_stylesheets(site)
+    def self.copy_stylesheets
       stylesheets = plugins.clone.map { 
         |p| p.stylesheets.clone.concat(p.sass) 
       }.flatten
-      copy(stylesheets, site)
+      copy stylesheets
     end
 
-    def self.add_static_files(site)
+    def self.add_static_files
      
-      plugin('user stylesheets').add_files(site)
+      plugin('user stylesheets').add_files
  
       # Copy/Generate Stylesheets
       #
-      if concat_css(site)
-        write_combined_stylesheet(site)
+      if concat_css
+        write_combined_stylesheet
       else
-        copy_stylesheets(site)
+        copy_stylesheets
       end
 
       # Copy/Generate Javascripts
       #
-      if concat_js(site)
-        write_combined_javascript(site)
+      if concat_js
+        write_combined_javascript
       else
-        copy_javascripts(site)
+        copy_javascripts
       end
 
       # Copy other assets
       #
-      copy_static_files(site)
+      copy_static_files
     end
 
-    def self.copy_static_files(site)
+    def self.copy_static_files
       plugins.each do |plugin| 
-        copy(plugin.files, site)
-        copy(plugin.images, site)
-        copy(plugin.fonts, site)
+        copy plugin.files
+        copy plugin.images
+        copy plugin.fonts
       end
     end
 
-    def self.copy(files, site)
-      files.each { |f| f.copy(site) }
+    def self.copy(files)
+      files.each { |f| f.copy }
     end
   end
 end

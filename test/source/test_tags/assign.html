@@ -22,4 +22,5 @@ yepyep → {% assign var1 += 'yep' %}{{ var1 }}
 ## Complex assignment
 awesome → {% assign var9 = (page.layout == 'nil' ? 'awesome' : 'lame' ) %}{{ var9 }}
 AWESOME → {% assign var10 = var9 | upcase %}{{ var10 }}
+whatever-man → {% assign var11 = 'whatever man' || nil | classify %}{{ var11 }}
 

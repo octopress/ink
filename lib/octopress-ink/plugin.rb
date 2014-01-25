@@ -71,8 +71,8 @@ module Octopress
       end
     end
 
-    def remove_jekyll_assets(files, site)
-      files.each {|f| f.remove_jekyll_asset(site) }
+    def remove_jekyll_assets(files)
+      files.each {|f| f.remove_jekyll_asset }
     end
 
     def add_includes
@@ -123,40 +123,40 @@ module Octopress
       files.each { |f| add_file(f) }
     end
 
-    def stylesheet_paths(site)
-      get_paths(@stylesheets, site)
+    def stylesheet_paths
+      get_paths @stylesheets
     end
 
-    def javascript_paths(site)
-      get_paths(@javascripts, site)
+    def javascript_paths
+      get_paths @javascripts
     end
 
     def stylesheet_tags
-      get_tags(@stylesheets)
+      get_tags @stylesheets
     end
 
     def sass_tags
-      get_tags(@sass)
+      get_tags @sass
     end
 
     def javascript_tags
-      get_tags(@javascripts)
+      get_tags @javascripts
     end
 
-    def get_paths(files, site)
-      files.dup.map { |f| f.path(site) }
+    def get_paths(files)
+      files.dup.map { |f| f.path }
     end
 
     def get_tags(files)
       files.dup.map { |f| f.tag }
     end
 
-    def include(file, site)
-      @includes.file(file, site)
+    def include(file)
+      @includes.file file
     end
 
-    def configs(site)
-      @config ||= @configs.read(site)
+    def configs
+      @config ||= @configs.read
       @config
     end
   end

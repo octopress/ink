@@ -1,7 +1,7 @@
 module Octopress
   module Tags
     class RenderTag < Liquid::Tag
-      SYNTAX = /(\S+)(.+)/
+      SYNTAX = /(\S+)(.+)?/
 
       def initialize(tag_name, markup, tokens)
         super

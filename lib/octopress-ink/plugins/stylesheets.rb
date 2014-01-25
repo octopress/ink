@@ -3,14 +3,14 @@
 #
 module Octopress
   class StylesheetsPlugin < Octopress::Plugin
-    def add_files(site)
+    def add_files
 
-      add_stylesheets(local_stylesheets(site))
+      add_stylesheets local_stylesheets
 
-      remove_jekyll_assets(@sass, site)
+      remove_jekyll_assets @sass
 
-      if Plugins.concat_css(site)
-        remove_jekyll_assets(@stylesheets, site)
+      if Plugins.concat_css
+        remove_jekyll_assets @stylesheets
       end
     end
 
@@ -36,11 +36,13 @@ module Octopress
       files
     end
 
-    def local_stylesheets(site)
-      if site.config['octopress'] && site.config['octopress']['stylesheets']
-        site.config['octopress']['stylesheets'] || []
+    def local_stylesheets
+      config = Plugins.site.config
+      source = Plugins.site.source
+      if config['octopress'] && config['octopress']['stylesheets']
+        config['octopress']['stylesheets'] || []
       else
-        dir = File.join(site.source, 'stylesheets/')
+        dir = File.join(source, 'stylesheets/')
         css = Dir.glob(File.join(dir, '**/*.css'))
         sass = Dir.glob(File.join(dir, '**/*.s[ca]ss')).reject { |f| File.basename(f) =~ /^_.*?s[ac]ss/ }
         files = css.concat sass

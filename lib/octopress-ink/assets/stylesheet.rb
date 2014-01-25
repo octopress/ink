@@ -25,7 +25,7 @@ module Octopress
       end
 
       def tag
-        "<link href='/#{File.join(@dir, @file)}' media='#{media}' rel='stylesheet' type='text/css'>"
+        "<link href='#{Filters.expand_url(File.join(@dir, @file))}' media='#{media}' rel='stylesheet' type='text/css'>"
       end
     end
   end

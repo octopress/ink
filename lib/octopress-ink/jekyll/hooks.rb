@@ -8,6 +8,9 @@ module Jekyll
       payload['plugins']   = config['plugins']
       payload['theme']     = config['theme']
       payload['converter'] = self.converter
+      self.site.config['octopress'] = {}
+      self.site.config['octopress']['theme'] = config['theme']
+      self.site.config['octopress']['plugins'] = config['plugins']
       do_layout_orig(payload, layouts)
     end
   end

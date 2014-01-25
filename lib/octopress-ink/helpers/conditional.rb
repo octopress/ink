@@ -1,7 +1,7 @@
 module Octopress
   module Helpers
     module Conditional
-      SYNTAX = /(.*)(if|unless)\s*(.+)/
+      SYNTAX = /(.*)\s(if|unless)\s(.+)/
 
       def self.parse(markup, context)
         if markup =~ SYNTAX
