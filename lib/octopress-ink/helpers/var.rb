@@ -29,10 +29,10 @@ module Octopress
           filters = $2
         end
         vars = vars.split(/ \|\| /).map { |v|
-          Liquid::Variable.new(v.strip).render(context)
+          context[v.strip]
         }.compact
 
-        var = vars.empty? ? nil : vars.first
+        var = vars.first
         if filters
           var = Liquid::Variable.new("'#{var}'"+ filters).render(context)
         end
