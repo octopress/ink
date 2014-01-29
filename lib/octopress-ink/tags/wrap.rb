@@ -16,16 +16,16 @@ module Octopress
 
         case @tag_name
         when 'wrap_yield'
-          content = content_for(markup, context)
+          content = Tags::YieldTag.new('yield', markup, []).render(context)
         when 'wrap_render'
           begin
-            content = include_tag = Octopress::Tags::RenderTag.new('render', markup, []).render(context)
+            content = Tags::RenderTag.new('render', markup, []).render(context)
           rescue => error
             error_msg error
           end
         when 'wrap'
           begin
-            content = include_tag = Octopress::Tags::IncludeTag.new('include', markup, []).render(context)
+            content = Tags::IncludeTag.new('include', markup, []).render(context)
           rescue => error
             error_msg error
           end

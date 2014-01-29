@@ -1,6 +1,21 @@
 ---
-layout: content_for
 ---
-{% content_for foo %}
-Testing content for
-{% endcontent_for %}
+Testing content for → {% content_for foo %}Testing content for{% endcontent_for %}{% yield foo %}
+
+Testing scripts → {% scripts %}
+Testing
+{% endscripts %}{% scripts %}
+scripts
+{% endscripts %}{% yield scripts | join_space %}
+
+Testing head tag → {% head %}
+Testing
+{% endhead %}{% head %}
+head tag
+{% endhead %}{% yield head | join_space %}
+
+Testing footer → {% footer %}
+Testing
+{% endfooter %}{% footer %}
+footer
+{% endfooter %}{% yield footer | join_space %}

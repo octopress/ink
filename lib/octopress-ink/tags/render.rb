@@ -14,6 +14,10 @@ module Octopress
 
       def render(context)
         markup = Helpers::Conditional.parse(@markup, context)
+        if markup =~ Helpers::Var::HAS_FILTERS
+          markup = $1
+          filters = $2
+        end
         return unless markup
         markup = Helpers::Var.evaluate_ternary(markup, context)
         markup = Helpers::Path.parse(markup, context)
@@ -36,8 +40,13 @@ module Octopress
           partial.render!(context)
         }.strip
 
-        parse_convertible(content, context)
-        
+        content = parse_convertible(content, context)
+
+        unless content.nil? || filters.nil?
+          content = Helpers::Var.render_filters(content, filters, context)
+        end
+
+        content
       end
 
       def read(markup, context)

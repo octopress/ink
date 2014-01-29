@@ -10,6 +10,10 @@ module Octopress
 
       def render(context)
         markup = Helpers::Conditional.parse(@markup, context)
+        if markup =~ Helpers::Var::HAS_FILTERS
+          markup = $1
+          filters = $2
+        end
         return unless markup
         markup = Helpers::Var.evaluate_ternary(markup, context)
         markup = Helpers::Path.parse(markup, context)
@@ -26,15 +30,21 @@ module Octopress
             raise IOError.new "Include failed: {% #{@tag_name} #{@og_markup}%}. The plugin '#{plugin}' does not have an include named '#{path}'."
           end
           partial = Liquid::Template.parse(content)
-          context.stack {
+          content = context.stack {
             context['include'] = include_tag.parse_params(context)
             partial.render!(context)
           }.strip
           
         # Otherwise, use Jekyll's default include tag
         else
-          include_tag.render(context).strip
+          content = include_tag.render(context).strip
         end
+
+        unless content.nil? || filters.nil?
+          content = Helpers::Var.render_filters(content, filters, context)
+        end
+
+        content
       end
     end
   end

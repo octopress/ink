@@ -9,6 +9,10 @@ Testing Include → {% include foo.html %}
 ## Local var passing
 Testing Include var_test → {% include foo.html some_var="var_test" %}
 
+## Filter testing
+TESTING INCLUDE → {% include foo.html | upcase %}
+'' → '{% include foo.html | upcase unless true %}'
+
 ## Conditional Include
 '' → '{% include foo.html unless true %}'
 '' → '{% include foo.html unless some_bool %}'

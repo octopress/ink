@@ -9,6 +9,10 @@ layout: nil
 ## Local var passing
 [- Testing Include var_test -] → {% wrap foo.html some_var="var_test" %}[- {=yield} -]{% endwrap %}
 
+## Filter testing
+[- TESTING INCLUDE -] → {% wrap foo.html | upcase %}[- {=yield} -]{% endwrap %}
+[- TESTING FILTERS -] → {% wrap foo.html | replace:"Include","Filters" | upcase | %}[- {=yield} -]{% endwrap %}
+
 ## Conditional wrap
 '' → '{% wrap foo.html unless true %}[- {=yield} -]{% endwrap %}'
 '' → '{% wrap foo.html unless some_bool %}[- {=yield} -]{% endwrap %}'
@@ -22,3 +26,6 @@ layout: nil
 ## Wrap render
 [- Testing Render -] → {% wrap_render test_render/_f.html %}[- {=yield} -]{% endwrap_render %}
 
+## Wrap yield
+{% content_for test %}Testing wrap yield{% endcontent_for %}
+[- Testing wrap yield -] → {% wrap_yield test %}[- {= yield } -]{% endwrap_yield %}

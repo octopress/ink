@@ -21,6 +21,10 @@ Testing Render → {% render file if some_bool %}
 ## Test Variables
 kittens → {% render test_render/_var.html %}
 
+## Test Filters
+KITTENS → {% render test_render/_var.html | upcase %}
+MITTENS → {% render test_render/_var.html | replace:"k","m" | upcase %}
+
 ## Ternary include
 kittens → {% render (false ? file : file2) %}
 Testing Render → {% render (some_bool ? file : file2) %}

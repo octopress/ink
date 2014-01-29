@@ -43,6 +43,7 @@ Liquid::Template.register_tag('yield', Octopress::Tags::YieldTag)
 Liquid::Template.register_tag('wrap_yield', Octopress::Tags::WrapTag)
 Liquid::Template.register_tag('wrap_render', Octopress::Tags::WrapTag)
 Liquid::Template.register_tag('wrap', Octopress::Tags::WrapTag)
+Liquid::Template.register_tag('_', Octopress::Tags::LineCommentTag)
 
 Octopress.register_plugin(Octopress::StylesheetsPlugin, 'user stylesheets', 'local_plugin')
 

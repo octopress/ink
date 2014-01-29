@@ -13,6 +13,7 @@ module Octopress
     autoload :YieldTag,             'octopress-ink/tags/yield'
     autoload :ScriptsBlock,         'octopress-ink/tags/scripts'
     autoload :WrapTag,              'octopress-ink/tags/wrap'
+    autoload :LineCommentTag,       'octopress-ink/tags/line_comment'
   end
 end
 

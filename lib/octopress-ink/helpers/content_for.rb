@@ -21,7 +21,7 @@ module Octopress
 
       def self.append_to_block(context, block, content)
         converter = context.environments.first['converter']
-        content = converter.convert(content).lstrip
+        content = converter.convert(content).sub(/\n$/,'')
         get_block(context, block) << content
       end
     end

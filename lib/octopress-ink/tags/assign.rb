@@ -22,7 +22,7 @@ module Octopress
 
           context = Helpers::Var.set_var(var, operator, value, context)
         else
-          raise SyntaxError.new("Syntax Error in 'assign' - Valid syntax: assign [var] = [source]")
+          raise SyntaxError.new("Syntax Error in 'assign tag': #{@markup} - Valid syntax: assign [var] = [source] | filter")
         end
         ''
       end

@@ -104,6 +104,11 @@ module Octopress
       input.gsub(/ /,'-').gsub(/[^\w-]/,'').downcase
     end
 
+    # Replaces newlines with space characters
+    def join_space(input)
+      input.gsub(/^\s+/,'').gsub(/\s+/, ' ')
+    end
+
     module_function :root, :expand_url, :expand_urls, :full_url, :full_urls, :excerpt, :titlecase, :classify
     public :expand_url, :expand_urls, :full_url, :full_urls, :excerpt, :titlecase, :classify
   end
