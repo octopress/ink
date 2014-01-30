@@ -1,7 +1,7 @@
 # Inspired by jekyll-contentblocks https://github.com/rustygeldmacher/jekyll-contentblocks
 module Octopress
   module Tags
-    class ContentForBlock < Liquid::Block
+    class ContentForTag < Liquid::Block
 
       def initialize(tag_name, markup, tokens)
         super

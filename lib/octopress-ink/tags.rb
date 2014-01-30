@@ -7,11 +7,8 @@ module Octopress
     autoload :CaptureTag,           'octopress-ink/tags/capture'
     autoload :JavascriptTag,        'octopress-ink/tags/javascript'
     autoload :StylesheetTag,        'octopress-ink/tags/stylesheet'
-    autoload :ContentForBlock,      'octopress-ink/tags/content_for'
-    autoload :HeadBlock,            'octopress-ink/tags/head'
-    autoload :FooterBlock,          'octopress-ink/tags/footer'
+    autoload :ContentForTag,        'octopress-ink/tags/content_for'
     autoload :YieldTag,             'octopress-ink/tags/yield'
-    autoload :ScriptsBlock,         'octopress-ink/tags/scripts'
     autoload :WrapTag,              'octopress-ink/tags/wrap'
     autoload :LineCommentTag,       'octopress-ink/tags/line_comment'
   end
