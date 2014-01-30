@@ -10,8 +10,7 @@ module Octopress
       end
 
       def render(context)
-        markup = Helpers::Conditional.parse(@markup, context)
-        return unless markup
+        return unless markup = Helpers::Conditional.parse(@markup, context)
 
         @block_name ||= Helpers::ContentFor.get_block_name(@tag_name, markup)
         Helpers::ContentFor.append_to_block(context, @block_name, super)

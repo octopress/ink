@@ -13,12 +13,11 @@ module Octopress
       end
 
       def render(context)
-        markup = Helpers::Conditional.parse(@markup, context)
+        return unless markup = Helpers::Conditional.parse(@markup, context)
         if markup =~ Helpers::Var::HAS_FILTERS
           markup = $1
           filters = $2
         end
-        return unless markup
         markup = Helpers::Var.evaluate_ternary(markup, context)
         markup = Helpers::Path.parse(markup, context)
 

@@ -1,5 +1,4 @@
 require 'colorator'
-ENV['OCTOPRESS_ENV'] = 'TEST'
 
 @has_failed = false
 @failures = {}

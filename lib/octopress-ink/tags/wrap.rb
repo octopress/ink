@@ -11,9 +11,7 @@ module Octopress
       end
 
       def render(context)
-        require 'pry-debugger'
-        markup = Helpers::Conditional.parse(@markup, context)
-        return unless markup
+        return unless markup = Helpers::Conditional.parse(@markup, context)
 
         type = if markup =~ /^\s*yield\s(.+)/
           markup = $1

@@ -19,16 +19,11 @@ module Octopress
       end
 
       def render(context)
-        markup = Helpers::Conditional.parse(@markup, context)
-        return unless markup
+        return unless markup = Helpers::Conditional.parse(@markup, context)
         content = Helpers::ContentFor.render(context, @block_name)
 
         unless content.nil? || @filters.nil?
           content = Helpers::Var.render_filters(content, @filters, context)
-        end
-
-        if @block_name == 'head' && ENV['OCTOPRESS_ENV'] != 'TEST'
-          content.insert 0, "<meta name='generator' content='Octopress #{Octopress::Ink::VERSION}'>"
         end
 
         content

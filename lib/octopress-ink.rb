@@ -24,6 +24,15 @@ module Octopress
   def self.register_plugin(plugin, name, type='plugin')
     Plugins.register_plugin(plugin, name, type)
   end
+
+  def self.version
+    version = "Jekyll v#{Jekyll::VERSION}, "
+    if defined? Octopress::VERSION
+      version << "Octopress v#{Octopress::VERSION} "
+    end
+    version << "Octopress Ink v#{Octopress::Ink::VERSION}"
+  end
+
 end
 
 Liquid::Template.register_filter Octopress::Filters

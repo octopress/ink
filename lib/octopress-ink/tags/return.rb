@@ -7,8 +7,7 @@ module Octopress
       end
 
       def render(context)
-        markup = Helpers::Conditional.parse(@markup, context)
-        return unless markup
+        return unless markup = Helpers::Conditional.parse(@markup, context)
 
         Helpers::Var.get_value(markup, context)
       end
