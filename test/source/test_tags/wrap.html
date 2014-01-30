@@ -4,28 +4,28 @@ layout: nil
 {% assign some_bool = true %}
 
 ## Testing a simple wrap
-[- Testing Include -] → {% wrap foo.html %}[- {=yield} -]{% endwrap %}
+[- Testing Include -] → {% wrap foo.html %}[- {{ yield }} -]{% endwrap %}
 
 ## Local var passing
-[- Testing Include var_test -] → {% wrap foo.html some_var="var_test" %}[- {=yield} -]{% endwrap %}
+[- Testing Include var_test -] → {% wrap foo.html some_var="var_test" %}[- {{ yield }} -]{% endwrap %}
 
 ## Filter testing
-[- TESTING INCLUDE -] → {% wrap foo.html | upcase %}[- {=yield} -]{% endwrap %}
-[- TESTING FILTERS -] → {% wrap foo.html | replace:"Include","Filters" | upcase | %}[- {=yield} -]{% endwrap %}
+[- TESTING INCLUDE -] → {% wrap foo.html | upcase %}[- {% assign foo = 'bar' %}{{ yield }} -]{% endwrap %}
+[- TESTING FILTERS -] → {% wrap foo.html | replace:"Include","Filters" | upcase | %}[- {{ yield }} -]{% endwrap %}
 
 ## Conditional wrap
-'' → '{% wrap foo.html unless true %}[- {=yield} -]{% endwrap %}'
-'' → '{% wrap foo.html unless some_bool %}[- {=yield} -]{% endwrap %}'
-[- Testing Include -] → {% wrap foo.html if true %}[- {=yield} -]{% endwrap %}
-[- Testing Include -] → {% wrap foo.html if some_bool %}[- {=yield} -]{% endwrap %}
+'' → '{% wrap foo.html unless true %}[- {{ yield }} -]{% endwrap %}'
+'' → '{% wrap foo.html unless some_bool %}[- {{ yield }} -]{% endwrap %}'
+[- Testing Include -] → {% wrap foo.html if true %}[- {{ yield }} -]{% endwrap %}
+[- Testing Include -] → {% wrap foo.html if some_bool %}[- {{ yield }} -]{% endwrap %}
 
 ## Plugin wraps
-[- include from plugin -] → {% wrap awesome-sauce:some-include.html %}[- {=yield} -]{% endwrap %}
-[- Yo Dawg, I heard you like includes. -] → {% wrap theme:greet.html greeting="Yo Dawg" %}[- {=yield} -]{% endwrap %}
+[- include from plugin -] → {% wrap awesome-sauce:some-include.html %}[- {{ yield }} -]{% endwrap %}
+[- Yo Dawg, I heard you like includes. -] → {% wrap theme:greet.html greeting="Yo Dawg" %}[- {{ yield }} -]{% endwrap %}
 
 ## Wrap render
-[- Testing Render -] → {% wrap_render test_render/_f.html %}[- {=yield} -]{% endwrap_render %}
+[- Testing Render -] → {% wrap_render test_render/_f.html %}[- {{ yield }} -]{% endwrap_render %}
 
 ## Wrap yield
 {% content_for test %}Testing wrap yield{% endcontent_for %}
-[- Testing wrap yield -] → {% wrap_yield test %}[- {= yield } -]{% endwrap_yield %}
+[- Testing wrap yield -] → {% wrap_yield test %}[- {{ yield }} -]{% endwrap_yield %}

@@ -5,6 +5,10 @@ module Octopress
     class YieldTag < Liquid::Tag
 
       def initialize(tag_name, markup, tokens)
+        if markup.strip == ''
+          raise IOError.new "Yield failed: {% #{tag_name} #{markup}%}. Please provide a block name to yield. - Syntax: {% yield block_name %}"
+        end
+
         super
         @markup = markup
         if markup =~ Helpers::Var::HAS_FILTERS

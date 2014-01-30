@@ -3,7 +3,7 @@
 module Octopress
   module Tags
     class WrapTag < Liquid::Block
-      HAS_YIELD = /(.*?)({=\s*yield\s*})(.*)/im
+
       def initialize(tag_name, markup, tokens)
         super
         @og_markup = @markup = markup
@@ -11,6 +11,7 @@ module Octopress
       end
 
       def render(context)
+        require 'pry-debugger'
         markup = Helpers::Conditional.parse(@markup, context)
         return unless markup
 
@@ -31,13 +32,8 @@ module Octopress
           end
         end
 
-        wrap = super.strip
-
-        if wrap =~ HAS_YIELD && content != ''
-          $1 + content + $3
-        else
-          ''
-        end
+        context.scopes.first['yield'] = content
+        super.strip
       end
 
       def error_msg(error)
