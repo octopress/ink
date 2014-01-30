@@ -32,8 +32,14 @@ module Octopress
           end
         end
 
+        # just in case yield had a value
+        old_yield = context.scopes.first['yield']
         context.scopes.first['yield'] = content
-        super.strip
+        
+        content = super.strip
+        context.scopes.first['yield'] = old_yield
+
+        content
       end
 
       def error_msg(error)
