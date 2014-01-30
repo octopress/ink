@@ -40,8 +40,6 @@ Liquid::Template.register_tag('head', Octopress::Tags::HeadBlock)
 Liquid::Template.register_tag('footer', Octopress::Tags::FooterBlock)
 Liquid::Template.register_tag('scripts', Octopress::Tags::ScriptsBlock)
 Liquid::Template.register_tag('yield', Octopress::Tags::YieldTag)
-Liquid::Template.register_tag('wrap_yield', Octopress::Tags::WrapTag)
-Liquid::Template.register_tag('wrap_render', Octopress::Tags::WrapTag)
 Liquid::Template.register_tag('wrap', Octopress::Tags::WrapTag)
 Liquid::Template.register_tag('_', Octopress::Tags::LineCommentTag)
 

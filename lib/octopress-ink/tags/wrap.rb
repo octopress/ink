@@ -15,16 +15,29 @@ module Octopress
         markup = Helpers::Conditional.parse(@markup, context)
         return unless markup
 
-        case @tag_name
-        when 'wrap_yield'
+        type = if markup =~ /^\s*yield\s(.+)/
+          markup = $1
+          'yield'
+        elsif markup =~ /^\s*render\s(.+)/
+          markup = $1
+          'render'
+        elsif markup =~ /^\s*include\s(.+)/
+          markup = $1
+          'include'
+        else
+          raise IOError.new "Wrap Failed: {% wrap #{@og_markup}%} - Which type of wrap: inlcude, yield, render? - Correct syntax: {% wrap type path or var [filters] [conditions] %}"
+        end
+
+        case type
+        when 'yield'
           content = Tags::YieldTag.new('yield', markup, []).render(context)
-        when 'wrap_render'
+        when 'render'
           begin
             content = Tags::RenderTag.new('render', markup, []).render(context)
           rescue => error
             error_msg error
           end
-        when 'wrap'
+        when 'include'
           begin
             content = Tags::IncludeTag.new('include', markup, []).render(context)
           rescue => error
