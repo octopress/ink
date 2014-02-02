@@ -9,13 +9,12 @@ require 'octopress-ink/version'
 require 'octopress-ink/helpers/titlecase'
 
 module Octopress
-  CUSTOM_DIR = "_custom"
-
   autoload :Helpers,              'octopress-ink/helpers'
   autoload :Filters,              'octopress-ink/filters'
   autoload :Assets,               'octopress-ink/assets'
-  autoload :StaticFile,           'octopress-ink/assets/static_file'
-  autoload :StaticFileContent,    'octopress-ink/assets/static_file_content'
+  autoload :Page,                 'octopress-ink/jekyll/page'
+  autoload :StaticFile,           'octopress-ink/jekyll/static_file'
+  autoload :StaticFileContent,    'octopress-ink/jekyll/static_file_content'
   autoload :Plugins,              'octopress-ink/plugins'
   autoload :Plugin,               'octopress-ink/plugin'
   autoload :Tags,                 'octopress-ink/tags'

@@ -1,2 +1,5 @@
 test: config from theme
 test_override: also config from theme
+pages:
+  test:
+    url: /awesome/

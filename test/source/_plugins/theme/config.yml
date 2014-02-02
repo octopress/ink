@@ -1,1 +1,4 @@
 test_override: config from theme override
+pages:
+  test:
+    path: /food/

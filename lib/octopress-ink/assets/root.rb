@@ -1,7 +1,6 @@
 # These are files which need to be in added to the root of the site directory
 # Use root assets for files like robots.text or favicon.ico
 
-
 module Octopress
   module Assets
     class RootAsset < Asset
@@ -11,8 +10,8 @@ module Octopress
         @plugin = plugin
         @dir = ''
         @type = type
-        @exists = {}
         @file = file
+        @exists = {}
         file_check
       end
 

@@ -43,6 +43,10 @@ def test_tags(dir)
   tags.each { |file| test("test_tags/#{file}.html", dir) }
 end
 
+def test_post(dir)
+  test("2014/02/01/test-post.html", dir)
+end
+
 def test_layouts(dir)
   layouts = %w{local plugin_layout theme theme_override}
   layouts.each { |file| test("test_layouts/#{file}.html", dir) }
@@ -89,6 +93,7 @@ def print_failures
   end
 end
 
+test_post('expected')
 test_tags('expected')
 test_layouts('expected')
 test_stylesheets('concat_css')

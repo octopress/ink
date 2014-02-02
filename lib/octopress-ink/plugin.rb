@@ -7,6 +7,7 @@ module Octopress
     def initialize(name, type)
       @layouts_dir       = 'layouts'
       @files_dir         = 'files'
+      @pages_dir         = 'pages'
       @fonts_dir         = 'fonts'
       @images_dir        = 'images'
       @includes_dir      = 'includes'
@@ -20,22 +21,21 @@ module Octopress
       @stylesheets       = []
       @javascripts       = []
       @images            = []
-      @root_files        = []
       @sass              = []
       @fonts             = []
       @files             = []
+      @pages             = []
       add_assets
       add_layouts
+      add_pages
       add_includes
       add_config
     end
 
-    def add_assets
-      
-    end
+    def add_assets; end
 
     def add_config
-      @configs = Assets::Config.new(self, @config_file)
+      @config_file = Assets::Config.new(self, @config_file)
     end
 
     def namespace
@@ -56,6 +56,19 @@ module Octopress
 
     def add_javascript(file)
       @javascripts << Assets::Javascript.new(self, @javascripts_dir, file)
+    end
+
+    def add_pages
+      if @assets_path
+        base = File.join(@assets_path, @pages_dir)
+        entries = []
+        if Dir.exists?(base)
+          Dir.chdir(base) { entries = Dir['**/*.*'] }
+          entries.each do |file|
+            @files << Assets::PageAsset.new(self, @pages_dir, file)
+          end
+        end
+      end
     end
 
     def add_layouts
@@ -155,9 +168,8 @@ module Octopress
       @includes.file file
     end
 
-    def configs
-      @config ||= @configs.read
-      @config
+    def config
+      @config ||= @config_file.read
     end
   end
 end
