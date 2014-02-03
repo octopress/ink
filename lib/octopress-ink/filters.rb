@@ -49,7 +49,7 @@ module Octopress
     def full_urls(input)
       url = Plugins.site.config['url']
       if url.nil?
-        expand_urls(input)
+        raise IOError.new "Could expand urls: Please add your published url to your _config.yml, eg url: http://example.com/"
       else
         File.join url, expand_urls(input)
       end
@@ -65,7 +65,7 @@ module Octopress
     def full_url(input)
       url = Plugins.site.config['url']
       if url.nil?
-        expand_url(input)
+        raise IOError.new "Could expand urls: Please add your published url to your _config.yml, eg url: http://example.com/"
       else
         File.join url, expand_url(input)
       end
@@ -109,7 +109,11 @@ module Octopress
       input.gsub(/\s+/, ' ').strip
     end
 
-    module_function :root, :expand_url, :expand_urls, :full_url, :full_urls, :excerpt, :titlecase, :classify, :join_spaces
-    public :expand_url, :expand_urls, :full_url, :full_urls, :excerpt, :titlecase, :classify, :join_spaces
+    def compact_newlines(input)
+      input.gsub(/\n{2,}/, "\n").gsub(/^ +\n/,"")
+    end
+
+    module_function :root, :expand_url, :expand_urls, :full_url, :full_urls, :excerpt, :titlecase, :classify, :join_spaces, :compact_newlines
+    public :expand_url, :expand_urls, :full_url, :full_urls, :excerpt, :titlecase, :classify, :join_spaces, :compact_newlines
   end
 end
