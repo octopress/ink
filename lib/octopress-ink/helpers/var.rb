@@ -2,7 +2,7 @@ module Octopress
   module Helpers
     module Var
       TERNARY = /(.*?)\(\s*(.+?)\s+\?\s+(.+?)\s+:\s+(.+?)\s*\)(.+)?/
-      HAS_FILTERS = /(.+?)(\s+\|\s+.+)/
+      HAS_FILTERS = /(.*?)(\s+\|\s+.+)/
 
       def self.set_var(var, operator, value, context)
         case operator

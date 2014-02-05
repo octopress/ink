@@ -13,6 +13,11 @@ module Octopress
       def render(context)
         return unless markup = Helpers::Conditional.parse(@markup, context)
 
+        if markup =~ Helpers::Var::HAS_FILTERS
+          markup = $1
+          filters = $2
+        end
+
         type = if markup =~ /^\s*yield\s(.+)/
           markup = $1
           'yield'
@@ -49,6 +54,10 @@ module Octopress
         
         content = super.strip
         context.scopes.first['yield'] = old_yield
+
+        unless content.nil? || filters.nil?
+          content = Helpers::Var.render_filters(content, filters, context)
+        end
 
         content
       end

@@ -25,6 +25,11 @@ module Octopress
       end
     end
 
+    # Prevent orphans in text by inserting a non-breaking space between the two last words of a string.
+    def unorphan(input)
+      input.sub(/\s+(\S+)\s*$/, '&nbsp;\1')
+    end
+
     # Prepend all absolute urls with a url fragment
     #
     # input - The content of a page or post
@@ -94,6 +99,11 @@ module Octopress
       input =~ /<!--\s*more\s*-->/i ? true : false
     end
 
+    # Escapes HTML content for XML
+    def cdata_escape(input)
+      input.gsub(/<!\[CDATA\[/, '&lt;![CDATA[').gsub(/\]\]>/, ']]&gt;')
+    end
+
     # Returns a title cased string based on John Gruber's title case http://daringfireball.net/2008/08/title_case_update
     def titlecase(input)
       input.titlecase
@@ -104,16 +114,17 @@ module Octopress
       input.gsub(/ /,'-').gsub(/[^\w-]/,'').downcase
     end
 
-    # Replaces newlines with space characters
-    def join_spaces(input)
-      input.gsub(/\s+/, ' ').strip
-    end
-
+    # Remove empty lines
     def compact_newlines(input)
       input.gsub(/\n{2,}/, "\n").gsub(/^ +\n/,"")
     end
 
-    module_function :root, :expand_url, :expand_urls, :full_url, :full_urls, :excerpt, :titlecase, :classify, :join_spaces, :compact_newlines
-    public :expand_url, :expand_urls, :full_url, :full_urls, :excerpt, :titlecase, :classify, :join_spaces, :compact_newlines
+    # Join newlines 
+    def join_lines(input, separator='')
+      compact_newlines(input).strip.gsub(/\s*\n\s*/, separator)
+    end
+
+    module_function :root, :expand_url, :expand_urls, :full_url, :full_urls, :excerpt, :cdata_escape, :titlecase, :classify, :join_lines, :compact_newlines, :unorphan
+    public :expand_url, :expand_urls, :full_url, :full_urls, :excerpt, :cdata_escape, :titlecase, :classify, :join_lines, :compact_newlines, :unorphan
   end
 end

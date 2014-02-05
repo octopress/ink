@@ -1,0 +1,6 @@
+---
+---
+omg → {% filter %}omg{% endfilter %}
+OMG → {% filter | upcase %}omg{% endfilter %}
+BOOGIE → {% filter | upcase if true %} boogie {% endfilter %}
+boogie → {% filter | upcase unless true %} boogie {% endfilter %}

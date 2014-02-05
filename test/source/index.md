@@ -18,3 +18,13 @@ Test configurations
 - sass line numbers
 - concat_css
 - concat_js
+
+{% assign separator = ' <span class='separator'></b> ' %}
+{% capture foo | join_lines:separator %}
+one
+ two
+ three
+
+four five
+
+{% endcapture %}{{ foo }}

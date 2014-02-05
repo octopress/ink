@@ -11,7 +11,8 @@ layout: nil
 
 ## Filter testing
 [- TESTING INCLUDE -] → {% wrap include foo.html | upcase %}[- {% assign foo = 'bar' %}{{ yield }} -]{% endwrap %}
-[- TESTING FILTERS -] → {% wrap include foo.html | replace:"Include","Filters" %}[- {{ yield | upcase }} -]{% endwrap %}
+[= TESTING INCLUDE =] → {% wrap include foo.html | replace:"-","=" %}[- {{ yield | upcase }} -]{% endwrap %}
+[- TESTING FILTERS -] → {% wrap include foo.html | replace:"INCLUDE","FILTERS" %}[- {{ yield | upcase }} -]{% endwrap %}
 
 ## Conditional wrap
 '' → '{% wrap include foo.html unless true %}[- {{ yield }} -]{% endwrap %}'

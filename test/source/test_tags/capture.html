@@ -23,7 +23,7 @@ um, hi → {% capture var9 if false or page.layout %}
         {% endcapture %}{{ var9 }}
 
 ## Test filters
-foo bar baz booga → {% capture filters | join_spaces %}
+foo bar baz booga → {% capture filters | join_lines:' ' %}
 foo
 bar 
 baz

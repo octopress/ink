@@ -39,7 +39,7 @@ end
 build
 
 def test_tags(dir)
-  tags = %w{content_for include assign capture wrap render}
+  tags = %w{content_for include assign capture wrap render filter}
   tags.each { |file| test("test_tags/#{file}.html", dir) }
 end
 
