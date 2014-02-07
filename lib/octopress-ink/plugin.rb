@@ -13,6 +13,7 @@ module Octopress
       @includes_dir      = 'includes'
       @javascripts_dir   = 'javascripts'
       @stylesheets_dir   = 'stylesheets'
+      @plugins_dir       = 'plugins'
       @config_file       = 'config.yml'
       @name              = name
       @type              = type
@@ -30,6 +31,7 @@ module Octopress
       add_pages
       add_includes
       add_config
+      require_plugins
     end
 
     def add_assets; end
@@ -66,6 +68,19 @@ module Octopress
           Dir.chdir(base) { entries = Dir['**/*.*'] }
           entries.each do |file|
             @files << Assets::PageAsset.new(self, @pages_dir, file)
+          end
+        end
+      end
+    end
+
+    def require_plugins
+      if @assets_path
+        base = File.join(@assets_path, @plugins_dir)
+        entries = []
+        if Dir.exists?(base)
+          Dir.chdir(base) { entries = Dir['**/*.rb'] }
+          entries.each do |file|
+            require File.join base, file
           end
         end
       end

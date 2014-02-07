@@ -54,9 +54,9 @@ module Octopress
     def full_urls(input)
       url = Plugins.site.config['url']
       if url.nil?
-        raise IOError.new "Could expand urls: Please add your published url to your _config.yml, eg url: http://example.com/"
+        raise IOError.new "Could not expand urls: Please add your published url to your _config.yml, eg url: http://example.com/"
       else
-        File.join url, expand_urls(input)
+        expand_urls(input, url)
       end
     end
     
@@ -70,9 +70,9 @@ module Octopress
     def full_url(input)
       url = Plugins.site.config['url']
       if url.nil?
-        raise IOError.new "Could expand urls: Please add your published url to your _config.yml, eg url: http://example.com/"
+        raise IOError.new "Could not expand url in #{input}: Please add your site's published url to your _config.yml, eg url: http://example.com/"
       else
-        File.join url, expand_url(input)
+        expand_url(input, url)
       end
     end
 
