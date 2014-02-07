@@ -39,8 +39,15 @@ end
 build
 
 def test_tags(dir)
-  tags = %w{content_for include assign capture wrap render filter}
+  tags = %w{content_for abort_false include assign capture wrap render filter}
   tags.each { |file| test("test_tags/#{file}.html", dir) }
+  if File.exist? "site/test_tags/abort_true.html"
+    @has_failed = true 
+    @failures['abort_true.html'] = "File 'abort_true.html' should not exist"
+    pout "F".red
+  else
+    pout ".".green
+  end
 end
 
 def test_post(dir)

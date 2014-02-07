@@ -23,10 +23,6 @@ module Octopress
         File.join(plugin_dir, @dir, @file)
       end
 
-      def dest
-        File.expand_path(Plugins.site.config['destination'])
-      end
-
       def page
         @page ||= Page.new(Plugins.site, plugin_dir, page_dir, @file, @plugin.config)
       end
@@ -35,11 +31,7 @@ module Octopress
       #
       def copy
         return unless page.url
-        overriden = false
-        Plugins.site.pages.clone.each do |p|
-          overriden = true if p.destination(dest) == @page.destination(dest)
-        end
-        Plugins.site.pages << @page unless overriden
+        Plugins.site.pages << @page unless Helpers::Path.find_page(@page)
       end
 
     end

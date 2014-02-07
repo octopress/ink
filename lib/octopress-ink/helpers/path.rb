@@ -36,7 +36,30 @@ module Octopress
           File.join root, file
         end
       end
-      
+
+      def self.site_dir
+        File.expand_path(Plugins.site.config['destination'])
+      end
+
+      def self.page_destination(page)
+        page.destination(site_dir)
+      end
+
+      def self.find_page(page)
+        find_page_by_dest find_page_by_dest(page)
+      end
+
+      def self.find_page_by_dest(dest)
+        Plugins.site.pages.clone.each do |p|
+          return p if page_destination(p) == dest
+        end
+      end
+
+      def self.remove_page(dest)
+        Plugins.site.pages.reject! do |p|
+          page_destination(p) == dest
+        end
+      end
     end
   end
 end

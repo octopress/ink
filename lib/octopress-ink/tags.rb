@@ -11,6 +11,7 @@ module Octopress
     autoload :ContentForTag,        'octopress-ink/tags/content_for'
     autoload :YieldTag,             'octopress-ink/tags/yield'
     autoload :WrapTag,              'octopress-ink/tags/wrap'
+    autoload :AbortTag,             'octopress-ink/tags/abort'
     autoload :LineCommentTag,       'octopress-ink/tags/line_comment'
   end
 end

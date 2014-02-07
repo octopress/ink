@@ -47,6 +47,7 @@ Liquid::Template.register_tag('octopress_css', Octopress::Tags::StylesheetTag)
 Liquid::Template.register_tag('content_for', Octopress::Tags::ContentForTag)
 Liquid::Template.register_tag('yield', Octopress::Tags::YieldTag)
 Liquid::Template.register_tag('wrap', Octopress::Tags::WrapTag)
+Liquid::Template.register_tag('abort', Octopress::Tags::AbortTag)
 Liquid::Template.register_tag('_', Octopress::Tags::LineCommentTag)
 
 Octopress.register_plugin(Octopress::StylesheetsPlugin, 'user stylesheets', 'local_plugin')
