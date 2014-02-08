@@ -18,6 +18,16 @@ def test(file, dir)
   end
 end
 
+def test_missing(file, dir)
+  if File.exist? File.join dir, file 
+    @failures[file] = "File #{file} should not exist"
+    pout "F".red
+    @has_failed = true
+  else
+    pout ".".green
+  end
+end
+
 def build(config='')
   config = ['_config.yml'] << config
   `rm -rf site && bundle exec jekyll build --config #{config.join(',')}`
@@ -41,13 +51,15 @@ build
 def test_tags(dir)
   tags = %w{content_for abort_false include assign capture wrap render filter}
   tags.each { |file| test("test_tags/#{file}.html", dir) }
-  if File.exist? "site/test_tags/abort_true.html"
-    @has_failed = true 
-    @failures['abort_true.html'] = "File 'abort_true.html' should not exist"
-    pout "F".red
-  else
-    pout ".".green
-  end
+
+  tags = %w{abort_true, abort_posts}
+  tags.each { |file| test_missing("test_tags/#{file}.html", dir) }
+end
+
+def test_pages(dir)
+  pages = %w{plugin_page plugin_page_override theme_page three}
+  pages.each { |file| test("test_pages/#{file}.html", dir) }
+  test("test_pages/feed/index.xml", dir)
 end
 
 def test_post(dir)
@@ -102,6 +114,7 @@ end
 
 test_post('expected')
 test_tags('expected')
+test_pages('expected')
 test_layouts('expected')
 test_stylesheets('concat_css')
 test_configs('expected')

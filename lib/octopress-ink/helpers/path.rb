@@ -46,13 +46,14 @@ module Octopress
       end
 
       def self.find_page(page)
-        find_page_by_dest find_page_by_dest(page)
+        find_page_by_dest page_destination(page)
       end
 
       def self.find_page_by_dest(dest)
         Plugins.site.pages.clone.each do |p|
           return p if page_destination(p) == dest
         end
+        return false
       end
 
       def self.remove_page(dest)

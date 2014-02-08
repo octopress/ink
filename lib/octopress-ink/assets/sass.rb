@@ -16,7 +16,7 @@ module Octopress
         "<link href='#{Filters.expand_url(File.join(@dir, @file))}' media='#{media}' rel='stylesheet' type='text/css'>"
       end
 
-      # TODO: choose user path before local path.
+      # TODO: see if this is done TODO: choose user path before local path.
       def user_load_path
         File.join(Plugins.site.source, Plugins.custom_dir, @dir, File.dirname(@file)).sub /\/\.$/, ''
       end

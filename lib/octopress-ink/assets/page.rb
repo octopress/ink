@@ -31,7 +31,7 @@ module Octopress
       #
       def copy
         return unless page.url
-        Plugins.site.pages << @page unless Helpers::Path.find_page(@page)
+        Plugins.site.pages << page unless Helpers::Path.find_page(page)
       end
 
     end

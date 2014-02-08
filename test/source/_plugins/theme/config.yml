@@ -1,4 +1,5 @@
 test_override: config from theme override
 pages:
-  test:
-    path: /food/
+  test: test_pages/theme_page.html
+feed:
+  url: test_pages/feed/

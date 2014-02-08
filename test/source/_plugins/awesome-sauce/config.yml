@@ -1,1 +1,4 @@
 test_override: config from plugin override
+pages:
+  one: test_pages/plugin_page_override.html
+  two: test_pages/plugin_page.html

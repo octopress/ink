@@ -1,5 +1,5 @@
 test: config from theme
 test_override: also config from theme
 pages:
-  test:
-    url: /awesome/
+  sub: /test-pages/sub/test.html
+  test: /test-pages/index.html
