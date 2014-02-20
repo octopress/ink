@@ -2,25 +2,27 @@
 # Use root assets for files like robots.text or favicon.ico
 
 module Octopress
-  module Assets
-    class RootAsset < Asset
+  module Ink
+    module Assets
+      class RootAsset < Asset
 
-      def initialize(plugin, type, file)
-        @root = plugin.assets_path
-        @plugin = plugin
-        @dir = ''
-        @type = type
-        @file = file
-        @exists = {}
-        file_check
-      end
-
-      def copy
-        unless exists? local_plugin_path
-          Plugins.site.static_files << StaticFile.new(plugin_path, destination)
+        def initialize(plugin, type, file)
+          @root = plugin.assets_path
+          @plugin = plugin
+          @dir = ''
+          @type = type
+          @file = file
+          @exists = {}
+          file_check
         end
-      end
 
+        def copy
+          unless exists? local_plugin_path
+            Plugins.site.static_files << StaticFile.new(plugin_path, destination)
+          end
+        end
+
+      end
     end
   end
 end

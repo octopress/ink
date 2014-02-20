@@ -1,6 +1,6 @@
 require 'octopress-ink'
 
-class TestTheme < Octopress::Plugin
+class TestTheme < Octopress::Ink::Plugin
   def initialize(name, type)
     @assets_path = File.expand_path(File.join(File.dirname(__FILE__)))
     super
@@ -13,4 +13,4 @@ class TestTheme < Octopress::Plugin
   end
 end
 
-Octopress.register_plugin(TestTheme, 'classic', 'theme')
+Octopress::Ink.register_plugin(TestTheme, 'classic', 'theme')

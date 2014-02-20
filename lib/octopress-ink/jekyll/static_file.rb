@@ -1,25 +1,27 @@
 module Octopress
-  class StaticFile
-    def initialize(source, dest)
-      @source = source
-      @dest = dest
-    end
+  module Ink
+    class StaticFile
+      def initialize(source, dest)
+        @source = source
+        @dest = dest
+      end
 
-    def destination(dest)
-      File.join(dest, @dest)
-    end
+      def destination(dest)
+        File.join(dest, @dest)
+      end
 
-    def path
-      @source
-    end
+      def path
+        @source
+      end
 
-    def write(dest)
-      dest_path = destination(dest)
+      def write(dest)
+        dest_path = destination(dest)
 
-      FileUtils.mkdir_p(File.dirname(dest_path))
-      FileUtils.cp(@source, dest_path)
+        FileUtils.mkdir_p(File.dirname(dest_path))
+        FileUtils.cp(@source, dest_path)
 
-      true
+        true
+      end
     end
   end
 end

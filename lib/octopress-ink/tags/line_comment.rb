@@ -1,7 +1,10 @@
 module Octopress
-  module Tags
-    class LineCommentTag < Liquid::Tag
-      def render(context); end
+  module Ink
+    module Tags
+      class LineCommentTag < Liquid::Tag
+        def render(context); end
+      end
     end
   end
 end
+
