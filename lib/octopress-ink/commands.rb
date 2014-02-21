@@ -11,9 +11,6 @@ module Octopress
             c.description "Get about octopress ink plugins"
 
             Info.process_command(c)
-
-            c.action do |args, options|
-            end
           end
         end
       end
