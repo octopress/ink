@@ -3,6 +3,7 @@ require 'octopress-ink'
 class TestTheme < Octopress::Ink::Plugin
   def initialize(name, type)
     @assets_path = File.expand_path(File.join(File.dirname(__FILE__)))
+    @description = "Test theme y'all"
     super
   end
   def add_assets
