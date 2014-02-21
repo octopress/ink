@@ -10,6 +10,14 @@ module Octopress
         @theme
       end
 
+      def self.each(&block)
+        plugins.each(&block)
+      end
+
+      def self.size
+        plugins.size
+      end
+
       def self.plugin(name)
         if name == 'theme'
           @theme
@@ -296,6 +304,7 @@ module Octopress
       def self.copy_static_files
         plugins.each do |plugin| 
           copy plugin.files
+          copy plugin.pages
           copy plugin.images
           copy plugin.fonts
         end

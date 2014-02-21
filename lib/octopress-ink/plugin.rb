@@ -1,9 +1,12 @@
+require 'find'
+
 module Octopress
   module Ink
     class Plugin
       attr_accessor :name, :type, :asset_override, :assets_path,
                     :layouts_dir, :stylesheets_dir, :javascripts_dir, :files_dir, :includes_dir, :images_dir,
-                    :layouts, :includes, :stylesheets, :javascripts, :images, :sass, :fonts, :files
+                    :layouts, :includes, :stylesheets, :javascripts, :images, :sass, :fonts, :files, :pages,
+                    :website, :description, :version
 
       def initialize(name, type)
         @layouts_dir       = 'layouts'
@@ -19,7 +22,7 @@ module Octopress
         @name              = name
         @type              = type
         @layouts           = []
-        @includes          = []
+        @includes          = {}
         @stylesheets       = []
         @javascripts       = []
         @images            = []
@@ -27,6 +30,9 @@ module Octopress
         @fonts             = []
         @files             = []
         @pages             = []
+        @version         ||= false
+        @description     ||= false
+        @website         ||= false
         add_assets
         add_layouts
         add_pages
@@ -49,6 +55,44 @@ module Octopress
         end
       end
 
+      def assets
+        {
+          'layouts'     => @layouts,
+          'includes'    => @includes.values,
+          'pages'       => @pages, 
+          'sass'        => @sass, 
+          'stylesheets' => @stylesheets,
+          'javascripts' => @javascripts, 
+          'images'      => @images, 
+          'fonts'       => @fonts, 
+          'files'       => @files
+        }
+      end
+
+      def info(options={})
+        message =  @name
+        message += " (theme)" if @type == 'theme'
+        message += " - v#{@version}" if @version
+        message += " - #{@description}" if @description
+        message += "\n"
+        if options == {}
+          asset_types = assets
+        else
+          asset_types = assets.select{|k,v| options.keys.include?(k)}
+        end
+        asset_types.each do |name, assets|
+          if assets.size > 0
+            message += "#{name.capitalize}:\n"
+            assets.each do |t|
+              message += "  - #{t.info}\n"
+            end
+          elsif options != {}
+            message += "#{name.capitalize}: none\n"
+          end
+        end
+        message
+      end
+
       def add_stylesheet(file, media=nil)
         @stylesheets << Assets::Stylesheet.new(self, @stylesheets_dir, file, media)
       end
@@ -63,39 +107,34 @@ module Octopress
 
       def add_pages
         if @assets_path
-          base = File.join(@assets_path, @pages_dir)
-          entries = []
-          if Dir.exists?(base)
-            Dir.chdir(base) { entries = Dir['**/*.*'] }
-            entries.each do |file|
-              @files << Assets::PageAsset.new(self, @pages_dir, file)
-            end
+          find_assets(File.join(@assets_path, @pages_dir)).each do |file|
+            @pages << Assets::PageAsset.new(self, @pages_dir, file)
           end
         end
       end
 
       def require_plugins
         if @assets_path
-          base = File.join(@assets_path, @plugins_dir)
-          entries = []
-          if Dir.exists?(base)
-            Dir.chdir(base) { entries = Dir['**/*.rb'] }
-            entries.each do |file|
-              require File.join base, file
-            end
+          find_assets(File.join(@assets_path, @plugins_dir)).each do |file|
+            require File.join base, file
           end
         end
       end
 
+      def find_assets(dir)
+        found = []
+        if Dir.exist? dir
+          Find.find(dir) do |file|
+            found << file.sub(dir+'/', '') unless File.directory? file
+          end
+        end
+        found
+      end
+
       def add_layouts
         if @assets_path
-          base = File.join(@assets_path, @layouts_dir)
-          entries = []
-          if Dir.exists?(base)
-            Dir.chdir(base) { entries = Dir['**/*.*'] }
-            entries.each do |file|
-              @layouts << Assets::Layout.new(self, @layouts_dir, file)
-            end
+          find_assets(File.join(@assets_path, @layouts_dir)).each do |layout|
+            @layouts << Assets::Layout.new(self, @layouts_dir, layout)
           end
         end
       end
@@ -105,7 +144,11 @@ module Octopress
       end
 
       def add_includes
-        @includes = Assets::Include.new(self, @includes_dir)
+        if @assets_path
+          find_assets(File.join(@assets_path, @includes_dir)).each do |include_file|
+            @includes[include_file] = Assets::Asset.new(self, @includes_dir, include_file)
+          end
+        end
       end
 
       def add_image(file)
@@ -181,7 +224,7 @@ module Octopress
       end
 
       def include(file)
-        @includes.file file
+        @includes[file].path
       end
 
       def config

@@ -1,7 +1,6 @@
 require 'jekyll'
 require 'sass'
 require 'digest/md5'
-require 'pry-debugger'
 
 require 'octopress-ink/version'
 require 'octopress-ink/generators/plugin_assets'
@@ -22,6 +21,11 @@ module Octopress
     autoload :Tags,                 'octopress-ink/tags'
     autoload :StylesheetsPlugin,    'octopress-ink/plugins/stylesheets'
 
+    if defined? Octopress::Command
+      require 'octopress-ink/commands/helpers'
+      require 'octopress-ink/commands'
+    end
+
     def self.register_plugin(plugin, name, type='plugin')
       Plugins.register_plugin(plugin, name, type)
     end
@@ -34,9 +38,52 @@ module Octopress
       version << "Octopress Ink v#{Octopress::Ink::VERSION}"
     end
 
-    def self.plugins(site=nil)
-      site ||= Jekyll::Site.new(Jekyll.configuration({}))
-      Plugins
+    def self.site
+      log_level = Jekyll.logger.log_level
+      Jekyll.logger.log_level = Jekyll::Stevenson::WARN
+      @site ||= Jekyll::Site.new(Jekyll.configuration({}))
+      Jekyll.logger.log_level = log_level
+      @site
+    end
+
+    def self.plugins
+      return @plugins if @plugins
+      s = site #spin up Jekyll to load all plugins
+      @plugins = Plugins
+      @plugins.site = s
+      @plugins
+    end
+
+    def self.plugin(name)
+      begin
+        plugins.plugin(name)
+      rescue
+        return false
+      end
+    end
+
+    def self.plugin_info(name, options)
+      if p = plugin(name)
+        p.info(options)
+      end
+    end
+    
+    def self.info
+      message = "Octopress Ink - v#{VERSION}\n"
+      if plugins.size > 0
+        message += "Plugins:\n"
+        plugins.each do |plugin| 
+          name = plugin.name
+          name += ' (theme)' if plugin.type == 'theme' 
+          message += "- #{name} ".ljust(30)
+          message += "v#{plugin.version} - " if plugin.version
+          message += plugin.description if plugin.description
+          message += "\n"
+        end
+      else
+        message += "Plugins: none"
+      end
+      puts message
     end
   end
 end

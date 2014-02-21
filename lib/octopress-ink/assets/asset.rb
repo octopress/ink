@@ -13,7 +13,16 @@ module Octopress
           file_check
         end
 
-        def file
+        def info
+          message = filename.ljust(25)
+          if path.to_s == user_path
+            shortpath = File.join(Plugins.custom_dir, @dir)
+            message += "(local @ #{shortpath}/#{filename})"
+          end
+          message
+        end
+
+        def filename
           @file
         end
 
