@@ -33,10 +33,6 @@ module Octopress
           @plugin.disabled?(@base, filename)
         end
 
-        def disable
-          @disabled = true
-        end
-
         def path
           if @found_file and !@no_cache
             @found_file
