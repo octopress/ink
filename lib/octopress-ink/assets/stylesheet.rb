@@ -2,15 +2,18 @@ module Octopress
   module Ink
     module Assets
       class Stylesheet < Asset
-        def initialize(plugin, type, file, media)
+        def initialize(plugin, base, file, media)
           @plugin = plugin
           @file = file
-          @type = type
+          @base = base
           @media = media || 'all'
           @root = plugin.assets_path
-          @dir = File.join(plugin.slug, type)
+          @dir = File.join(plugin.slug, 'stylesheets')
           @exists = {}
           file_check
+        end
+
+        def type
         end
 
         def media

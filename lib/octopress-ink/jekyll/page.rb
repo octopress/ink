@@ -1,6 +1,7 @@
 module Octopress
   module Ink
     class Page < Jekyll::Page
+      attr_accessor :default_url
 
       # Override the destination for a page
       #
@@ -16,13 +17,6 @@ module Octopress
 
       def destination(dest)
         path = File.join(dest, self.url)
-        if self.url =~ /\/$/
-          if self.ext == '.xml'
-            path = File.join(path, "index.xml")
-          else
-            path = File.join(path, "index.html")
-          end
-        end
         path
       end
 
@@ -39,6 +33,17 @@ module Octopress
               @url = config if config.is_a? String
             end
           rescue; end
+
+          @default_url = true if @url.nil?
+
+          if @url =~ /\/$/
+            if self.ext == '.xml'
+              @url = File.join(@url, "index.xml")
+            else
+              @url = File.join(@url, "index.html")
+            end
+          end
+
           super
         end
       end

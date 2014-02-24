@@ -6,10 +6,11 @@ module Octopress
     module Assets
       class PageAsset < Asset
 
-        def initialize(plugin, type, file)
+        def initialize(plugin, base, file)
           @root = plugin.assets_path
           @plugin = plugin
-          @type = type
+          @base = base
+          @filename = file
           @dir  = File.dirname(file)
           @file = File.basename(file)
           @exists = {}
@@ -22,6 +23,14 @@ module Octopress
 
         def plugin_path
           File.join(plugin_dir, @dir, @file)
+        end
+
+        def filename
+          @filename
+        end
+
+        def url_info
+          "output: #{page.url.sub(/^\//,'')}"
         end
 
         def page

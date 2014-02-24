@@ -1,7 +1,6 @@
 module Octopress
   module Ink
     module Plugins
-
       @plugins = []
       @local_plugins = []
       @site = nil
@@ -34,36 +33,23 @@ module Octopress
         [@theme].concat(@plugins).concat(@local_plugins).compact
       end
 
-      def self.site=(site)
-        @site = site
+      def self.register(site)
+        @site ||= site
+        plugins.each do |p| 
+          p.register
+        end
+      end
+
+      def self.add_files
+        plugins.each do |p| 
+          p.copy_static_files
+        end
+        add_stylesheets
+        add_javascripts
       end
 
       def self.site
         @site
-      end
-
-      def self.config
-        if @config
-          @config
-        else
-          @config            = {}
-          @config['plugins'] = {}
-          @config['theme']   = @theme.nil? ? {} : @theme.config
-
-
-          plugins.each do |p| 
-            unless p == @theme
-              @config['plugins'][p.name] = p.config
-            end
-          end
-
-          @config
-        end
-      end
-
-      def self.include(name, file)
-        p = plugin(name)
-        p.include(file)
       end
 
       def self.register_plugin(plugin, name, type='plugin')
@@ -79,18 +65,27 @@ module Octopress
         end
       end
 
-      def self.register_layouts
-        plugins.each do |p|
-          p.layouts.clone.each { |layout| layout.register }
+      def self.config
+        if @config
+          @config
+        else
+          @config            = {}
+          @config['plugins'] = {}
+          @config['theme']   = @theme.nil? ? {} : @theme.config
+
+          plugins.each do |p| 
+            unless p == @theme
+              @config['plugins'][p.name] = p.config
+            end
+          end
+
+          @config
         end
       end
 
-      def self.layouts
-        names = []
-        plugins.each do |p|
-          p.layouts.each { |layout| names << layout.name }
-        end
-        names
+      def self.include(name, file)
+        p = plugin(name)
+        p.include(file)
       end
 
       def self.custom_dir
@@ -276,38 +271,29 @@ module Octopress
         copy stylesheets
       end
 
-      def self.add_static_files
+      # Copy/Generate Stylesheets
+      #
+      def self.add_stylesheets
        
         plugin('user stylesheets').add_files
    
-        # Copy/Generate Stylesheets
-        #
         if concat_css
           write_combined_stylesheet
         else
           copy_stylesheets
         end
+      end
 
-        # Copy/Generate Javascripts
-        #
+      # Copy/Generate Javascripts
+      #
+      def self.add_javascripts
+
         if concat_js
           write_combined_javascript
         else
           copy_javascripts
         end
 
-        # Copy other assets
-        #
-        copy_static_files
-      end
-
-      def self.copy_static_files
-        plugins.each do |plugin| 
-          copy plugin.files
-          copy plugin.pages
-          copy plugin.images
-          copy plugin.fonts
-        end
       end
 
       def self.copy(files)

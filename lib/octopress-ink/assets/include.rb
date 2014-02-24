@@ -3,11 +3,11 @@ module Octopress
     module Assets
       class Include < Asset
 
-        def initialize(plugin, type)
+        def initialize(plugin, base)
           @root = plugin.assets_path
-          @type = type
+          @base = base
           @plugin = plugin
-          @dir = File.join(plugin.slug, type)
+          @dir = File.join(plugin.slug, base)
           @no_cache = true
           @exists = {}
         end

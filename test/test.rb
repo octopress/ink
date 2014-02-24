@@ -34,7 +34,8 @@ def build(config='')
 end
 
 def diff_file(file, dir='expected')
-  if File.exist?(Dir.glob("site/#{file}").first)
+  site_file = Dir.glob("site/#{file}").first
+  if site_file && File.exist?(site_file)
     diff = `diff #{dir}/#{file} site/#{file}`
     if diff.size > 0
       diff

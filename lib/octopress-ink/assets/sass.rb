@@ -2,13 +2,13 @@ module Octopress
   module Ink
     module Assets
       class Sass < Stylesheet
-        def initialize(plugin, type, file, media)
+        def initialize(plugin, base, file, media)
           @plugin = plugin
-          @type = type
+          @base = base
           @file = file
           @media = media || 'all'
           @root = plugin.assets_path
-          @dir = File.join(plugin.slug, type)
+          @dir = File.join(plugin.slug, base)
           @exists = {}
           file_check
         end
@@ -23,7 +23,11 @@ module Octopress
         end
 
         def theme_load_path
-          File.expand_path(File.join(@root, @type))
+          File.expand_path(File.join(@root, @base))
+        end
+
+        def disabled?
+          @plugin.disabled?('sass', filename)
         end
 
         def compile

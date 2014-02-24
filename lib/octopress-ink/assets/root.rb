@@ -6,11 +6,11 @@ module Octopress
     module Assets
       class RootAsset < Asset
 
-        def initialize(plugin, type, file)
+        def initialize(plugin, base, file)
           @root = plugin.assets_path
           @plugin = plugin
           @dir = ''
-          @type = type
+          @base = base
           @file = file
           @exists = {}
           file_check

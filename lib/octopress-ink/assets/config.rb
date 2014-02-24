@@ -7,7 +7,7 @@ module Octopress
           @root = plugin.assets_path
           @plugin = plugin
           @dir = plugin.slug
-          @type = ''
+          @base = ''
           @exists = {}
           @file = path
         end

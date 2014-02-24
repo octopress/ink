@@ -38,47 +38,42 @@ module Octopress
       version << "Octopress Ink v#{Octopress::Ink::VERSION}"
     end
 
-    def self.site
+    def self.site(options={})
       log_level = Jekyll.logger.log_level
       Jekyll.logger.log_level = Jekyll::Stevenson::WARN
-      @site ||= Jekyll::Site.new(Jekyll.configuration({}))
+      @site ||= Jekyll::Site.new(Jekyll.configuration(options))
       Jekyll.logger.log_level = log_level
       @site
     end
 
     def self.plugins
-      return @plugins if @plugins
-      s = site #spin up Jekyll to load all plugins
-      @plugins = Plugins
-      @plugins.site = s
-      @plugins
+      Plugins.plugins
     end
 
     def self.plugin(name)
       begin
-        plugins.plugin(name)
+        Plugins.plugin(name)
       rescue
         return false
       end
     end
 
     def self.plugin_info(name, options)
+      Plugins.register site(options)
+      options.delete('config')
       if p = plugin(name)
         p.info(options)
       end
     end
     
-    def self.info
+    def self.info(options={})
+      Plugins.register site(options)
+      options.delete('config')
       message = "Octopress Ink - v#{VERSION}\n"
       if plugins.size > 0
-        message += "Plugins:\n"
-        plugins.each do |plugin| 
-          name = plugin.name
-          name += ' (theme)' if plugin.type == 'theme' 
-          message += "- #{name} ".ljust(30)
-          message += "v#{plugin.version} - " if plugin.version
-          message += plugin.description if plugin.description
-          message += "\n"
+        options['brief'] = options.empty?
+        plugins.each do |plugin|
+          message += plugin.info(options)
         end
       else
         message += "Plugins: none"

@@ -5,8 +5,8 @@ module Octopress
     class Plugin
       attr_accessor :name, :type, :asset_override, :assets_path,
                     :layouts_dir, :stylesheets_dir, :javascripts_dir, :files_dir, :includes_dir, :images_dir,
-                    :layouts, :includes, :stylesheets, :javascripts, :images, :sass, :fonts, :files, :pages,
-                    :website, :description, :version
+                    :layouts, :includes, :images, :fonts, :files, :pages,
+                    :website, :description, :version, :config
 
       def initialize(name, type)
         @layouts_dir       = 'layouts'
@@ -17,6 +17,7 @@ module Octopress
         @includes_dir      = 'includes'
         @javascripts_dir   = 'javascripts'
         @stylesheets_dir   = 'stylesheets'
+        @sass_dir          = 'stylesheets'
         @plugins_dir       = 'plugins'
         @config_file       = 'config.yml'
         @name              = name
@@ -33,18 +34,42 @@ module Octopress
         @version         ||= false
         @description     ||= false
         @website         ||= false
+      end
+
+      def register
+        add_config
+        disable_assets
         add_assets
         add_layouts
         add_pages
         add_includes
-        add_config
         require_plugins
       end
 
       def add_assets; end
 
       def add_config
-        @config_file = Assets::Config.new(self, @config_file)
+        @config = Assets::Config.new(self, @config_file).read
+      end
+
+      def disable_assets
+        disabled = []
+        @config['disable'] ||= {}
+        @config['disable'].each do |key,val| 
+          next unless can_disable.include? key
+          if !!val == val
+            disabled << key if val
+          elsif val.is_a? Array
+            val.each { |v| disabled << File.join(key, v) }
+          elsif val.is_a? String
+            disabled << File.join(key, val)
+          end
+        end
+        @config['disable'] = disabled
+      end
+
+      def disabled?(dir, file)
+        @config['disable'].include?(dir) || @config['disable'].include?(File.join(dir, file))
       end
 
       def slug
@@ -53,6 +78,18 @@ module Octopress
         else
           @type == 'theme' ? @type : @name
         end
+      end
+
+      def can_disable
+        [ 
+          'pages',
+          'sass',
+          'stylesheets',
+          'javascripts',
+          'images',
+          'fonts',
+          'files'
+        ]
       end
 
       def assets
@@ -70,27 +107,62 @@ module Octopress
       end
 
       def info(options={})
-        message =  @name
-        message += " (theme)" if @type == 'theme'
-        message += " - v#{@version}" if @version
-        message += " - #{@description}" if @description
-        message += "\n"
-        if options == {}
-          asset_types = assets
+        if options['brief']
+          message = " #{@name}"
+          message += " (theme)" if @type == 'theme'
+          message += " - v#{@version}" if @version
+          if @description
+            message = "#{message.ljust(30)} #{@description}"
+          end
+          message += "\n"
         else
-          asset_types = assets.select{|k,v| options.keys.include?(k)}
+          name = "Plugin: #{@name}"
+          name += " (theme)" if @type == 'theme'
+          name += " - v#{@version}" if @version
+          name  = pad_line(name)
+          message = name
+          if @description
+            message += "\n#{pad_line(@description)}"
+          end
+          line = ''
+          80.times { line += '=' }
+          message = "#{line}\n#{message}\n#{line}\n"
+          message += asset_info(options)
+          message += "\n"
         end
-        asset_types.each do |name, assets|
+      end
+
+      def pad_line(line)
+        line = "| #{line.ljust(76)} |"
+      end
+
+      def asset_info(options={})
+        message = ''
+        none = []
+        select_assets(options).each do |name, assets|
           if assets.size > 0
-            message += "#{name.capitalize}:\n"
+            message += " #{name.capitalize}:\n"
             assets.each do |t|
               message += "  - #{t.info}\n"
             end
-          elsif options != {}
-            message += "#{name.capitalize}: none\n"
+            message += "\n"
+          elsif !options.empty?
+            none << name.capitalize
           end
         end
+        unless none.empty?
+          message += " Plugin has no: #{none.join(', ')}\n"
+        end
+
         message
+      end
+
+      def select_assets(options={})
+        if options['all'] || options.empty?
+          assets
+        else
+          assets.select{|k,v| options.keys.include?(k)}
+        end
       end
 
       def add_stylesheet(file, media=nil)
@@ -98,7 +170,7 @@ module Octopress
       end
 
       def add_sass(file, media=nil)
-        @sass << Assets::Sass.new(self, @stylesheets_dir, file, media)
+        @sass << Assets::Sass.new(self, @sass_dir, file, media)
       end
 
       def add_javascript(file)
@@ -121,6 +193,16 @@ module Octopress
         end
       end
 
+      def add_layouts
+        if @assets_path
+          find_assets(File.join(@assets_path, @layouts_dir)).each do |layout|
+            layout = Assets::Layout.new(self, @layouts_dir, layout)
+            @layouts << layout
+            layout.register
+          end
+        end
+      end
+
       def find_assets(dir)
         found = []
         if Dir.exist? dir
@@ -129,14 +211,6 @@ module Octopress
           end
         end
         found
-      end
-
-      def add_layouts
-        if @assets_path
-          find_assets(File.join(@assets_path, @layouts_dir)).each do |layout|
-            @layouts << Assets::Layout.new(self, @layouts_dir, layout)
-          end
-        end
       end
 
       def remove_jekyll_assets(files)
@@ -148,6 +222,12 @@ module Octopress
           find_assets(File.join(@assets_path, @includes_dir)).each do |include_file|
             @includes[include_file] = Assets::Asset.new(self, @includes_dir, include_file)
           end
+        end
+      end
+
+      def copy_static_files
+        [@images, @pages, @files, @fonts].each do |asset_type|
+          asset_type.each {|asset| asset.copy unless asset.disabled? }
         end
       end
 
@@ -163,12 +243,12 @@ module Octopress
         @files << Assets::RootAsset.new(self, @files_dir, file)
       end
 
-      def add_font(file)
-        @fonts << Assets::Asset.new(self, @fonts_dir, file)
-      end
-
       def add_file(file)
         @files << Assets::Asset.new(self, @files_dir, file)
+      end
+
+      def add_font(file)
+        @fonts << Assets::Asset.new(self, @fonts_dir, file)
       end
 
       def add_stylesheets(files, media=nil)
@@ -196,15 +276,27 @@ module Octopress
       end
 
       def stylesheet_paths
-        get_paths @stylesheets
+        get_paths @stylesheets.reject{|f| f.disabled? }
       end
 
       def javascript_paths
-        get_paths @javascripts
+        get_paths @javascripts.reject{|f| f.disabled? }
       end
 
       def stylesheet_tags
-        get_tags @stylesheets
+        get_tags @stylesheets.reject{|f| f.disabled? }
+      end
+
+      def stylesheets
+        @stylesheets.reject{|f| f.disabled? }
+      end
+
+      def sass
+        @sass.reject{|f| f.disabled? }
+      end
+
+      def javascripts
+        @javascripts.reject{|f| f.disabled? }
       end
 
       def sass_tags
@@ -216,7 +308,7 @@ module Octopress
       end
 
       def get_paths(files)
-        files.dup.map { |f| f.path }
+        files.dup.map { |f| f.path }.compact
       end
 
       def get_tags(files)
@@ -225,10 +317,6 @@ module Octopress
 
       def include(file)
         @includes[file].path
-      end
-
-      def config
-        @config ||= @config_file.read
       end
     end
   end
