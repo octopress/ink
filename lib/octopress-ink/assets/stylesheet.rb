@@ -13,9 +13,6 @@ module Octopress
           file_check
         end
 
-        def type
-        end
-
         def media
           m = @media
           if @file =~ /@(.+?)\./

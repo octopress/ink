@@ -16,9 +16,13 @@ module Octopress
           file_check
         end
 
-        def copy
+        def user_dir
+          File.join Plugins.site.source, Plugins.custom_dir, @plugin.slug, 'files', @dir
+        end
+
+        def add
           unless exists? local_plugin_path
-            Plugins.site.static_files << StaticFile.new(plugin_path, destination)
+            Plugins.site.static_files << StaticFile.new(File.join(source_dir, @file), destination)
           end
         end
 

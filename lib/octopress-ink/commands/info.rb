@@ -7,14 +7,14 @@ module Octopress
             c.syntax "octopress ink info [plugin] [options]"
             c.description "Get info about octopress ink plugins"
             c.option "all", "--all", "List all plugins and their assets"
-            CommandHelpers.add_asset_options(c)
+            CommandHelpers.add_asset_options(c, 'List')
 
             c.action do |args, options|
               if args.empty?
                 Octopress::Ink.info(options)
               else
                 name = args.first
-                puts Octopress::Ink.plugin_info(name, options)
+                Octopress::Ink.plugin_info(name, options)
               end
             end
           end

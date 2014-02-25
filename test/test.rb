@@ -1,4 +1,5 @@
 require 'colorator'
+require 'find'
 
 @has_failed = false
 @failures = []
@@ -8,17 +9,17 @@ def pout(str)
   $stdout.flush
 end
 
-def test(file, dir)
-  site_file = Dir.glob("site/#{file}").first
+def test(file, target_dir, source_dir="site")
+  site_file = Dir.glob("#{source_dir}/#{file}").first
   if site_file && File.exist?(site_file)
-    if diff_file(file, dir)
+    if diff_file(file, target_dir, source_dir)
       pout "F".red
       @has_failed = true
     else
       pout ".".green
     end
   else
-    @failures << "File: site/#{file}: No such file or directory."
+    @failures << "File: #{source_dir}/#{file}: No such file or directory."
     @has_failed = true
     pout "F".red
   end
@@ -39,8 +40,8 @@ def build(config='')
   `rm -rf site && bundle exec jekyll build --config #{config.join(',')}`
 end
 
-def diff_file(file, dir='expected')
-  diff = `diff #{dir}/#{file} site/#{file}`
+def diff_file(file, target_dir='expected', source_dir='site')
+  diff = `diff #{target_dir}/#{file} #{source_dir}/#{file}`
   if diff =~ /(<.+?\n)?(---\n)?(>.+)/
     @failures << <<-DIFF
 Failure in #{file}
@@ -114,6 +115,15 @@ def test_root_assets(dir)
   root_assets.each { |file| test(file, dir) }
 end
 
+def test_copy_assets(dir)
+  Find.find("#{dir}/_copy") do |file|
+    unless File.directory? file
+      test(file.sub("#{dir}"+"/", ''), dir, 'source')
+    end
+  end
+  `rm -rf source/_copy`
+end
+
 def test_disabled(dir)
   files = %w{
     stylesheets/theme/disable-this.css
@@ -147,6 +157,10 @@ test_stylesheets('concat_css')
 test_javascripts('concat_js')
 test_configs('expected')
 test_root_assets('expected')
+`octopress ink copy theme _copy --force`
+test_copy_assets('copy_test')
+`octopress ink copy theme _copy --layouts --pages --force`
+test_copy_assets('copy_layouts_pages')
 
 build '_concat_false.yml'
 test_stylesheets('concat_css_false', false)

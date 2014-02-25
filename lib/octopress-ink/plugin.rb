@@ -99,7 +99,9 @@ module Octopress
           'pages'       => @pages, 
           'sass'        => @sass, 
           'stylesheets' => @stylesheets,
+          'css'         => @stylesheets,  #less typing ftw
           'javascripts' => @javascripts, 
+          'js'          => @javascripts,  #less typing ftw
           'images'      => @images, 
           'fonts'       => @fonts, 
           'files'       => @files
@@ -107,7 +109,7 @@ module Octopress
       end
 
       def info(options={})
-        if options['brief']
+        if options == 'brief'
           message = " #{@name}"
           message += " (theme)" if @type == 'theme'
           message += " - v#{@version}" if @version
@@ -116,18 +118,24 @@ module Octopress
           end
           message += "\n"
         else
+          asset_info = assets_info(options)
+          return '' if asset_info.empty?
+
           name = "Plugin: #{@name}"
           name += " (theme)" if @type == 'theme'
           name += " - v#{@version}" if @version
           name  = pad_line(name)
           message = name
+
           if @description
             message += "\n#{pad_line(@description)}"
           end
-          line = ''
-          80.times { line += '=' }
-          message = "#{line}\n#{message}\n#{line}\n"
-          message += asset_info(options)
+
+          lines = ''
+          80.times { lines += '=' }
+
+          message = "#{lines}\n#{message}\n#{lines}\n"
+          message += asset_info
           message += "\n"
         end
       end
@@ -136,32 +144,47 @@ module Octopress
         line = "| #{line.ljust(76)} |"
       end
 
-      def asset_info(options={})
+      # Return information about each asset 
+      def assets_info(options)
         message = ''
-        none = []
+        no_assets = []
+
         select_assets(options).each do |name, assets|
-          if assets.size > 0
-            message += " #{name.capitalize}:\n"
-            assets.each do |t|
-              message += "  - #{t.info}\n"
-            end
-            message += "\n"
-          elsif !options.empty?
-            none << name.capitalize
+          next if assets.size == 0
+          message += " #{name.capitalize}:\n"
+          assets.each do |asset|
+            message += "  - #{asset.info}\n"
           end
-        end
-        unless none.empty?
-          message += " Plugin has no: #{none.join(', ')}\n"
+          message += "\n"
         end
 
         message
       end
 
-      def select_assets(options={})
-        if options['all'] || options.empty?
+      # Return selected assets
+      #
+      # input: options (an array ['type',...], hash {'type'=>true}
+      # or string of asset types)
+      # 
+      # Output a hash of assets instances {'files' => @files }
+      #
+      def select_assets(options)
+        # Accept options from the CLI (as a hash of asset: true)
+        # Or from Ink modules as an array of asset names
+        #
+        if options.is_a? Hash
+          options = options.keys
+        end
+        options = [options] if options.is_a? String
+        
+        # Remove options which don't belong
+        #
+        options.select!{|o| assets.include?(o)}
+
+        if options.nil? || options.empty?
           assets
         else
-          assets.select{|k,v| options.keys.include?(k)}
+          assets.select{|k,v| options.include?(k)}
         end
       end
 
@@ -225,10 +248,18 @@ module Octopress
         end
       end
 
-      def copy_static_files
-        [@images, @pages, @files, @fonts].each do |asset_type|
-          asset_type.each {|asset| asset.copy unless asset.disabled? }
+      def add_asset_files(options)
+        options = [options] unless options.is_a? Array 
+        select_assets(options).each do |name, assets|
+          assets.each {|file| file.add unless file.disabled? }
         end
+      end
+
+      def copy_asset_files(path, options)
+        select_assets(options).each do |name, assets|
+          assets.each { |a| puts a.copy(path) }
+        end
+        ''
       end
 
       def add_image(file)

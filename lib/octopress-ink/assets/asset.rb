@@ -54,13 +54,36 @@ module Octopress
           path
         end
 
+        def source_dir
+          if exists? user_override_path
+            user_dir
+          else
+            plugin_dir
+          end
+        end
+
         def destination
           File.join(@dir, @file)
         end
 
-        def copy
+        def add
           Plugins.site.static_files << StaticFile.new(path, destination)
         end
+
+        # Copy asset to user override directory
+        #
+        def copy(target_dir)
+          if target_dir
+            target_dir = File.join(target_dir, @base)
+          else
+            target_dir = user_dir
+          end
+          FileUtils.mkdir_p target_dir
+          FileUtils.cp plugin_path, target_dir
+          target_dir.sub!(Dir.pwd+'/', '')
+          "+ ".green + "#{File.join(target_dir, filename)}"
+        end
+
 
         def plugin_dir
           File.join @root, @base
@@ -79,7 +102,7 @@ module Octopress
         end
 
         def user_override_path
-          File.join user_dir, @file
+          File.join user_dir, filename
         end
 
         def user_path
@@ -90,12 +113,6 @@ module Octopress
           end
         end
 
-        def alt_syntax_file
-          ext = File.extname(@file)
-          alt_ext = ext == 'scss' ? 'sass' : 'scss'
-          @file.sub(/\.#{ext}/, ".#{alt_ext}")
-        end
-        
         # Remove files from Jekyll's static_files array so it doesn't end up in the
         # compiled site directory. 
         #

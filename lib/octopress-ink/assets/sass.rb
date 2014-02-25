@@ -54,11 +54,17 @@ module Octopress
           end
         end
 
+        def alt_syntax_file
+          ext = File.extname(@file)
+          alt_ext = (ext == '.scss' ? '.sass' : '.scss')
+          @file.sub(ext, alt_ext)
+        end
+
         def destination
           File.join(@base, @plugin.slug, @file.sub(/s.ss/, 'css'))
         end
 
-        def copy
+        def add
           Plugins.site.static_files << StaticFileContent.new(compile, destination)
         end
       end

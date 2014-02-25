@@ -34,18 +34,24 @@ module Octopress
       end
 
       def self.register(site)
-        @site ||= site
-        plugins.each do |p| 
-          p.register
+        unless @site
+          @site = site
+          plugins.each do |p| 
+            p.register
+          end
         end
       end
 
       def self.add_files
-        plugins.each do |p| 
-          p.copy_static_files
-        end
+        add_assets(%w{images pages files fonts})
         add_stylesheets
         add_javascripts
+      end
+
+      def self.add_assets(type)
+        plugins.each do |p| 
+          p.add_asset_files(type)
+        end
       end
 
       def self.site
@@ -89,7 +95,7 @@ module Octopress
       end
 
       def self.custom_dir
-        @site.config['plugins']
+        site.config['plugins']
       end
 
       def self.fingerprint(paths)
@@ -263,19 +269,6 @@ module Octopress
         end
       end
 
-      def self.copy_javascripts
-        plugins.each do |plugin| 
-          copy plugin.javascripts
-        end
-      end
-
-      def self.copy_stylesheets
-        stylesheets = plugins.clone.map { 
-          |p| p.stylesheets.clone.concat(p.sass) 
-        }.flatten
-        copy stylesheets
-      end
-
       # Copy/Generate Stylesheets
       #
       def self.add_stylesheets
@@ -285,7 +278,7 @@ module Octopress
         if concat_css
           write_combined_stylesheet
         else
-          copy_stylesheets
+          add_assets(['stylesheets', 'sass'])
         end
       end
 
@@ -296,14 +289,11 @@ module Octopress
         if concat_js
           write_combined_javascript
         else
-          copy_javascripts
+          add_assets('javascripts')
         end
 
       end
 
-      def self.copy(files)
-        files.each { |f| f.copy }
-      end
     end
   end
 end
