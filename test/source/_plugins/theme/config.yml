@@ -1,5 +1,15 @@
 test_override: config from theme override
-pages:
+page_urls:
   test: test_pages/theme_page.html
 feed:
   url: test_pages/feed/
+
+disable:
+  fonts: true
+  stylesheets: disable-this.css
+  sass: disable.sass
+  pages:
+    - disable-test.html
+    - test_pages/disable-test.html
+  files: disabled-file.txt
+  javascripts: disable-this.js

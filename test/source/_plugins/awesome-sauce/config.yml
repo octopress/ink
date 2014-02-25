@@ -1,4 +1,8 @@
 test_override: config from plugin override
-pages:
+page_urls:
   one: test_pages/plugin_page_override.html
   two: test_pages/plugin_page.html
+
+#disable:
+  #pages: test_pages/one.html
+  #includes: true

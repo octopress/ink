@@ -1,7 +1,6 @@
 module Octopress
   module Ink
     module Plugins
-
       @plugins = []
       @local_plugins = []
       @site = nil
@@ -34,12 +33,36 @@ module Octopress
         [@theme].concat(@plugins).concat(@local_plugins).compact
       end
 
-      def self.site=(site)
-        @site = site
+      def self.register(site)
+        @site ||= site
+        plugins.each do |p| 
+          p.register
+        end
+      end
+
+      def self.add_files
+        plugins.each do |p| 
+          p.copy_static_files
+        end
+        add_stylesheets
+        add_javascripts
       end
 
       def self.site
         @site
+      end
+
+      def self.register_plugin(plugin, name, type='plugin')
+        new_plugin = plugin.new(name, type)
+
+        case type
+        when 'theme'
+          @theme = new_plugin
+        when 'local_plugin'
+          @local_plugins << new_plugin
+        else
+          @plugins << new_plugin
+        end
       end
 
       def self.config
@@ -49,7 +72,6 @@ module Octopress
           @config            = {}
           @config['plugins'] = {}
           @config['theme']   = @theme.nil? ? {} : @theme.config
-
 
           plugins.each do |p| 
             unless p == @theme
@@ -66,33 +88,6 @@ module Octopress
         p.include(file)
       end
 
-      def self.register_plugin(plugin, name, type='plugin')
-        new_plugin = plugin.new(name, type)
-
-        case type
-        when 'theme'
-          @theme = new_plugin
-        when 'local_plugin'
-          @local_plugins << new_plugin
-        else
-          @plugins << new_plugin
-        end
-      end
-
-      def self.register_layouts
-        plugins.each do |p|
-          p.layouts.clone.each { |layout| layout.register }
-        end
-      end
-
-      def self.layouts
-        names = []
-        plugins.each do |p|
-          p.layouts.each { |layout| names << layout.name }
-        end
-        names
-      end
-
       def self.custom_dir
         @site.config['plugins']
       end
@@ -107,8 +102,13 @@ module Octopress
       end
 
       def self.combined_javascript_path
-        print = @javascript_fingerprint || ''
-        File.join('javascripts', "#{print}.js")
+        print = ''
+
+        if @js_fingerprint
+          print = "-" + @js_fingerprint
+        end
+
+        File.join('javascripts', "all#{print}.js")
       end
 
       def self.write_files(source, dest)
@@ -196,7 +196,7 @@ module Octopress
           js = ''
           plugins.each do |plugin| 
             paths = plugin.javascript_paths
-            @javascript_fingerprint = fingerprint(paths)
+            @js_fingerprint = fingerprint(paths)
             paths.each do |file|
               js.concat Pathname.new(file).read
             end
@@ -276,38 +276,29 @@ module Octopress
         copy stylesheets
       end
 
-      def self.add_static_files
+      # Copy/Generate Stylesheets
+      #
+      def self.add_stylesheets
        
         plugin('user stylesheets').add_files
    
-        # Copy/Generate Stylesheets
-        #
         if concat_css
           write_combined_stylesheet
         else
           copy_stylesheets
         end
+      end
 
-        # Copy/Generate Javascripts
-        #
+      # Copy/Generate Javascripts
+      #
+      def self.add_javascripts
+
         if concat_js
           write_combined_javascript
         else
           copy_javascripts
         end
 
-        # Copy other assets
-        #
-        copy_static_files
-      end
-
-      def self.copy_static_files
-        plugins.each do |plugin| 
-          copy plugin.files
-          copy plugin.pages
-          copy plugin.images
-          copy plugin.fonts
-        end
       end
 
       def self.copy(files)

@@ -1,7 +1,7 @@
 require 'colorator'
 
 @has_failed = false
-@failures = {}
+@failures = []
 
 def pout(str)
   print str
@@ -9,18 +9,24 @@ def pout(str)
 end
 
 def test(file, dir)
-  if diff = diff_file(file, dir)
-    @failures[file] = diff
-    pout "F".red
-    @has_failed = true
+  site_file = Dir.glob("site/#{file}").first
+  if site_file && File.exist?(site_file)
+    if diff_file(file, dir)
+      pout "F".red
+      @has_failed = true
+    else
+      pout ".".green
+    end
   else
-    pout ".".green
+    @failures << "File: site/#{file}: No such file or directory."
+    @has_failed = true
+    pout "F".red
   end
 end
 
 def test_missing(file, dir)
   if File.exist? File.join dir, file 
-    @failures[file] = "File #{file} should not exist"
+    @failures << "File #{file} should not exist".red
     pout "F".red
     @has_failed = true
   else
@@ -34,15 +40,16 @@ def build(config='')
 end
 
 def diff_file(file, dir='expected')
-  if File.exist?(Dir.glob("site/#{file}").first)
-    diff = `diff #{dir}/#{file} site/#{file}`
-    if diff.size > 0
-      diff
-    else
-      false
-    end
+  diff = `diff #{dir}/#{file} site/#{file}`
+  if diff =~ /(<.+?\n)?(---\n)?(>.+)/
+    @failures << <<-DIFF
+Failure in #{file}
+---------
+#{($1||'').red + $3.green}
+---------
+DIFF
   else
-    "File: site/#{file}: No such file or directory."
+    false
   end
 end
 
@@ -53,7 +60,7 @@ def test_tags(dir)
   tags.each { |file| test("test_tags/#{file}.html", dir) }
 
   tags = %w{abort_true, abort_posts}
-  tags.each { |file| test_missing("test_tags/#{file}.html", dir) }
+  tags.each { |file| test_missing("test_tags/#{file}.html", 'site') }
 end
 
 def test_pages(dir)
@@ -76,8 +83,8 @@ def test_configs(dir)
   configs.each { |file| test("test_config/#{file}.html", dir) }
 end
 
-def test_stylesheets(dir, concat_css=true)
-  if concat_css
+def test_stylesheets(dir, concat=true)
+  if concat
     stylesheets = %w{all-* print-*}
     stylesheets.each { |file| test("stylesheets/#{file}.css", dir) }
   else
@@ -85,10 +92,20 @@ def test_stylesheets(dir, concat_css=true)
     local_stylesheets.each { |file| test("stylesheets/#{file}.css", dir) }
 
     plugin_stylesheets = %w{plugin-media-test plugin-test}
-    plugin_stylesheets.each { |file| test("awesome-sauce/stylesheets/#{file}.css", dir) }
+    plugin_stylesheets.each { |file| test("stylesheets/awesome-sauce/#{file}.css", dir) }
 
     theme_stylesheets = %w{theme-media-test theme-test theme-test2}
-    theme_stylesheets.each { |file| test("theme/stylesheets/#{file}.css", dir) }
+    theme_stylesheets.each { |file| test("stylesheets/theme/#{file}.css", dir) }
+  end
+end
+
+def test_javascripts(dir, concat=true)
+  if concat
+    javascripts = %w{all-*}
+    javascripts.each { |file| test("javascripts/#{file}.js", dir) }
+  else
+    javascripts = %w{bar foo}
+    javascripts.each { |file| test("javascripts/theme/#{file}.js", dir) }
   end
 end
 
@@ -97,14 +114,24 @@ def test_root_assets(dir)
   root_assets.each { |file| test(file, dir) }
 end
 
+def test_disabled(dir)
+  files = %w{
+    stylesheets/theme/disable-this.css
+    stylesheets/theme/disable.css
+    disable-test.html
+    test_pages/disable-test.html
+    javascripts/disable-this.js
+    fonts/font-one.otf
+    fonts/font-two.ttf
+  }
+  files.each { |file| test_missing(file, dir) }
+end
+
 def print_failures
   puts "\n"
   if @has_failed
-    @failures.each do |name, diff|
-      puts "Failure in #{name}:".red
-      puts "---------"
-      puts diff
-      puts "---------"
+    @failures.each do |failure|
+      puts failure
     end
     abort
   else
@@ -117,11 +144,14 @@ test_tags('expected')
 test_pages('expected')
 test_layouts('expected')
 test_stylesheets('concat_css')
+test_javascripts('concat_js')
 test_configs('expected')
 test_root_assets('expected')
 
-build '_concat_css_false.yml'
+build '_concat_false.yml'
 test_stylesheets('concat_css_false', false)
+test_javascripts('concat_js_false', false)
+test_disabled('site')
 
 build '_sass_compact.yml'
 test_stylesheets('sass_compact')

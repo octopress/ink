@@ -12,6 +12,7 @@ module Octopress
           c.option "images", "--images", "List only images"
           c.option "fonts", "--fonts", "List only fonts"
           c.option "files", "--files", "List only files"
+          c.option "config", "--config <CONFIG_FILE>[,CONFIG_FILE2,...]", Array, "Custom configuration file"
         end
       end
     end

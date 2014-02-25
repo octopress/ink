@@ -2,28 +2,35 @@ module Octopress
   module Ink
     module Assets
       class Asset
-
-        def initialize(plugin, type, file)
+        def initialize(plugin, base, file)
           @file = file
-          @type = type
+          @base = base
           @plugin = plugin
           @root = plugin.assets_path
-          @dir = File.join(plugin.slug, type)
+          @dir = File.join(plugin.slug, base)
           @exists = {}
           file_check
         end
 
         def info
-          message = filename.ljust(25)
-          if path.to_s == user_path
+          message = filename.ljust(35)
+          if disabled?
+            message += "disabled"
+          elsif path.to_s != plugin_path
             shortpath = File.join(Plugins.custom_dir, @dir)
-            message += "(local @ #{shortpath}/#{filename})"
+            message += "from: #{shortpath}/#{filename}"
+          elsif self.respond_to?(:url_info)
+            message += url_info
           end
           message
         end
 
         def filename
           @file
+        end
+
+        def disabled?
+          @plugin.disabled?(@base, filename)
         end
 
         def path
@@ -56,7 +63,7 @@ module Octopress
         end
 
         def plugin_dir
-          File.join @root, @type
+          File.join @root, @base
         end
 
         def plugin_path

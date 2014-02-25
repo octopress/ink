@@ -1,3 +1,4 @@
 # Sass configurations 
 octopress:
   concat_css: false
+  concat_js: false
