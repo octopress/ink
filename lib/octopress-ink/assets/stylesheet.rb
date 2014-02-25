@@ -25,7 +25,7 @@ module Octopress
         end
 
         def destination
-          File.join(@dir, @file.sub(/@(.+?)\./,'.'))
+          File.join(@base, @plugin.slug, @file.sub(/@(.+?)\./,'.'))
         end
 
         def tag

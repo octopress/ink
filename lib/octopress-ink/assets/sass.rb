@@ -55,7 +55,7 @@ module Octopress
         end
 
         def destination
-          File.join(@dir, @file.sub(/s.ss/, 'css'))
+          File.join(@base, @plugin.slug, @file.sub(/s.ss/, 'css'))
         end
 
         def copy

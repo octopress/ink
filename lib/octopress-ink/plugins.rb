@@ -102,8 +102,13 @@ module Octopress
       end
 
       def self.combined_javascript_path
-        print = @javascript_fingerprint || ''
-        File.join('javascripts', "#{print}.js")
+        print = ''
+
+        if @js_fingerprint
+          print = "-" + @js_fingerprint
+        end
+
+        File.join('javascripts', "all#{print}.js")
       end
 
       def self.write_files(source, dest)
@@ -191,7 +196,7 @@ module Octopress
           js = ''
           plugins.each do |plugin| 
             paths = plugin.javascript_paths
-            @javascript_fingerprint = fingerprint(paths)
+            @js_fingerprint = fingerprint(paths)
             paths.each do |file|
               js.concat Pathname.new(file).read
             end

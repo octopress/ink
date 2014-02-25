@@ -5,6 +5,11 @@ feed:
   url: test_pages/feed/
 
 disable:
-  sass: true
-  stylesheets:
-    - theme-test2.css
+  fonts: true
+  stylesheets: disable-this.css
+  sass: disable.sass
+  pages:
+    - disable-test.html
+    - test_pages/disable-test.html
+  files: disabled-file.txt
+  javascripts: disable-this.js
