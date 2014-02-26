@@ -1,6 +1,6 @@
 require 'colorator'
 require 'find'
-require 'octopress-ink'
+require '../lib/octopress-ink.rb'
 
 @has_failed = false
 @failures = []
