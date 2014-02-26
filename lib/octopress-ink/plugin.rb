@@ -266,16 +266,8 @@ module Octopress
         @images << Assets::Asset.new(self, @images_dir, file)
       end
 
-      def add_root_files(files)
-        files.each { |f| add_root_file(f) }
-      end
-
-      def add_root_file(file)
-        @files << Assets::RootAsset.new(self, @files_dir, file)
-      end
-
       def add_file(file)
-        @files << Assets::Asset.new(self, @files_dir, file)
+        @files << Assets::FileAsset.new(self, @files_dir, file)
       end
 
       def add_font(file)

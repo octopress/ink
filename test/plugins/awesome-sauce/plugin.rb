@@ -8,7 +8,7 @@ class TestPlugin < Octopress::Ink::Plugin
   def add_assets
     add_stylesheet 'plugin-test.css'
     add_stylesheet 'plugin-media-test.css', 'print'
-    add_root_file 'robots.txt'
+    add_file 'robots.txt'
     super
   end
 end

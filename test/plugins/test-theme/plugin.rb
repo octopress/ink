@@ -11,7 +11,7 @@ class TestTheme < Octopress::Ink::Plugin
     add_stylesheet 'theme-media-test@print.css'
     add_stylesheet 'disable-this.css'
     add_sass_files ['main.scss', 'disable.sass']
-    add_root_files ['favicon.ico', 'favicon.png', 'disabled-file.txt']
+    add_files ['favicon.ico', 'favicon.png', 'disabled-file.txt']
     add_fonts ['font-one.otf', 'font-two.ttf']
     add_javascripts ['bar.js', 'foo.js', 'disable-this.js']
   end

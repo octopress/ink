@@ -4,20 +4,25 @@
 module Octopress
   module Ink
     module Assets
-      class RootAsset < Asset
+      class FileAsset < Asset
 
         def initialize(plugin, base, file)
           @root = plugin.assets_path
           @plugin = plugin
-          @dir = ''
           @base = base
-          @file = file
+          @filename = file
+          @dir  = File.dirname(file)
+          @file = File.basename(file)
           @exists = {}
           file_check
         end
 
+        def filename
+          @filename
+        end
+
         def user_dir
-          File.join Plugins.site.source, Plugins.custom_dir, @plugin.slug, 'files', @dir
+          File.join Plugins.site.source, Plugins.custom_dir, @plugin.slug, @base
         end
 
         def add
