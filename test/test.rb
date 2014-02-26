@@ -1,5 +1,6 @@
 require 'colorator'
 require 'find'
+require 'octopress-ink'
 
 @has_failed = false
 @failures = []
@@ -157,9 +158,11 @@ test_stylesheets('concat_css')
 test_javascripts('concat_js')
 test_configs('expected')
 test_root_assets('expected')
-`octopress ink copy theme _copy --force`
+
+Octopress::Ink.copy_plugin_assets('theme', '_copy', {'force'=> true})
 test_copy_assets('copy_test')
-`octopress ink copy theme _copy --layouts --pages --force`
+
+Octopress::Ink.copy_plugin_assets('theme', '_copy', {'force'=> true, 'layouts' => true, 'pages' => true})
 test_copy_assets('copy_layouts_pages')
 
 build '_concat_false.yml'
