@@ -4,5 +4,5 @@ group :octopress do
   gem "octopress-ink", path: "../"
 end
 
-#gem "octopress", "~> 3.0.0.alpha5"
-#gem "pry-debugger"
+gem "octopress", path: "../../cli"
+gem "pry-debugger"

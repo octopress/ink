@@ -1,5 +1,4 @@
 # Sass configurations 
-octopress:
-  sass: 
-    output_style: compact
+sass: 
+  style: compact
 

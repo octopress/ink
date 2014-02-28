@@ -26,8 +26,8 @@ module Octopress
       require 'octopress-ink/commands'
     end
 
-    def self.register_plugin(plugin, name, type='plugin')
-      Plugins.register_plugin(plugin, name, type)
+    def self.register_plugin(plugin, name, type='plugin', local=nil)
+      Plugins.register_plugin(plugin, name, type, local)
     end
 
     def self.version
@@ -128,5 +128,5 @@ Liquid::Template.register_tag('wrap', Octopress::Ink::Tags::WrapTag)
 Liquid::Template.register_tag('abort', Octopress::Ink::Tags::AbortTag)
 Liquid::Template.register_tag('_', Octopress::Ink::Tags::LineCommentTag)
 
-Octopress::Ink.register_plugin(Octopress::Ink::StylesheetsPlugin, 'user stylesheets', 'local_plugin')
+Octopress::Ink.register_plugin(Octopress::Ink::StylesheetsPlugin, 'stylesheets', 'plugin', true)
 

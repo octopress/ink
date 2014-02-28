@@ -1,16 +1,14 @@
 module Octopress
   module Ink
     module Assets
-      class Stylesheet < Asset
-        def initialize(plugin, base, file, media)
+      class LocalStylesheet < LocalAsset
+        def initialize(plugin, base, file, media=nil)
           @plugin = plugin
           @file = file
           @base = base
+          @root = Plugins.site.source
+          @dir = base.sub(/^_/,'')
           @media = media || 'all'
-          @root = plugin.assets_path
-          @dir = File.join(plugin.slug, 'stylesheets')
-          @exists = {}
-          file_check
         end
 
         def media
@@ -21,13 +19,8 @@ module Octopress
           m
         end
 
-        def disabled?
-          @plugin.disabled?('css', filename) ||
-          @plugin.disabled?('stylesheets', filename)
-        end
-
         def destination
-          File.join(@base, @plugin.slug, @file.sub(/@(.+?)\./,'.'))
+          File.join(@dir, @file.sub(/@(.+?)\./,'.'))
         end
 
         def tag

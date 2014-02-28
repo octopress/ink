@@ -39,7 +39,7 @@ module Octopress
           else
             files = []
             files << user_path
-            files << plugin_path unless @plugin.type == 'local_plugin'
+            files << plugin_path
             files = files.flatten.reject { |f| !exists? f }
 
             if files.empty?
@@ -106,11 +106,7 @@ module Octopress
         end
 
         def user_path
-          if @plugin.type == 'local_plugin'
-            local_plugin_path
-          else
-            user_override_path
-          end
+          user_override_path
         end
 
         # Remove files from Jekyll's static_files array so it doesn't end up in the
@@ -125,7 +121,7 @@ module Octopress
         end
 
         def file_check
-          if @plugin.type != 'local_plugin' and !exists? plugin_path
+          if !exists? plugin_path
             raise "\nPlugin: #{@plugin.name}: Could not find #{File.basename(@file)} at #{plugin_path}".red
           end
         end

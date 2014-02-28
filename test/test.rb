@@ -38,7 +38,7 @@ end
 
 def build(config='')
   config = ['_config.yml'] << config
-  `rm -rf site && bundle exec jekyll build --config #{config.join(',')}`
+  `rm -rf site && bundle exec octopress build --config #{config.join(',')}`
 end
 
 def diff_file(file, target_dir='expected', source_dir='site')
@@ -54,8 +54,6 @@ DIFF
     false
   end
 end
-
-build
 
 def test_tags(dir)
   tags = %w{content_for abort_false include assign capture wrap render filter}
@@ -149,6 +147,8 @@ def print_failures
     puts "All passed!".green
   end
 end
+
+build
 
 test_post('expected')
 test_tags('expected')

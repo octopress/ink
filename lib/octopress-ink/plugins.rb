@@ -1,8 +1,10 @@
+require 'octopress'
+
 module Octopress
   module Ink
     module Plugins
       @plugins = []
-      @local_plugins = []
+      @user_plugins = []
       @site = nil
 
       def self.theme
@@ -30,7 +32,7 @@ module Octopress
       end
 
       def self.plugins
-        [@theme].concat(@plugins).concat(@local_plugins).compact
+        [@theme].concat(@plugins).concat(@user_plugins).compact
       end
 
       def self.register(site)
@@ -58,16 +60,18 @@ module Octopress
         @site
       end
 
-      def self.register_plugin(plugin, name, type='plugin')
+      def self.register_plugin(plugin, name, type='plugin', local=nil)
         new_plugin = plugin.new(name, type)
 
         case type
         when 'theme'
           @theme = new_plugin
-        when 'local_plugin'
-          @local_plugins << new_plugin
         else
-          @plugins << new_plugin
+          if local
+            @user_plugins << new_plugin
+          else
+            @plugins << new_plugin
+          end
         end
       end
 
@@ -129,29 +133,24 @@ module Octopress
         ::Sass.compile(contents, options)
       end
 
-      def self.sass_config(item, default)
-        config = @site.config
-        if config['octopress'] && config['octopress']['sass'] && config['octopress']['sass'][item]
-          config['octopress']['sass'][item]
-        else
-          default
-        end
-      end
-      
       def self.sass_options
-        options = {
-          style:        sass_config('output_style', 'compressed').to_sym,
-          trace:        sass_config('trace', false),
-          line_numbers: sass_config('line_numbers', false)
+        config = @site.config
+        
+        defaults = {
+          'style'        => :compressed,
+          'trace'        => false,
+          'line_numbers' => false
         }
+
+        options = defaults.deep_merge(config['sass'] || {}).symbolize_keys
+        options = options.each{ |k,v| options[k] = v.to_sym if v.is_a? String }
+        options
       end
 
       def self.write_combined_stylesheet
         css = combine_stylesheets
         css.keys.each do |media|
-          options = sass_options
-          options[:line_numbers] = false
-          contents = compile_sass(css[media][:contents], options)
+          contents = compile_sass(css[media][:contents], sass_options)
           write_files(contents, combined_stylesheet_path(media)) 
         end
       end
@@ -171,7 +170,7 @@ module Octopress
             else
               plugin_header = "/* Plugin: #{plugin.name} */\n"
             end
-            stylesheets = plugin.stylesheets.clone.concat plugin.sass
+            stylesheets = plugin.stylesheets
             stylesheets.each do |file|
               css[file.media] ||= {}
               css[file.media][:contents] ||= ''
@@ -273,12 +272,12 @@ module Octopress
       #
       def self.add_stylesheets
        
-        plugin('user stylesheets').add_files
+        plugin('stylesheets').register_stylesheets
    
         if concat_css
           write_combined_stylesheet
         else
-          add_assets(['stylesheets', 'sass'])
+          add_assets(['css', 'sass'])
         end
       end
 

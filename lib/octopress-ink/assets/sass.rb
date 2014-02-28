@@ -27,20 +27,15 @@ module Octopress
         end
 
         def disabled?
-          @plugin.disabled?('sass', filename)
+          @plugin.disabled?('sass', filename) ||
+          @plugin.disabled?('stylesheets', filename)
         end
 
         def compile
           unless @compiled
             options = Plugins.sass_options
-            if @plugin.type == 'local_plugin'
-              @compiled = Plugins.compile_sass_file(path.to_s, options)
-            else
-              # If the plugin isn't a local plugin, add source paths to allow overrieds on @imports.
-              #
-              options[:load_paths] = [user_load_path, theme_load_path]
-              @compiled = Plugins.compile_sass(path.read, options)
-            end
+            options[:load_paths] = [user_load_path, theme_load_path]
+            @compiled = Plugins.compile_sass(path.read, options)
           end
           @compiled
         end
@@ -61,7 +56,7 @@ module Octopress
         end
 
         def destination
-          File.join(@base, @plugin.slug, @file.sub(/s.ss/, 'css'))
+          File.join(@base, @plugin.slug, @file.sub(/@(.+?)\./,'.').sub(/s.ss/, 'css'))
         end
 
         def add
