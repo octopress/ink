@@ -3,6 +3,11 @@ module Octopress
     module Assets
       class Layout < Asset
 
+        def initialize(plugin, base, file)
+          super
+          register
+        end
+
         def register
           file = user_path
           dir = user_dir

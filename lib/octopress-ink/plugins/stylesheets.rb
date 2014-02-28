@@ -56,7 +56,7 @@ module Octopress
           config['stylesheets']
         else
           dir = File.join(source, stylesheets_dir)
-          files = find_assets(dir).reject { |f| File.basename(f) =~ /^_.*?s[ac]ss/ }
+          files = glob_assets(dir).reject { |f| File.basename(f) =~ /^_.*?s[ac]ss/ }
           files.map { |f| f.split(dir).last }
         end
       end

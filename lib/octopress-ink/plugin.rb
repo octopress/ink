@@ -22,7 +22,7 @@ module Octopress
         @name              = name
         @type              = type
         @layouts           = []
-        @includes          = {}
+        @includes          = []
         @css               = []
         @javascripts       = []
         @images            = []
@@ -100,7 +100,7 @@ module Octopress
       def assets
         {
           'layouts'     => @layouts,
-          'includes'    => @includes.values,
+          'includes'    => @includes,
           'pages'       => @pages, 
           'sass'        => @sass, 
           'css'         => @css,
@@ -193,58 +193,46 @@ module Octopress
       end
 
       def add_layouts
-        find_assets(File.join(@assets_path, @layouts_dir)).each do |layout|
-          layout = Assets::Layout.new(self, @layouts_dir, layout)
-          @layouts << layout
-          layout.register
-        end
+        @layouts = find_assets(@layouts_dir, Assets::Layout)
       end
 
       def add_includes
-        find_assets(File.join(@assets_path, @includes_dir)).each do |include_file|
-          @includes[include_file] = Assets::Asset.new(self, @includes_dir, include_file)
-        end
+        @includes = find_assets(@includes_dir, Assets::Asset)
       end
 
       def add_pages
-        find_assets(File.join(@assets_path, @pages_dir)).each do |file|
-          @pages << Assets::PageAsset.new(self, @pages_dir, file)
-        end
+        @pages = find_assets(@pages_dir, Assets::PageAsset)
       end
 
       def add_files
-        find_assets(File.join(@assets_path, @files_dir)).each do |file|
-          @files << Assets::FileAsset.new(self, @files_dir, file)
-        end
+        @files = find_assets(@files_dir, Assets::FileAsset)
       end
 
       def add_javascripts
-        find_assets(File.join(@assets_path, @javascripts_dir)).each do |file|
-          @javascripts << Assets::Javascript.new(self, @javascripts_dir, file)
-        end
+        @javascripts = find_assets(@javascripts_dir, Assets::Javascript)
       end
 
-
       def add_fonts
-        find_assets(File.join(@assets_path, @fonts_dir)).each do |file|
-          @fonts << Assets::Asset.new(self, @fonts_dir, file)
-        end
+        @fonts = find_assets(@fonts_dir, Assets::Asset)
       end
 
       def add_images
-        find_assets(File.join(@assets_path, @images_dir)).each do |file|
-          @images << Assets::Asset.new(self, @images_dir, file)
-        end
+        @images = find_assets(@images_dir, Assets::Asset)
       end
 
-      def find_assets(dir)
+      def find_assets(dir, asset_type)
         found = []
-        if Dir.exist? dir
-          Find.find(dir) do |file|
-            found << file.sub(dir+'/', '') unless File.directory? file
-          end
+        full_dir = File.join(@assets_path, dir)
+        glob_assets(full_dir).each do |file|
+          asset = file.sub(full_dir+'/', '')
+          found << asset_type.new(self, dir, asset)
         end
         found
+      end
+
+      def glob_assets(dir)
+        return [] unless Dir.exist? dir
+        Find.find(dir).to_a.reject {|f| File.directory? f }
       end
 
       def add_css(file, media=nil)
@@ -321,7 +309,7 @@ module Octopress
       end
 
       def include(file)
-        @includes[file].path
+        @includes.find{|i| i.filename == file }.path
       end
     end
   end
