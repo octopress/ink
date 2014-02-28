@@ -3,15 +3,16 @@ require 'find'
 module Octopress
   module Ink
     class Plugin
-      attr_accessor :name, :type, :asset_override, :assets_path,
+      attr_accessor :name, :type, :assets_path,
                     :layouts_dir, :css_dir, :javascripts_dir, :files_dir, :includes_dir, :images_dir,
-                    :layouts, :includes, :images, :fonts, :files, :pages,
+                    :layouts, :includes, :images, :fonts, :files, :pages, :docs,
                     :website, :description, :version, :config
 
       def initialize(name, type)
         @layouts_dir       = 'layouts'
         @files_dir         = 'files'
         @pages_dir         = 'pages'
+        @docs_dir          = 'docs'
         @fonts_dir         = 'fonts'
         @images_dir        = 'images'
         @includes_dir      = 'includes'
@@ -27,6 +28,7 @@ module Octopress
         @javascripts       = []
         @images            = []
         @sass              = []
+        @docs              = []
         @fonts             = []
         @files             = []
         @pages             = []
@@ -41,12 +43,16 @@ module Octopress
           disable_assets
           add_assets
           add_layouts
-          add_pages
           add_includes
-          add_files
           add_javascripts
           add_fonts
           add_images
+          if Octopress::Ink.docs_mode
+            add_docs
+          else
+            add_files
+            add_pages
+          end
         end
       end
 
@@ -102,6 +108,7 @@ module Octopress
           'layouts'     => @layouts,
           'includes'    => @includes,
           'pages'       => @pages, 
+          'docs'        => @docs,
           'sass'        => @sass, 
           'css'         => @css,
           'javascripts' => @javascripts, 
@@ -202,6 +209,12 @@ module Octopress
 
       def add_pages
         @pages = find_assets(@pages_dir, Assets::PageAsset)
+      end
+
+      def add_docs
+        find_assets(File.join(@assets_path, @docs_dir)).each do |file|
+          @docs << Assets::DocPageAsset.new(self, @docs_dir, file)
+        end
       end
 
       def add_files

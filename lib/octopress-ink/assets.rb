@@ -6,6 +6,7 @@ module Octopress
       autoload :Config,               'octopress-ink/assets/config'
       autoload :FileAsset,            'octopress-ink/assets/file'
       autoload :PageAsset,            'octopress-ink/assets/page'
+      autoload :DocPageAsset,         'octopress-ink/assets/doc_page'
       autoload :Javascript,           'octopress-ink/assets/javascript'
       autoload :Stylesheet,           'octopress-ink/assets/stylesheet'
       autoload :LocalStylesheet,      'octopress-ink/assets/local_stylesheet'

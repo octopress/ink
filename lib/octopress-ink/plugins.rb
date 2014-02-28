@@ -45,7 +45,7 @@ module Octopress
       end
 
       def self.add_files
-        add_assets(%w{images pages files fonts})
+        add_assets(%w{images pages files fonts docs})
         add_stylesheets
         add_javascripts
       end

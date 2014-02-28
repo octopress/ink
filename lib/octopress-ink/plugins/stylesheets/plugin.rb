@@ -5,6 +5,11 @@ module Octopress
   module Ink
     class StylesheetsPlugin < Plugin
 
+      def initialize(name, type)
+        @assets_path = File.dirname(File.expand_path(__FILE__))
+        super
+      end
+
       def register_stylesheets
 
         add_stylesheets local_stylesheets

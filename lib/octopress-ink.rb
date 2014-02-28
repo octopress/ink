@@ -10,6 +10,8 @@ require 'octopress-ink/helpers/titlecase'
 
 module Octopress
   module Ink
+    attr_accessor :docs_mode
+
     autoload :Helpers,              'octopress-ink/helpers'
     autoload :Filters,              'octopress-ink/filters'
     autoload :Assets,               'octopress-ink/assets'
@@ -19,7 +21,7 @@ module Octopress
     autoload :Plugins,              'octopress-ink/plugins'
     autoload :Plugin,               'octopress-ink/plugin'
     autoload :Tags,                 'octopress-ink/tags'
-    autoload :StylesheetsPlugin,    'octopress-ink/plugins/stylesheets'
+    autoload :StylesheetsPlugin,    'octopress-ink/plugins/stylesheets/plugin'
 
     if defined? Octopress::Command
       require 'octopress-ink/commands/helpers'
@@ -50,12 +52,34 @@ module Octopress
       Plugins.plugins
     end
 
+    def self.docs_mode
+      @docs_mode
+    end
+
     def self.plugin(name)
       begin
         Plugins.plugin(name)
       rescue
         return false
       end
+    end
+    
+    def self.info(options={})
+      Plugins.register site(options)
+      options = {'brief'=>true} if options.empty?
+      message = "Octopress Ink - v#{VERSION}\n"
+      plugins.each do |plugin|
+        message += plugin.register_docs(options)
+      end
+
+      if plugins.size > 0
+        plugins.each do |plugin|
+          message += plugin.info(options)
+        end
+      else
+        message += "You have no plugins installed."
+      end
+      puts message
     end
 
     def self.plugin_info(name, options)
@@ -93,21 +117,6 @@ module Octopress
       else
         puts "You have no plugins installed."
       end
-    end
-    
-    def self.info(options={})
-      Plugins.register site(options)
-      options = {'brief'=>true} if options.empty?
-      message = "Octopress Ink - v#{VERSION}\n"
-
-      if plugins.size > 0
-        plugins.each do |plugin|
-          message += plugin.info(options)
-        end
-      else
-        message += "You have no plugins installed."
-      end
-      puts message
     end
   end
 end

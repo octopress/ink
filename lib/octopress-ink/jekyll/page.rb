@@ -9,14 +9,16 @@ module Octopress
       #         - '/' for the _site/index.html page
       #         - '/archive/' for the _site/archive/index.html page
       #
-      def initialize(site, base, dir, name, config)
-        @plugin_config = config
+      def initialize(site, base, dir, name, config={})
+        @config = config
         super(site, base, dir, name)
       end
 
       def destination(dest)
-        path = File.join(dest, self.url)
-        path
+        if @config['path']
+          dest = File.join(dest, @config['path'])
+        end
+        File.join(dest, self.url)
       end
 
       # Allow pages to read url from plugin configuration
@@ -27,7 +29,7 @@ module Octopress
         else
           begin
             if path_config = self.data['url_config']
-              config = @plugin_config
+              config = @config
               path_config.split('.').each { |key| config = config[key] }
               @url = config if config.is_a? String
             end
