@@ -97,7 +97,7 @@ module Octopress
     
     def self.info(options={})
       Plugins.register site(options)
-      options = 'brief' if options.empty?
+      options = {'brief'=>true} if options.empty?
       message = "Octopress Ink - v#{VERSION}\n"
 
       if plugins.size > 0

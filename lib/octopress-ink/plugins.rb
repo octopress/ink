@@ -50,9 +50,9 @@ module Octopress
         add_javascripts
       end
 
-      def self.add_assets(type)
+      def self.add_assets(assets)
         plugins.each do |p| 
-          p.add_asset_files(type)
+          p.add_asset_files(assets)
         end
       end
 
@@ -277,7 +277,7 @@ module Octopress
         if concat_css
           write_combined_stylesheet
         else
-          add_assets(['css', 'sass'])
+          add_assets(%w{css sass})
         end
       end
 
@@ -288,7 +288,7 @@ module Octopress
         if concat_js
           write_combined_javascript
         else
-          add_assets('javascripts')
+          add_assets(['javascripts'])
         end
 
       end

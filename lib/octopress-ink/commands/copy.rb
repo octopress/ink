@@ -13,7 +13,7 @@ module Octopress
             c.action do |args, options|
               if args.empty?
                 puts "Error: Please pass a plugin to install assets from."
-                Octopress::Ink.list_plugins()
+                Octopress::Ink.list_plugins
               else
                 name = args[0]
                 path = args[1]

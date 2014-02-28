@@ -112,7 +112,7 @@ module Octopress
       end
 
       def info(options={})
-        if options == 'brief'
+        if options['brief']
           message = " #{@name}"
           message += " (theme)" if @type == 'theme'
           message += " - v#{@version}" if @version
@@ -171,23 +171,24 @@ module Octopress
       # 
       # Output a hash of assets instances {'files' => @files }
       #
-      def select_assets(options)
+      def select_assets(asset_types)
         # Accept options from the CLI (as a hash of asset: true)
         # Or from Ink modules as an array of asset names
         #
-        if options.is_a? Hash
-          options = options.keys
+        if asset_types.is_a? Hash
+          asset_types = asset_types.keys
         end
-        options = [options] if options.is_a? String
+
+        asset_types = [asset_types] if asset_types.is_a? String
         
         # Remove options which don't belong
         #
-        options.select!{|o| assets.include?(o)}
+        asset_types.select!{|asset| assets.include?(asset)}
 
-        if options.nil? || options.empty?
+        if asset_types.nil? || asset_types.empty?
           assets
         else
-          assets.select{|k,v| options.include?(k)}
+          assets.select{|k,v| asset_types.include?(k)}
         end
       end
 
@@ -267,7 +268,6 @@ module Octopress
       end
 
       def add_asset_files(options)
-        options = [options] unless options.is_a? Array 
         select_assets(options).each do |name, assets|
           assets.each {|file| file.add unless file.disabled? }
         end
