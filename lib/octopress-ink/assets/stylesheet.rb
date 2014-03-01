@@ -2,6 +2,7 @@ module Octopress
   module Ink
     module Assets
       class Stylesheet < Asset
+
         def initialize(plugin, base, file, media)
           @plugin = plugin
           @file = file
@@ -13,23 +14,25 @@ module Octopress
           file_check
         end
 
-        def type
-        end
-
         def media
           m = @media
-          if @file =~ /@(.+?)\./
+          if file =~ /@(.+?)\./
             m = $1
           end
           m
         end
 
+        def disabled?
+          plugin.disabled?('css', filename) ||
+          plugin.disabled?('stylesheets', filename)
+        end
+
         def destination
-          File.join(@base, @plugin.slug, @file.sub(/@(.+?)\./,'.'))
+          File.join(base, plugin.slug, file.sub(/@(.+?)\./,'.'))
         end
 
         def tag
-          "<link href='#{Filters.expand_url(File.join(@dir, @file))}' media='#{media}' rel='stylesheet' type='text/css'>"
+          "<link href='#{Filters.expand_url(File.join(dir, file))}' media='#{media}' rel='stylesheet' type='text/css'>"
         end
       end
     end

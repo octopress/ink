@@ -2,6 +2,7 @@ module Octopress
   module Ink
     module Commands
       require 'octopress-ink/commands/info'
+      require 'octopress-ink/commands/copy'
 
       class Ink < Octopress::Command
 
@@ -11,6 +12,7 @@ module Octopress
             c.description "Get about octopress ink plugins"
 
             Info.process_command(c)
+            Copy.process_command(c)
           end
         end
       end

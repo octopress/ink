@@ -4,7 +4,7 @@ module Octopress
   module Ink
     class Plugin
       attr_accessor :name, :type, :asset_override, :assets_path,
-                    :layouts_dir, :stylesheets_dir, :javascripts_dir, :files_dir, :includes_dir, :images_dir,
+                    :layouts_dir, :css_dir, :javascripts_dir, :files_dir, :includes_dir, :images_dir,
                     :layouts, :includes, :images, :fonts, :files, :pages,
                     :website, :description, :version, :config
 
@@ -16,15 +16,14 @@ module Octopress
         @images_dir        = 'images'
         @includes_dir      = 'includes'
         @javascripts_dir   = 'javascripts'
-        @stylesheets_dir   = 'stylesheets'
+        @css_dir           = 'stylesheets'
         @sass_dir          = 'stylesheets'
-        @plugins_dir       = 'plugins'
         @config_file       = 'config.yml'
         @name              = name
         @type              = type
         @layouts           = []
-        @includes          = {}
-        @stylesheets       = []
+        @includes          = []
+        @css               = []
         @javascripts       = []
         @images            = []
         @sass              = []
@@ -37,16 +36,25 @@ module Octopress
       end
 
       def register
-        add_config
-        disable_assets
-        add_assets
-        add_layouts
-        add_pages
-        add_includes
-        require_plugins
+        unless @assets_path.nil?
+          add_config
+          disable_assets
+          add_assets
+          add_layouts
+          add_pages
+          add_includes
+          add_files
+          add_javascripts
+          add_fonts
+          add_images
+        end
       end
 
       def add_assets; end
+
+      def stylesheets
+        css.clone.concat sass
+      end
 
       def add_config
         @config = Assets::Config.new(self, @config_file).read
@@ -73,17 +81,14 @@ module Octopress
       end
 
       def slug
-        if @type == 'local_plugin'
-          ''
-        else
-          @type == 'theme' ? @type : @name
-        end
+        @type == 'theme' ? @type : @name
       end
 
       def can_disable
         [ 
           'pages',
           'sass',
+          'css',
           'stylesheets',
           'javascripts',
           'images',
@@ -95,10 +100,10 @@ module Octopress
       def assets
         {
           'layouts'     => @layouts,
-          'includes'    => @includes.values,
+          'includes'    => @includes,
           'pages'       => @pages, 
           'sass'        => @sass, 
-          'stylesheets' => @stylesheets,
+          'css'         => @css,
           'javascripts' => @javascripts, 
           'images'      => @images, 
           'fonts'       => @fonts, 
@@ -116,18 +121,24 @@ module Octopress
           end
           message += "\n"
         else
+          asset_info = assets_info(options)
+          return '' if asset_info.empty?
+
           name = "Plugin: #{@name}"
           name += " (theme)" if @type == 'theme'
           name += " - v#{@version}" if @version
           name  = pad_line(name)
           message = name
+
           if @description
             message += "\n#{pad_line(@description)}"
           end
-          line = ''
-          80.times { line += '=' }
-          message = "#{line}\n#{message}\n#{line}\n"
-          message += asset_info(options)
+
+          lines = ''
+          80.times { lines += '=' }
+
+          message = "#{lines}\n#{message}\n#{lines}\n"
+          message += asset_info
           message += "\n"
         end
       end
@@ -136,147 +147,129 @@ module Octopress
         line = "| #{line.ljust(76)} |"
       end
 
-      def asset_info(options={})
+      # Return information about each asset 
+      def assets_info(options)
         message = ''
-        none = []
+        no_assets = []
+
         select_assets(options).each do |name, assets|
-          if assets.size > 0
-            message += " #{name.capitalize}:\n"
-            assets.each do |t|
-              message += "  - #{t.info}\n"
-            end
-            message += "\n"
-          elsif !options.empty?
-            none << name.capitalize
+          next if assets.size == 0
+          message += " #{name}:\n"
+          assets.each do |asset|
+            message += "  - #{asset.info}\n"
           end
-        end
-        unless none.empty?
-          message += " Plugin has no: #{none.join(', ')}\n"
+          message += "\n"
         end
 
         message
       end
 
-      def select_assets(options={})
-        if options['all'] || options.empty?
+      # Return selected assets
+      #
+      # input: options (an array ['type',...], hash {'type'=>true}
+      # or string of asset types)
+      # 
+      # Output a hash of assets instances {'files' => @files }
+      #
+      def select_assets(asset_types)
+        # Accept options from the CLI (as a hash of asset: true)
+        # Or from Ink modules as an array of asset names
+        #
+        if asset_types.is_a? Hash
+          asset_types = asset_types.keys
+        end
+
+        asset_types = [asset_types] if asset_types.is_a? String
+        
+        # Remove options which don't belong
+        #
+        asset_types.select!{|asset| assets.include?(asset)}
+
+        if asset_types.nil? || asset_types.empty?
           assets
         else
-          assets.select{|k,v| options.keys.include?(k)}
+          assets.select{|k,v| asset_types.include?(k)}
         end
       end
 
-      def add_stylesheet(file, media=nil)
-        @stylesheets << Assets::Stylesheet.new(self, @stylesheets_dir, file, media)
+      def add_layouts
+        @layouts = find_assets(@layouts_dir, Assets::Layout)
+      end
+
+      def add_includes
+        @includes = find_assets(@includes_dir, Assets::Asset)
+      end
+
+      def add_pages
+        @pages = find_assets(@pages_dir, Assets::PageAsset)
+      end
+
+      def add_files
+        @files = find_assets(@files_dir, Assets::FileAsset)
+      end
+
+      def add_javascripts
+        @javascripts = find_assets(@javascripts_dir, Assets::Javascript)
+      end
+
+      def add_fonts
+        @fonts = find_assets(@fonts_dir, Assets::Asset)
+      end
+
+      def add_images
+        @images = find_assets(@images_dir, Assets::Asset)
+      end
+
+      def find_assets(dir, asset_type)
+        found = []
+        full_dir = File.join(@assets_path, dir)
+        glob_assets(full_dir).each do |file|
+          asset = file.sub(full_dir+'/', '')
+          found << asset_type.new(self, dir, asset)
+        end
+        found
+      end
+
+      def glob_assets(dir)
+        return [] unless Dir.exist? dir
+        Find.find(dir).to_a.reject {|f| File.directory? f }
+      end
+
+      def add_css(file, media=nil)
+        @css << Assets::Stylesheet.new(self, @css_dir, file, media)
       end
 
       def add_sass(file, media=nil)
         @sass << Assets::Sass.new(self, @sass_dir, file, media)
       end
 
-      def add_javascript(file)
-        @javascripts << Assets::Javascript.new(self, @javascripts_dir, file)
-      end
-
-      def add_pages
-        if @assets_path
-          find_assets(File.join(@assets_path, @pages_dir)).each do |file|
-            @pages << Assets::PageAsset.new(self, @pages_dir, file)
-          end
-        end
-      end
-
-      def require_plugins
-        if @assets_path
-          find_assets(File.join(@assets_path, @plugins_dir)).each do |file|
-            require File.join base, file
-          end
-        end
-      end
-
-      def add_layouts
-        if @assets_path
-          find_assets(File.join(@assets_path, @layouts_dir)).each do |layout|
-            layout = Assets::Layout.new(self, @layouts_dir, layout)
-            @layouts << layout
-            layout.register
-          end
-        end
-      end
-
-      def find_assets(dir)
-        found = []
-        if Dir.exist? dir
-          Find.find(dir) do |file|
-            found << file.sub(dir+'/', '') unless File.directory? file
-          end
-        end
-        found
-      end
-
-      def remove_jekyll_assets(files)
-        files.each {|f| f.remove_jekyll_asset }
-      end
-
-      def add_includes
-        if @assets_path
-          find_assets(File.join(@assets_path, @includes_dir)).each do |include_file|
-            @includes[include_file] = Assets::Asset.new(self, @includes_dir, include_file)
-          end
-        end
-      end
-
-      def copy_static_files
-        [@images, @pages, @files, @fonts].each do |asset_type|
-          asset_type.each {|asset| asset.copy unless asset.disabled? }
-        end
-      end
-
-      def add_image(file)
-        @images << Assets::Asset.new(self, @images_dir, file)
-      end
-
-      def add_root_files(files)
-        files.each { |f| add_root_file(f) }
-      end
-
-      def add_root_file(file)
-        @files << Assets::RootAsset.new(self, @files_dir, file)
-      end
-
-      def add_file(file)
-        @files << Assets::Asset.new(self, @files_dir, file)
-      end
-
-      def add_font(file)
-        @fonts << Assets::Asset.new(self, @fonts_dir, file)
-      end
-
-      def add_stylesheets(files, media=nil)
-        files.each { |f| add_stylesheet(f, media) }
+      def add_css_files(files, media=nil)
+        files.each { |f| add_css(f, media) }
       end
 
       def add_sass_files(files, media=nil)
         files.each { |f| add_sass(f, media) }
       end
 
-      def add_javascripts(files)
-        files.each { |f| add_javascript(f) }
+      def remove_jekyll_assets(files)
+        files.each {|f| f.remove_jekyll_asset }
       end
 
-      def add_images(files)
-        files.each { |f| add_image(f) }
+      def add_asset_files(options)
+        select_assets(options).each do |name, assets|
+          assets.each {|file| file.add unless file.disabled? }
+        end
       end
 
-      def add_fonts(files)
-        files.each { |f| add_font(f) }
-      end
-
-      def add_files(files)
-        files.each { |f| add_file(f) }
+      def copy_asset_files(path, options)
+        select_assets(options).each do |name, assets|
+          assets.each { |a| puts a.copy(path) }
+        end
+        ''
       end
 
       def stylesheet_paths
-        get_paths @stylesheets.reject{|f| f.disabled? }
+        get_paths @css.reject{|f| f.disabled? }
       end
 
       def javascript_paths
@@ -284,11 +277,11 @@ module Octopress
       end
 
       def stylesheet_tags
-        get_tags @stylesheets.reject{|f| f.disabled? }
+        get_tags @css.reject{|f| f.disabled? }
       end
 
-      def stylesheets
-        @stylesheets.reject{|f| f.disabled? }
+      def css
+        @css.reject{|f| f.disabled? }
       end
 
       def sass
@@ -316,7 +309,7 @@ module Octopress
       end
 
       def include(file)
-        @includes[file].path
+        @includes.find{|i| i.filename == file }.path
       end
     end
   end

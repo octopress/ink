@@ -26,8 +26,8 @@ module Octopress
       require 'octopress-ink/commands'
     end
 
-    def self.register_plugin(plugin, name, type='plugin')
-      Plugins.register_plugin(plugin, name, type)
+    def self.register_plugin(plugin, name, type='plugin', local=nil)
+      Plugins.register_plugin(plugin, name, type, local)
     end
 
     def self.version
@@ -62,21 +62,50 @@ module Octopress
       Plugins.register site(options)
       options.delete('config')
       if p = plugin(name)
-        p.info(options)
+        puts p.info(options)
+      else
+        puts "Plugin '#{name}' not found."
+        list_plugins
+      end
+    end
+
+    def self.copy_plugin_assets(name, path, options)
+      Plugins.register site(options)
+      if path
+        full_path = File.join(Plugins.site.source, path)
+        if !Dir["#{full_path}/*"].empty? && options['force'].nil?
+          abort "Error: directory #{path} is not empty. Use --force to overwrite files."
+        end
+      else
+        full_path = File.join(Plugins.site.source, Plugins.custom_dir, name)
+      end
+      puts "Files copied:"
+      if p = plugin(name)
+        p.copy_asset_files(full_path, options)
+      end
+    end
+
+    def self.list_plugins(options={})
+      Plugins.register site(options)
+      puts "\nCurrently installed plugins:"
+      if plugins.size > 0
+        plugins.each { |plugin| puts plugin.name }
+      else
+        puts "You have no plugins installed."
       end
     end
     
     def self.info(options={})
       Plugins.register site(options)
-      options.delete('config')
+      options = {'brief'=>true} if options.empty?
       message = "Octopress Ink - v#{VERSION}\n"
+
       if plugins.size > 0
-        options['brief'] = options.empty?
         plugins.each do |plugin|
           message += plugin.info(options)
         end
       else
-        message += "Plugins: none"
+        message += "You have no plugins installed."
       end
       puts message
     end
@@ -99,5 +128,5 @@ Liquid::Template.register_tag('wrap', Octopress::Ink::Tags::WrapTag)
 Liquid::Template.register_tag('abort', Octopress::Ink::Tags::AbortTag)
 Liquid::Template.register_tag('_', Octopress::Ink::Tags::LineCommentTag)
 
-Octopress::Ink.register_plugin(Octopress::Ink::StylesheetsPlugin, 'user stylesheets', 'local_plugin')
+Octopress::Ink.register_plugin(Octopress::Ink::StylesheetsPlugin, 'stylesheets', 'plugin', true)
 
