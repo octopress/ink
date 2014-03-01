@@ -226,7 +226,7 @@ module Octopress
       end
 
       def self.stylesheet_tags
-        if concat_css
+        if Ink.config['concat_css']
           combined_stylesheet_tag
         else
           css = []
@@ -238,26 +238,8 @@ module Octopress
         end
       end
 
-      def self.concat_css
-        config = @site.config
-        if config['octopress'] && !config['octopress']['concat_css'].nil?
-          config['octopress']['concat_css'] != false
-        else
-          true
-        end
-      end
-
-      def self.concat_js
-        config = @site.config
-        if config['octopress'] && !config['octopress']['concat_js'].nil?
-          config['octopress']['concat_js'] != false
-        else
-          true
-        end
-      end
-
       def self.javascript_tags
-        if concat_js
+        if Ink.config['concat_js']
           combined_javascript_tag
         else
           js = []
@@ -274,7 +256,7 @@ module Octopress
        
         plugin('stylesheets').register_stylesheets
    
-        if concat_css
+        if Ink.config['concat_css']
           write_combined_stylesheet
         else
           add_assets(%w{css sass})
@@ -285,7 +267,7 @@ module Octopress
       #
       def self.add_javascripts
 
-        if concat_js
+        if Ink.config['concat_js']
           write_combined_javascript
         else
           add_assets(['javascripts'])

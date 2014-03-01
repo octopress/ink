@@ -40,7 +40,7 @@ module Octopress
         # Add doc page to Jekyll pages
         #
         def add
-          if Octopress::Ink.docs_mode
+          if Octopress::Ink.config['docs_mode']
             Plugins.site.pages << page
           end
         end

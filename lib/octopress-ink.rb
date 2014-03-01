@@ -10,8 +10,8 @@ require 'octopress-ink/helpers/titlecase'
 
 module Octopress
   module Ink
-    attr_accessor :docs_mode
 
+    autoload :Configuration,        'octopress-ink/configuration'
     autoload :Helpers,              'octopress-ink/helpers'
     autoload :Filters,              'octopress-ink/filters'
     autoload :Assets,               'octopress-ink/assets'
@@ -39,6 +39,10 @@ module Octopress
       version << "Octopress Ink v#{Octopress::Ink::VERSION}"
     end
 
+    def self.config
+      Configuration.config
+    end
+
     def self.site(options={})
       log_level = Jekyll.logger.log_level
       Jekyll.logger.log_level = Jekyll::Stevenson::WARN
@@ -49,10 +53,6 @@ module Octopress
 
     def self.plugins
       Plugins.plugins
-    end
-
-    def self.docs_mode
-      @docs_mode
     end
 
     def self.plugin(name)
@@ -127,6 +127,7 @@ module Octopress
 end
 
 Liquid::Template.register_filter Octopress::Ink::Filters
+
 
 Liquid::Template.register_tag('include', Octopress::Ink::Tags::IncludeTag)
 Liquid::Template.register_tag('assign', Octopress::Ink::Tags::AssignTag)

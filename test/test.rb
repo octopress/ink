@@ -36,9 +36,11 @@ def test_missing(file, dir)
   end
 end
 
-def build(config='')
-  config = ['_config.yml'] << config
-  `rm -rf site && bundle exec octopress build --config #{config.join(',')}`
+def build(options={})
+  config = ['_config.yml'] << options[:config]
+  cmd = "rm -rf site && bundle exec octopress build --config #{config.join(',')}"
+  cmd += " --octopress-config #{options[:octopress_config]}" if options[:octopress_config]
+  `#{cmd}`
 end
 
 def diff_file(file, target_dir='expected', source_dir='site')
@@ -165,15 +167,15 @@ test_copy_assets('copy_test')
 Octopress::Ink.copy_plugin_assets('theme', '_copy', {'force'=> true, 'layouts' => true, 'pages' => true})
 test_copy_assets('copy_layouts_pages')
 
-build '_concat_false.yml'
+build octopress_config: '_concat_false.yml'
 test_stylesheets('concat_css_false', false)
 test_javascripts('concat_js_false', false)
 test_disabled('site')
 
-build '_sass_compact.yml'
+build config: '_sass_compact.yml'
 test_stylesheets('sass_compact')
 
-build '_sass_expanded.yml'
+build config: '_sass_expanded.yml'
 test_stylesheets('sass_expanded')
 
 print_failures

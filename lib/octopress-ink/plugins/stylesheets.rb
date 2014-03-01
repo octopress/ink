@@ -11,13 +11,13 @@ module Octopress
 
         remove_jekyll_assets @sass if @sass
 
-        if Plugins.concat_css
+        if Ink.config['concat_js']
           remove_jekyll_assets @css if @css
         end
       end
 
       def disabled?(*args)
-        Octopress.config['stylesheets'] == false
+        false
       end
 
       def add_stylesheets(files)
