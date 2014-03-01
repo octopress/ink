@@ -289,11 +289,12 @@ module Octopress
       end
 
       def copy_asset_files(path, options)
+        copied = ''
         select_assets(options).each do |name, assets|
           next if name == 'docs'
-          assets.each { |a| puts a.copy(path) }
+          assets.each { |a| copied += "#{a.copy(path)}\n" }
         end
-        ''
+        copied == '' ? false : copied
       end
 
       def stylesheet_paths

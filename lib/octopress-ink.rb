@@ -84,8 +84,7 @@ module Octopress
       if p = plugin(name)
         puts p.info(options)
       else
-        puts "Plugin '#{name}' not found."
-        list_plugins
+        not_found(name)
       end
     end
 
@@ -99,10 +98,20 @@ module Octopress
       else
         full_path = File.join(Plugins.site.source, Plugins.custom_dir, name)
       end
-      puts "Files copied:"
       if p = plugin(name)
-        p.copy_asset_files(full_path, options)
+        if copied = p.copy_asset_files(full_path, options)
+          puts "Copied files:\n#{copied}"
+        else
+          puts "No files copied from #{name}."
+        end
+      else
+        not_found(name)
       end
+    end
+
+    def self.not_found(plugin)
+      puts "Plugin '#{plugin}' not found."
+      list_plugins
     end
 
     def self.list_plugins(options={})
