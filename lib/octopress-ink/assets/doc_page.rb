@@ -30,7 +30,7 @@ module Octopress
         end
 
         def url_info
-          "output: #{page.url.sub(/^\//,'')}"
+          ''
         end
 
         def page
@@ -40,7 +40,9 @@ module Octopress
         # Add doc page to Jekyll pages
         #
         def add
-          Plugins.site.pages << page
+          if Octopress::Ink.docs_mode
+            Plugins.site.pages << page
+          end
         end
       end
     end

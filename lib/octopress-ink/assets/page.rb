@@ -30,7 +30,7 @@ module Octopress
         end
 
         def url_info
-          "output: #{page.url.sub(/^\//,'')}"
+          "path: #{page.url.sub(/^\//,'')}"
         end
 
         def user_dir
@@ -44,8 +44,9 @@ module Octopress
         # Add page to Jekyll pages if no other page has a conflicting destination
         #
         def add
-          return unless page.url
-          Plugins.site.pages << page unless Helpers::Path.find_page(page)
+          if !page.url && !Octopress::Ink.docs_mode
+            Plugins.site.pages << page unless Helpers::Path.find_page(page)
+          end
         end
       end
     end

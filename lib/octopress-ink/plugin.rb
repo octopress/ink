@@ -47,12 +47,9 @@ module Octopress
           add_javascripts
           add_fonts
           add_images
-          if Octopress::Ink.docs_mode
-            add_docs
-          else
-            add_files
-            add_pages
-          end
+          add_docs
+          add_files
+          add_pages
         end
       end
 
@@ -91,7 +88,8 @@ module Octopress
       end
 
       def docs_base_path
-        File.join('docs', @plugin.type, @plugin.name)
+        type = @type == 'plugin' ? 'plugins' : @type
+        File.join('docs', type, @name)
       end
 
       def can_disable
@@ -109,10 +107,10 @@ module Octopress
 
       def assets
         {
+          'docs'        => @docs,
           'layouts'     => @layouts,
           'includes'    => @includes,
           'pages'       => @pages, 
-          'docs'        => @docs,
           'sass'        => @sass, 
           'css'         => @css,
           'javascripts' => @javascripts, 
@@ -138,21 +136,21 @@ module Octopress
           name = "Plugin: #{@name}"
           name += " (theme)" if @type == 'theme'
           name += " - v#{@version}" if @version
-          name  = pad_line(name)
+          name  = name
           message = name
 
           if @description
-            message += "\n#{pad_line(@description)}"
+            message += "\n#{@description}"
           end
 
-          if !@docs.empty?
-            message += "\n#{pad_line("Docs: /#{doc_path}")}"
-          end
+          #if !@docs.empty?
+            #message += "\n#{pad_line("Docs: /#{docs_base_path}")}"
+          #end
 
           lines = ''
           80.times { lines += '=' }
 
-          message = "#{lines}\n#{message}\n#{lines}\n"
+          message = "\n#{message}\n#{lines}\n"
           message += asset_info
           message += "\n"
         end
@@ -169,9 +167,19 @@ module Octopress
 
         select_assets(options).each do |name, assets|
           next if assets.size == 0
-          message += " #{name}:\n"
-          assets.each do |asset|
-            message += "  - #{asset.info}\n"
+          if name == 'docs'
+            message += " documentation: /#{docs_base_path}/\n"
+            #message += "  pages:\n"
+            if assets.size > 1
+              assets.each do |asset|
+                message += "  - #{asset.info}\n"
+              end
+            end
+          else
+            message += " #{name}:\n"
+            assets.each do |asset|
+              message += "  - #{asset.info}\n"
+            end
           end
           message += "\n"
         end
@@ -282,6 +290,7 @@ module Octopress
 
       def copy_asset_files(path, options)
         select_assets(options).each do |name, assets|
+          next if name == 'docs'
           assets.each { |a| puts a.copy(path) }
         end
         ''

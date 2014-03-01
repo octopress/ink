@@ -67,9 +67,6 @@ module Octopress
       Plugins.register site(options)
       options = {'brief'=>true} if options.empty?
       message = "Octopress Ink - v#{VERSION}\n"
-      #plugins.each do |plugin|
-        #message += plugin.info(options)
-      #end
 
       if plugins.size > 0
         plugins.each do |plugin|
