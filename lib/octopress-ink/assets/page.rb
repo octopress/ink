@@ -44,7 +44,7 @@ module Octopress
         # Add page to Jekyll pages if no other page has a conflicting destination
         #
         def add
-          if !page.url && !Octopress::Ink.docs_mode
+          if page.url && !Octopress::Ink.docs_mode
             Plugins.site.pages << page unless Helpers::Path.find_page(page)
           end
         end
