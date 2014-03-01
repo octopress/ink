@@ -13,11 +13,11 @@ module Octopress
         end
 
         def user_dir
-          File.join Plugins.site.source, Plugins.custom_dir, @dir
+          File.join Plugins.site.source, Plugins.custom_dir, dir
         end
 
         def local_plugin_path
-          File.join Plugins.site.source, @dir, @file
+          File.join Plugins.site.source, dir, file
         end
 
         def read

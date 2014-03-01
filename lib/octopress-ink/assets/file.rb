@@ -22,12 +22,12 @@ module Octopress
         end
 
         def user_dir
-          File.join Plugins.site.source, Plugins.custom_dir, @plugin.slug, @base
+          File.join Plugins.site.source, Plugins.custom_dir, plugin.slug, base
         end
 
         def add
           unless exists? local_plugin_path
-            Plugins.site.static_files << StaticFile.new(File.join(source_dir, @file), destination)
+            Plugins.site.static_files << StaticFile.new(File.join(source_dir, file), destination)
           end
         end
 

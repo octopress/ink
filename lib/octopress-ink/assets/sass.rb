@@ -14,21 +14,21 @@ module Octopress
         end
 
         def tag
-          "<link href='#{Filters.expand_url(File.join(@dir, @file))}' media='#{media}' rel='stylesheet' type='text/css'>"
+          "<link href='#{Filters.expand_url(File.join(dir, file))}' media='#{@media}' rel='stylesheet' type='text/css'>"
         end
 
         # TODO: see if this is done TODO: choose user path before local path.
         def user_load_path
-          File.join(Plugins.site.source, Plugins.custom_dir, @dir, File.dirname(@file)).sub /\/\.$/, ''
+          File.join(Plugins.site.source, Plugins.custom_dir, dir, File.dirname(file)).sub /\/\.$/, ''
         end
 
         def theme_load_path
-          File.expand_path(File.join(@root, @base))
+          File.expand_path(File.join(root, base))
         end
 
         def disabled?
-          @plugin.disabled?('sass', filename) ||
-          @plugin.disabled?('stylesheets', filename)
+          plugin.disabled?('sass', filename) ||
+          plugin.disabled?('stylesheets', filename)
         end
 
         def compile
@@ -42,21 +42,21 @@ module Octopress
 
         def user_override_path
           # Allow Sass overrides to use either syntax
-          if @file =~ /s[ac]ss$/
-            [File.join(user_dir, @file), File.join(user_dir, alt_syntax_file)]
+          if file =~ /s[ac]ss$/
+            [File.join(user_dir, file), File.join(user_dir, alt_syntax_file)]
           else
-            File.join user_dir, @file
+            File.join user_dir, file
           end
         end
 
         def alt_syntax_file
-          ext = File.extname(@file)
+          ext = File.extname(file)
           alt_ext = (ext == '.scss' ? '.sass' : '.scss')
-          @file.sub(ext, alt_ext)
+          file.sub(ext, alt_ext)
         end
 
         def destination
-          File.join(@base, @plugin.slug, @file.sub(/@(.+?)\./,'.').sub(/s.ss/, 'css'))
+          File.join(base, plugin.slug, file.sub(/@(.+?)\./,'.').sub(/s.ss/, 'css'))
         end
 
         def add

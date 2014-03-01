@@ -18,11 +18,11 @@ module Octopress
         end
 
         def page_dir
-          @dir == '.' ? '' : @dir
+          dir == '.' ? '' : dir
         end
 
         def plugin_path
-          File.join(plugin_dir, @dir, @file)
+          File.join(plugin_dir, dir, file)
         end
 
         def filename
@@ -34,11 +34,11 @@ module Octopress
         end
 
         def user_dir
-          File.join Plugins.site.source, Plugins.custom_dir, @plugin.slug, @base
+          File.join Plugins.site.source, Plugins.custom_dir, plugin.slug, base
         end
 
         def page
-          @page ||= Page.new(Plugins.site, source_dir, page_dir, @file, @plugin.config)
+          page ||= Page.new(Plugins.site, source_dir, page_dir, file, plugin.config)
         end
 
         # Add page to Jekyll pages if no other page has a conflicting destination

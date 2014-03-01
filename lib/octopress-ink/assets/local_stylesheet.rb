@@ -13,18 +13,18 @@ module Octopress
 
         def media
           m = @media
-          if @file =~ /@(.+?)\./
+          if file =~ /@(.+?)\./
             m = $1
           end
           m
         end
 
         def destination
-          File.join(@dir, @file.sub(/@(.+?)\./,'.'))
+          File.join(dir, file.sub(/@(.+?)\./,'.'))
         end
 
         def tag
-          "<link href='#{Filters.expand_url(File.join(@dir, @file))}' media='#{media}' rel='stylesheet' type='text/css'>"
+          "<link href='#{Filters.expand_url(File.join(dir, file))}' media='#{media}' rel='stylesheet' type='text/css'>"
         end
       end
     end

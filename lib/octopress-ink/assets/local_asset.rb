@@ -12,15 +12,15 @@ module Octopress
 
         def info
           message = filename.ljust(35)
-          message += "from: #{@base}"
+          message += "from: #{base}"
         end
 
         def path
-          Pathname.new File.join(@root, @base, @file)
+          Pathname.new File.join(root, base, file)
         end
 
         def destination
-          File.join(@dir, @file)
+          File.join(dir, file)
         end
 
         def add

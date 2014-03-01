@@ -12,12 +12,12 @@ module Octopress
         end
 
         def destination
-          File.join(@dir, @file.sub(/@(.+?)\./,'.').sub(/s.ss/, 'css'))
+          File.join(dir, file.sub(/@(.+?)\./,'.').sub(/s.ss/, 'css'))
         end
 
         def compile
           options = Plugins.sass_options
-          @compiled = Plugins.compile_sass_file(path.to_s, options)
+          compiled = Plugins.compile_sass_file(path.to_s, options)
         end
 
         def add
