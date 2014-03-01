@@ -18,19 +18,15 @@ module Octopress
         end
 
         def page_dir
-          @dir == '.' ? '' : @dir
+          dir == '.' ? '' : dir
         end
 
         def source_dir
-          File.join @root, @base
+          File.join root, base
         end
 
         def path
-          File.join(plugin_dir, page_dir, @file)
-        end
-
-        def doc_path
-          File.join('docs', @plugin.type, @plugin.name)
+          File.join(plugin_dir, page_dir, file)
         end
 
         def url_info
@@ -38,7 +34,7 @@ module Octopress
         end
 
         def page
-          @page ||= Page.new(Plugins.site, source_dir, page_dir, @file, {'path'=>doc_path})
+          @page ||= Page.new(Plugins.site, source_dir, page_dir, file, {'path'=>plugin.docs_base_path})
         end
 
         # Add doc page to Jekyll pages

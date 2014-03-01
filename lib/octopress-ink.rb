@@ -21,7 +21,6 @@ module Octopress
     autoload :Plugins,              'octopress-ink/plugins'
     autoload :Plugin,               'octopress-ink/plugin'
     autoload :Tags,                 'octopress-ink/tags'
-    autoload :StylesheetsPlugin,    'octopress-ink/plugins/stylesheets/plugin'
 
     if defined? Octopress::Command
       require 'octopress-ink/commands/helpers'
@@ -68,9 +67,9 @@ module Octopress
       Plugins.register site(options)
       options = {'brief'=>true} if options.empty?
       message = "Octopress Ink - v#{VERSION}\n"
-      plugins.each do |plugin|
-        message += plugin.register_docs(options)
-      end
+      #plugins.each do |plugin|
+        #message += plugin.info(options)
+      #end
 
       if plugins.size > 0
         plugins.each do |plugin|
@@ -137,5 +136,9 @@ Liquid::Template.register_tag('wrap', Octopress::Ink::Tags::WrapTag)
 Liquid::Template.register_tag('abort', Octopress::Ink::Tags::AbortTag)
 Liquid::Template.register_tag('_', Octopress::Ink::Tags::LineCommentTag)
 
+require 'octopress-ink/plugins/ink'
+require 'octopress-ink/plugins/stylesheets'
+
+Octopress::Ink.register_plugin(Ink, 'ink', 'plugin')
 Octopress::Ink.register_plugin(Octopress::Ink::StylesheetsPlugin, 'stylesheets', 'plugin', true)
 

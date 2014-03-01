@@ -90,6 +90,10 @@ module Octopress
         @type == 'theme' ? @type : @name
       end
 
+      def docs_base_path
+        File.join('docs', @plugin.type, @plugin.name)
+      end
+
       def can_disable
         [ 
           'pages',
@@ -139,6 +143,10 @@ module Octopress
 
           if @description
             message += "\n#{pad_line(@description)}"
+          end
+
+          if !@docs.empty?
+            message += "\n#{pad_line("Docs: /#{doc_path}")}"
           end
 
           lines = ''
@@ -212,9 +220,7 @@ module Octopress
       end
 
       def add_docs
-        find_assets(File.join(@assets_path, @docs_dir)).each do |file|
-          @docs << Assets::DocPageAsset.new(self, @docs_dir, file)
-        end
+        @docs = find_assets(@docs_dir, Assets::DocPageAsset)
       end
 
       def add_files

@@ -38,7 +38,7 @@ module Octopress
         end
 
         def page
-          page ||= Page.new(Plugins.site, source_dir, page_dir, file, plugin.config)
+          @page ||= Page.new(Plugins.site, source_dir, page_dir, file, plugin.config)
         end
 
         # Add page to Jekyll pages if no other page has a conflicting destination

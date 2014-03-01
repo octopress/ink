@@ -3,7 +3,7 @@ module Octopress
     module Assets
       class LocalAsset < Asset
         def initialize(plugin, base, file)
-          @plugin = plugin
+          plugin = plugin
           @file = file
           @base = base
           @dir = base.sub(/^_/,'')
