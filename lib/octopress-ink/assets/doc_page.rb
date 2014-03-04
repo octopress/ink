@@ -42,6 +42,7 @@ module Octopress
         #
         def add
           if Ink.config['docs_mode']
+            page.data['layout'] = 'docs'
             Plugins.site.pages << page
           end
         end
