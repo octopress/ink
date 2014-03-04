@@ -5,6 +5,7 @@ module Octopress
   module Ink
     module Assets
       class PageAsset < Asset
+        attr_reader :filename
 
         def initialize(plugin, base, file)
           @root = plugin.assets_path
@@ -25,10 +26,6 @@ module Octopress
           File.join(plugin_dir, dir, file)
         end
 
-        def filename
-          @filename
-        end
-
         def url_info
           "path: #{page.url.sub(/^\//,'')}"
         end
@@ -44,7 +41,7 @@ module Octopress
         # Add page to Jekyll pages if no other page has a conflicting destination
         #
         def add
-          if page.url && !Octopress::Ink.config['docs_mode']
+          if page.url && !Ink.config['docs_mode']
             Plugins.site.pages << page unless Helpers::Path.find_page(page)
           end
         end

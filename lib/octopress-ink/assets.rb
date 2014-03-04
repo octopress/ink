@@ -10,6 +10,7 @@ module Octopress
       autoload :Javascript,           'octopress-ink/assets/javascript'
       autoload :Stylesheet,           'octopress-ink/assets/stylesheet'
       autoload :LocalStylesheet,      'octopress-ink/assets/local_stylesheet'
+      autoload :LocalJavascript,      'octopress-ink/assets/local_javascript'
       autoload :Sass,                 'octopress-ink/assets/sass'
       autoload :LocalSass,            'octopress-ink/assets/local_sass'
       autoload :Include,              'octopress-ink/assets/include'

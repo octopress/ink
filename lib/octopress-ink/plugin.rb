@@ -143,10 +143,6 @@ module Octopress
             message += "\n#{@description}"
           end
 
-          #if !@docs.empty?
-            #message += "\n#{pad_line("Docs: /#{docs_base_path}")}"
-          #end
-
           lines = ''
           80.times { lines += '=' }
 
@@ -169,7 +165,6 @@ module Octopress
           next if assets.size == 0
           if name == 'docs'
             message += " documentation: /#{docs_base_path}/\n"
-            #message += "  pages:\n"
             if assets.size > 1
               assets.each do |asset|
                 message += "  - #{asset.info}\n"
@@ -289,12 +284,12 @@ module Octopress
       end
 
       def copy_asset_files(path, options)
-        copied = ''
+        copied = []
         select_assets(options).each do |name, assets|
           next if name == 'docs'
-          assets.each { |a| copied += "#{a.copy(path)}\n" }
+          assets.each { |a| copied << a.copy(path) }
         end
-        copied == '' ? false : copied
+        copied
       end
 
       def stylesheet_paths

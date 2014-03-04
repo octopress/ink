@@ -99,8 +99,9 @@ module Octopress
         full_path = File.join(Plugins.site.source, Plugins.custom_dir, name)
       end
       if p = plugin(name)
-        if copied = p.copy_asset_files(full_path, options)
-          puts "Copied files:\n#{copied}"
+        copied = p.copy_asset_files(full_path, options)
+        if !copied.empty?
+          puts "Copied files:\n#{copied.join("\n")}"
         else
           puts "No files copied from #{name}."
         end
@@ -144,8 +145,8 @@ Liquid::Template.register_tag('abort', Octopress::Ink::Tags::AbortTag)
 Liquid::Template.register_tag('_', Octopress::Ink::Tags::LineCommentTag)
 
 require 'octopress-ink/plugins/ink'
-require 'octopress-ink/plugins/stylesheets'
+require 'octopress-ink/plugins/asset_pipeline'
 
 Octopress::Ink.register_plugin(Ink, 'ink', 'plugin')
-Octopress::Ink.register_plugin(Octopress::Ink::StylesheetsPlugin, 'stylesheets', 'plugin', true)
+Octopress::Ink.register_plugin(Octopress::Ink::AssetPipelinePlugin, 'asset-pipeline', 'plugin', true)
 

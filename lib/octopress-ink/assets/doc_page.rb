@@ -4,7 +4,8 @@
 module Octopress
   module Ink
     module Assets
-      class DocPageAsset < PageAsset
+      class DocPageAsset < Asset
+        attr_reader :filename
 
         def initialize(plugin, base, file)
           @root = plugin.assets_path
@@ -21,16 +22,16 @@ module Octopress
           dir == '.' ? '' : dir
         end
 
+        def plugin_path
+          File.join(plugin_dir, dir, file)
+        end
+
         def source_dir
           File.join root, base
         end
 
         def path
           File.join(plugin_dir, page_dir, file)
-        end
-
-        def url_info
-          ''
         end
 
         def page
@@ -40,7 +41,7 @@ module Octopress
         # Add doc page to Jekyll pages
         #
         def add
-          if Octopress::Ink.config['docs_mode']
+          if Ink.config['docs_mode']
             Plugins.site.pages << page
           end
         end

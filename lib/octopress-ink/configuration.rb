@@ -6,7 +6,10 @@ module Octopress
         'concat_css' => true,
         'concat_js' => true,
         'stylesheets_dir' => '_stylesheets',
-        'javascripts_dir' => '_javascripts'
+        'javascripts_dir' => '_javascripts',
+        'stylesheets' => [],
+        'javascripts' => [],
+        'disable' => []
       }
 
       def self.config

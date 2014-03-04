@@ -46,6 +46,7 @@ module Octopress
 
       def self.add_files
         add_assets(%w{images pages files fonts docs})
+        plugin('asset-pipeline').register_assets
         add_stylesheets
         add_javascripts
       end
@@ -254,8 +255,6 @@ module Octopress
       #
       def self.add_stylesheets
        
-        plugin('stylesheets').register_stylesheets
-   
         if Ink.config['concat_css']
           write_combined_stylesheet
         else

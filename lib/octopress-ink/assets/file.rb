@@ -26,7 +26,7 @@ module Octopress
         end
 
         def add
-          if !exists?(local_plugin_path) && !Octopress::Ink.config['docs_mode']
+          if !exists?(local_plugin_path) && !Ink.config['docs_mode']
             Plugins.site.static_files << StaticFile.new(File.join(source_dir, file), destination)
           end
         end
