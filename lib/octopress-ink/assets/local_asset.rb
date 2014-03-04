@@ -27,10 +27,9 @@ module Octopress
           Plugins.site.static_files << StaticFile.new(path, destination)
         end
 
-        # Copy asset to user override directory
+        # Copy is unncessary with local assets
         #
-        def copy(target_dir)
-        end
+        def copy(target_dir); end
 
         # Remove files from Jekyll's static_files array so it doesn't end up in the
         # compiled site directory. 

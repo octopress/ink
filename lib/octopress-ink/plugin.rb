@@ -3,15 +3,16 @@ require 'find'
 module Octopress
   module Ink
     class Plugin
-      attr_accessor :name, :type, :asset_override, :assets_path,
+      attr_accessor :name, :type, :assets_path,
                     :layouts_dir, :css_dir, :javascripts_dir, :files_dir, :includes_dir, :images_dir,
-                    :layouts, :includes, :images, :fonts, :files, :pages,
+                    :layouts, :includes, :images, :fonts, :files, :pages, :docs,
                     :website, :description, :version, :config
 
       def initialize(name, type)
         @layouts_dir       = 'layouts'
         @files_dir         = 'files'
         @pages_dir         = 'pages'
+        @docs_dir          = 'docs'
         @fonts_dir         = 'fonts'
         @images_dir        = 'images'
         @includes_dir      = 'includes'
@@ -27,6 +28,7 @@ module Octopress
         @javascripts       = []
         @images            = []
         @sass              = []
+        @docs              = []
         @fonts             = []
         @files             = []
         @pages             = []
@@ -41,12 +43,13 @@ module Octopress
           disable_assets
           add_assets
           add_layouts
-          add_pages
           add_includes
-          add_files
           add_javascripts
           add_fonts
           add_images
+          add_docs
+          add_files
+          add_pages
         end
       end
 
@@ -84,6 +87,11 @@ module Octopress
         @type == 'theme' ? @type : @name
       end
 
+      def docs_base_path
+        type = @type == 'plugin' ? 'plugins' : @type
+        File.join('docs', type, @name)
+      end
+
       def can_disable
         [ 
           'pages',
@@ -99,6 +107,7 @@ module Octopress
 
       def assets
         {
+          'docs'        => @docs,
           'layouts'     => @layouts,
           'includes'    => @includes,
           'pages'       => @pages, 
@@ -112,7 +121,7 @@ module Octopress
       end
 
       def info(options={})
-        if options['brief']
+        if options['minimal']
           message = " #{@name}"
           message += " (theme)" if @type == 'theme'
           message += " - v#{@version}" if @version
@@ -127,17 +136,17 @@ module Octopress
           name = "Plugin: #{@name}"
           name += " (theme)" if @type == 'theme'
           name += " - v#{@version}" if @version
-          name  = pad_line(name)
+          name  = name
           message = name
 
           if @description
-            message += "\n#{pad_line(@description)}"
+            message += "\n#{@description}"
           end
 
           lines = ''
           80.times { lines += '=' }
 
-          message = "#{lines}\n#{message}\n#{lines}\n"
+          message = "\n#{message}\n#{lines}\n"
           message += asset_info
           message += "\n"
         end
@@ -154,9 +163,18 @@ module Octopress
 
         select_assets(options).each do |name, assets|
           next if assets.size == 0
-          message += " #{name}:\n"
-          assets.each do |asset|
-            message += "  - #{asset.info}\n"
+          if name == 'docs'
+            message += " documentation: /#{docs_base_path}/\n"
+            if assets.size > 1
+              assets.each do |asset|
+                message += "  - #{asset.info}\n"
+              end
+            end
+          else
+            message += " #{name}:\n"
+            assets.each do |asset|
+              message += "  - #{asset.info}\n"
+            end
           end
           message += "\n"
         end
@@ -202,6 +220,10 @@ module Octopress
 
       def add_pages
         @pages = find_assets(@pages_dir, Assets::PageAsset)
+      end
+
+      def add_docs
+        @docs = find_assets(@docs_dir, Assets::DocPageAsset)
       end
 
       def add_files
@@ -262,10 +284,12 @@ module Octopress
       end
 
       def copy_asset_files(path, options)
+        copied = []
         select_assets(options).each do |name, assets|
-          assets.each { |a| puts a.copy(path) }
+          next if name == 'docs'
+          assets.each { |a| copied << a.copy(path) }
         end
-        ''
+        copied
       end
 
       def stylesheet_paths

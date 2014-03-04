@@ -8,7 +8,7 @@ body { background: black; }
 /* Plugin: awesome-sauce */
 .plugin-widget { background: red; color: #fff; }
 
-/* Plugin: stylesheets */
+/* Plugin: asset-pipeline */
 .css-plugin { background: #fed; }
 
 body { display: table; }

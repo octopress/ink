@@ -19,11 +19,11 @@ module Octopress
           message = filename.ljust(35)
           if disabled?
             message += "disabled"
+          elsif self.respond_to?(:url_info)
+            message += url_info
           elsif path.to_s != plugin_path
             shortpath = File.join(Plugins.custom_dir, dir)
             message += "from: #{shortpath}/#{filename}"
-          elsif self.respond_to?(:url_info)
-            message += url_info
           end
           message
         end

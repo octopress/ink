@@ -1,3 +1,2 @@
-octopress:
-  concat_css: false
-  concat_js: false
+concat_css: false
+concat_js: false

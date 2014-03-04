@@ -4,7 +4,7 @@
 module Octopress
   module Ink
     module Assets
-      class PageAsset < Asset
+      class DocPageAsset < Asset
         attr_reader :filename
 
         def initialize(plugin, base, file)
@@ -26,23 +26,24 @@ module Octopress
           File.join(plugin_dir, dir, file)
         end
 
-        def url_info
-          "path: #{page.url.sub(/^\//,'')}"
+        def source_dir
+          File.join root, base
         end
 
-        def user_dir
-          File.join Plugins.site.source, Plugins.custom_dir, plugin.slug, base
+        def path
+          File.join(plugin_dir, page_dir, file)
         end
 
         def page
-          @page ||= Page.new(Plugins.site, source_dir, page_dir, file, plugin.config)
+          @page ||= Page.new(Plugins.site, source_dir, page_dir, file, {'path'=>plugin.docs_base_path})
         end
 
-        # Add page to Jekyll pages if no other page has a conflicting destination
+        # Add doc page to Jekyll pages
         #
         def add
-          if page.url && !Ink.config['docs_mode']
-            Plugins.site.pages << page unless Helpers::Path.find_page(page)
+          if Ink.config['docs_mode']
+            page.data['layout'] = 'docs'
+            Plugins.site.pages << page
           end
         end
       end
