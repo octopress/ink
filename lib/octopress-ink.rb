@@ -63,9 +63,18 @@ module Octopress
       end
     end
     
+    # Prints a list of plugins and details
+    #
+    # options - a Hash of options from the Info command
+    #
+    #   Note: if options are empty, this will display a
+    #   list of plugin names, versions, and descriptions,
+    #   but no assets, i.e. 'minimal' info.
+    #
+    #
     def self.info(options={})
       Plugins.register site(options)
-      options = {'brief'=>true} if options.empty?
+      options = {'minimal'=>true} if options.empty?
       message = "Octopress Ink - v#{VERSION}\n"
 
       if plugins.size > 0
