@@ -8,8 +8,9 @@ module Octopress
 
         def self.init_with_program(p)
           p.command(:ink) do |c|
-            c.syntax "octopress ink [options]"
-            c.description "Get about octopress ink plugins"
+            c.version Octopress::Ink::VERSION
+            c.description "Get informationa about and work with Octopress Ink plugins."
+            c.syntax "ink <subcommand>"
 
             Info.process_command(c)
             Copy.process_command(c)
