@@ -1,5 +1,3 @@
-require 'octopress'
-
 module Octopress
   module Ink
     module Plugins
