@@ -1,7 +1,4 @@
 source 'https://rubygems.org'
 
-group :octopress do
-  gem "octopress-ink", path: "../"
-end
-
+gem "octopress-ink", path: "../"
 gem "pry-debugger"

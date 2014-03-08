@@ -38,9 +38,13 @@ end
 
 def build(options={})
   config = ['_config.yml'] << options[:config]
-  cmd = "rm -rf site && bundle exec octopress build --config #{config.join(',')}"
-  cmd += " --octopress-config #{options[:octopress_config]}" if options[:octopress_config]
+  cmd = "rm -rf site && bundle exec jekyll build --config #{config.join(',')}"
+  #cmd += " --octopress-config #{options[:octopress_config]}" if options[:octopress_config]
+  if options[:octopress_config]
+    FileUtils.cp options[:octopress_config], '_octopress.yml'
+  end
   `#{cmd}`
+  `rm _octopress.yml`
 end
 
 def diff_file(file, target_dir='expected', source_dir='site')
