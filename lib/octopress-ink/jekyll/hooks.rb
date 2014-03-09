@@ -10,6 +10,9 @@ module Jekyll
       payload['converter'] = self.converter
       payload['octopress'] = {}
       payload['octopress']['version'] = Octopress::Ink.version
+      if Octopress::Ink.config['docs_mode']
+        payload['doc_pages'] = Octopress::Ink::Plugins.doc_pages
+      end
       do_layout_orig(payload, layouts)
     end
   end
