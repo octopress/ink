@@ -35,14 +35,18 @@ module Octopress
         end
 
         def page
-          @page ||= Page.new(Plugins.site, source_dir, page_dir, file, {'path'=>plugin.docs_base_path})
+          return @page if @page
+          @page = Page.new(Plugins.site, source_dir, page_dir, file, {'path'=>plugin.docs_base_path})
+          @page.data['layout'] = 'docs'
+          @page.data['plugin'] = @plugin.slug
+          @page.data['docs_pages'] = @plugin.doc_pages
+          @page
         end
 
         # Add doc page to Jekyll pages
         #
         def add
           if Ink.config['docs_mode']
-            page.data['layout'] = 'docs'
             Plugins.site.pages << page
           end
         end

@@ -5,6 +5,11 @@ module Octopress
   module Ink
     class AssetPipelinePlugin < Plugin
 
+      def initialize(slug, type)
+        @name = "Octopress Assset Pipeline"
+        super
+      end
+
       def register_assets
 
         local_stylesheets.each {|f| add_stylesheet(f) }

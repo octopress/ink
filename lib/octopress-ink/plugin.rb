@@ -3,12 +3,12 @@ require 'find'
 module Octopress
   module Ink
     class Plugin
-      attr_accessor :name, :type, :assets_path,
+      attr_reader   :name, :type, :assets_path,
                     :layouts_dir, :css_dir, :javascripts_dir, :files_dir, :includes_dir, :images_dir,
                     :layouts, :includes, :images, :fonts, :files, :pages, :docs,
                     :website, :description, :version, :config
 
-      def initialize(name, type)
+      def initialize(slug, type)
         @layouts_dir       = 'layouts'
         @files_dir         = 'files'
         @pages_dir         = 'pages'
@@ -20,8 +20,6 @@ module Octopress
         @css_dir           = 'stylesheets'
         @sass_dir          = 'stylesheets'
         @config_file       = 'config.yml'
-        @name              = name
-        @type              = type
         @layouts           = []
         @includes          = []
         @css               = []
@@ -32,6 +30,9 @@ module Octopress
         @fonts             = []
         @files             = []
         @pages             = []
+        @type              = type
+        @slug              = slug
+        @name            ||= slug
         @version         ||= false
         @description     ||= false
         @website         ||= false
@@ -84,12 +85,32 @@ module Octopress
       end
 
       def slug
-        @type == 'theme' ? @type : @name
+        @type == 'theme' ? @type : @slug
       end
 
       def docs_base_path
         type = @type == 'plugin' ? 'plugins' : @type
-        File.join('docs', type, @name)
+        File.join('docs', type, slug)
+      end
+
+      # Docs pages for easy listing in an index
+      #
+      # returns: Array of hashes including doc page title and url
+      #
+      def doc_pages
+        if !@docs.empty?
+          @docs.clone.map do |d|
+            page_data = d.page.data
+            title   = page_data['link_title'] || page_data['title']
+            title ||= File.basename(d.file, '.*')
+            path = File.join(docs_base_path, d.file)
+
+            {
+              'title' => title,
+              'path' => path
+            }
+          end
+        end
       end
 
       def can_disable
@@ -138,6 +159,7 @@ module Octopress
           name += " - v#{@version}" if @version
           name  = name
           message = name
+          message += "\nSlug: #{slug}"
 
           if @description
             message += "\n#{@description}"

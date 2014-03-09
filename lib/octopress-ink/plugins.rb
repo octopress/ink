@@ -17,13 +17,13 @@ module Octopress
         plugins.size
       end
 
-      def self.plugin(name)
-        if name == 'theme'
+      def self.plugin(slug)
+        if slug == 'theme'
           @theme
         else
-          found = plugins.reject { |p| p.name != name }
+          found = plugins.reject { |p| p.slug != slug }
           if found.empty?
-            raise IOError.new "No Theme or Plugin with the name '#{name}' was found."
+            raise IOError.new "No Theme or Plugin with the slug '#{slug}' was found."
           end
           found.first
         end
@@ -84,12 +84,29 @@ module Octopress
 
           plugins.each do |p| 
             unless p == @theme
-              @config['plugins'][p.name] = p.config
+              @config['plugins'][p.slug] = p.config
             end
           end
 
           @config
         end
+      end
+
+      # Docs pages for each plugin
+      #
+      # returns: Array of plugin doc pages
+      #
+      def self.doc_pages
+        plugins.clone.map { |p|
+          if pages = p.doc_pages
+            { 
+              "name" => p.name,
+              "pages" => pages
+            }
+          else
+            nil
+          end
+        }.compact
       end
 
       def self.include(name, file)
