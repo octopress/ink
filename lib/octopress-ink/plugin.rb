@@ -3,39 +3,26 @@ require 'find'
 module Octopress
   module Ink
     class Plugin
-      attr_reader   :name, :type, :assets_path,
-                    :layouts_dir, :css_dir, :javascripts_dir, :files_dir, :includes_dir, :images_dir,
-                    :layouts, :includes, :images, :fonts, :files, :pages, :docs,
-                    :website, :description, :version, :config
+      cattr_accessor(:type)               { "plugin" }
+      cattr_accessor(:slug)               { "a_new_plugin" }
+      cattr_accessor(:layouts_dir)        { "layouts" }
+      cattr_accessor(:files_dir)          { "files" }
+      cattr_accessor(:pages_dir)          { "pages" }
+      cattr_accessor(:docs_dir)           { "docs" }
+      cattr_accessor(:fonts_dir)          { "fonts" }
+      cattr_accessor(:images_dir)         { "images" }
+      cattr_accessor(:includes_dir)       { "includes" }
+      cattr_accessor(:javascripts_dir)    { "javascripts" }
+      cattr_accessor(:css_dir, :sass_dir) { "stylesheets" }
+      cattr_accessor(:config_file)        { "config.yml" }
+
+      cattr_accessor(:layouts, :includes, :css, :javascripts, :images, :sass,
+                     :docs, :fonts, :files, :pages) { Array.new }
 
       def initialize(slug, type)
-        @layouts_dir       = 'layouts'
-        @files_dir         = 'files'
-        @pages_dir         = 'pages'
-        @docs_dir          = 'docs'
-        @fonts_dir         = 'fonts'
-        @images_dir        = 'images'
-        @includes_dir      = 'includes'
-        @javascripts_dir   = 'javascripts'
-        @css_dir           = 'stylesheets'
-        @sass_dir          = 'stylesheets'
-        @config_file       = 'config.yml'
-        @layouts           = []
-        @includes          = []
-        @css               = []
-        @javascripts       = []
-        @images            = []
-        @sass              = []
-        @docs              = []
-        @fonts             = []
-        @files             = []
-        @pages             = []
-        @type              = type
-        @slug              = slug
-        @name            ||= slug
-        @version         ||= false
-        @description     ||= false
-        @website         ||= false
+        @slug   = slug
+        @name ||= slug
+        @type   = type
       end
 
       def register
@@ -67,7 +54,7 @@ module Octopress
       def disable_assets
         disabled = []
         @config['disable'] ||= {}
-        @config['disable'].each do |key,val| 
+        @config['disable'].each do |key,val|
           next unless can_disable.include? key
           if !!val == val
             disabled << key if val
@@ -114,7 +101,7 @@ module Octopress
       end
 
       def can_disable
-        [ 
+        [
           'pages',
           'sass',
           'css',
@@ -131,12 +118,12 @@ module Octopress
           'docs'        => @docs,
           'layouts'     => @layouts,
           'includes'    => @includes,
-          'pages'       => @pages, 
-          'sass'        => @sass, 
+          'pages'       => @pages,
+          'sass'        => @sass,
           'css'         => @css,
-          'javascripts' => @javascripts, 
-          'images'      => @images, 
-          'fonts'       => @fonts, 
+          'javascripts' => @javascripts,
+          'images'      => @images,
+          'fonts'       => @fonts,
           'files'       => @files
         }
       end
@@ -178,7 +165,7 @@ module Octopress
         line = "| #{line.ljust(76)} |"
       end
 
-      # Return information about each asset 
+      # Return information about each asset
       def assets_info(options)
         message = ''
         no_assets = []
@@ -208,7 +195,7 @@ module Octopress
       #
       # input: options (an array ['type',...], hash {'type'=>true}
       # or string of asset types)
-      # 
+      #
       # Output a hash of assets instances {'files' => @files }
       #
       def select_assets(asset_types)
@@ -220,7 +207,7 @@ module Octopress
         end
 
         asset_types = [asset_types] if asset_types.is_a? String
-        
+
         # Remove options which don't belong
         #
         asset_types.select!{|asset| assets.include?(asset)}
