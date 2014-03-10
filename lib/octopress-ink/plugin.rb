@@ -103,11 +103,11 @@ module Octopress
             page_data = d.page.data
             title   = page_data['link_title'] || page_data['title']
             title ||= File.basename(d.file, '.*')
-            path = File.join(docs_base_path, d.file)
+            url = File.join(docs_base_path, d.file)
 
             {
               'title' => title,
-              'path' => path
+              'url' => url
             }
           end
         end

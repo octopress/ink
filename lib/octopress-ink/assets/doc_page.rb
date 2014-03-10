@@ -38,8 +38,11 @@ module Octopress
           return @page if @page
           @page = Page.new(Plugins.site, source_dir, page_dir, file, {'path'=>plugin.docs_base_path})
           @page.data['layout'] = 'docs'
-          @page.data['plugin'] = @plugin.slug
-          @page.data['docs_pages'] = @plugin.doc_pages
+          @page.data['plugin'] = { 
+            'name' => @plugin.name, 
+            'slug' => @plugin.slug
+          }
+          @page.data['doc_pages'] = @plugin.doc_pages
           @page
         end
 
