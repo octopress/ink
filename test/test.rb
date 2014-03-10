@@ -38,7 +38,7 @@ end
 
 def build(options={})
   config = ['_config.yml'] << options[:config]
-  cmd = "rm -rf site && bundle exec jekyll build --config #{config.join(',')}"
+  cmd = "rm -rf site && bundle exec jekyll build --trace --config #{config.join(',')}"
   #cmd += " --octopress-config #{options[:octopress_config]}" if options[:octopress_config]
   if options[:octopress_config]
     FileUtils.cp options[:octopress_config], '_octopress.yml'

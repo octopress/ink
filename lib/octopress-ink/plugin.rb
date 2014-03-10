@@ -11,6 +11,7 @@ module Octopress
       cattr_accessor(:docs_dir)           { "docs" }
       cattr_accessor(:fonts_dir)          { "fonts" }
       cattr_accessor(:images_dir)         { "images" }
+      cattr_accessor(:assets_path)        { "assets" }
       cattr_accessor(:includes_dir)       { "includes" }
       cattr_accessor(:javascripts_dir)    { "javascripts" }
       cattr_accessor(:css_dir, :sass_dir) { "stylesheets" }
