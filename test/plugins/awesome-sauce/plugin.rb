@@ -1,9 +1,11 @@
 class TestPlugin < Octopress::Ink::Plugin
+  @config = {
+    assets_path: File.expand_path(File.dirname(__FILE__)),
+    description: "Test some plugins y'all",
+    slug:        'awesome-sauce',
+    name:        'Awesome Sauce'
+  }
   def initialize
-    @assets_path = File.expand_path(File.dirname(__FILE__))
-    @description = "Test some plugins y'all"
-    @slug        = 'awesome-sauce'
-    @name        = 'Awesome Sauce'
     super
   end
 
