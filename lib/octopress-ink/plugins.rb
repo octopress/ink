@@ -44,7 +44,7 @@ module Octopress
 
       def self.add_files
         add_assets(%w{images pages files fonts docs})
-        plugin('asset-pipeline').register_assets
+        plugin('octopress-asset-pipeline').register_assets
         add_stylesheets
         add_javascripts
       end
@@ -59,14 +59,14 @@ module Octopress
         @site
       end
 
-      def self.register_plugin(plugin, name, type='plugin', local=nil)
-        new_plugin = plugin.new(name, type)
+      def self.register_plugin(plugin)
+        new_plugin = plugin.new
 
-        case type
+        case new_plugin.type
         when 'theme'
           @theme = new_plugin
         else
-          if local
+          if new_plugin.local
             @user_plugins << new_plugin
           else
             @plugins << new_plugin

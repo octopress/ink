@@ -5,8 +5,10 @@ module Octopress
   module Ink
     class AssetPipelinePlugin < Plugin
 
-      def initialize(slug, type)
-        @name = "Octopress Assset Pipeline"
+      def initialize
+        @name        = "Octopress Asset Pipeline"
+        @description = "Add your CSS and JS to the asset pipeline."
+        @local       = true
         super
       end
 

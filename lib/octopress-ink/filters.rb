@@ -1,7 +1,6 @@
 module Octopress
   module Ink
     module Filters
-      
 
       # Returns the site's config root or '/' if the config isn't set
       #
@@ -115,6 +114,8 @@ module Octopress
         input.gsub(/ /,'-').gsub(/[^\w-]/,'').downcase
       end
 
+      alias_method :sluggify, :classify
+
       # Remove empty lines
       def compact_newlines(input)
         input.gsub(/\n{2,}/, "\n").gsub(/^ +\n/,"")
@@ -125,8 +126,8 @@ module Octopress
         compact_newlines(input).strip.gsub(/\s*\n\s*/, separator)
       end
 
-      module_function :root, :expand_url, :expand_urls, :full_url, :full_urls, :excerpt, :cdata_escape, :titlecase, :classify, :join_lines, :compact_newlines, :unorphan
-      public :expand_url, :expand_urls, :full_url, :full_urls, :excerpt, :cdata_escape, :titlecase, :classify, :join_lines, :compact_newlines, :unorphan
+      module_function :root, :expand_url, :expand_urls, :full_url, :full_urls, :excerpt, :cdata_escape, :titlecase, :classify, :sluggify, :join_lines, :compact_newlines, :unorphan
+      public :expand_url, :expand_urls, :full_url, :full_urls, :excerpt, :cdata_escape, :titlecase, :classify, :sluggify, :join_lines, :compact_newlines, :unorphan
     end
   end
 end

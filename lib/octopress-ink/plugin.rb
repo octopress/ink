@@ -3,12 +3,11 @@ require 'find'
 module Octopress
   module Ink
     class Plugin
-      attr_reader   :name, :type, :assets_path,
+      attr_reader   :website, :description, :version, :name, :type, :assets_path, :local,
                     :layouts_dir, :css_dir, :javascripts_dir, :files_dir, :includes_dir, :images_dir,
-                    :layouts, :includes, :images, :fonts, :files, :pages, :docs,
-                    :website, :description, :version, :config
+                    :layouts, :includes, :images, :fonts, :files, :pages, :docs, :config
 
-      def initialize(slug, type)
+      def initialize
         @layouts_dir       = 'layouts'
         @files_dir         = 'files'
         @pages_dir         = 'pages'
@@ -30,9 +29,10 @@ module Octopress
         @fonts             = []
         @files             = []
         @pages             = []
-        @type              = type
-        @slug              = slug
-        @name            ||= slug
+        @type            ||= 'plugin'
+        @name            ||= false
+        @slug            ||= @name
+        @local           ||= false
         @version         ||= false
         @description     ||= false
         @website         ||= false
@@ -85,7 +85,7 @@ module Octopress
       end
 
       def slug
-        @type == 'theme' ? @type : @slug
+        Filters.sluggify @type == 'theme' ? @type : @slug
       end
 
       def docs_base_path

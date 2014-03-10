@@ -27,8 +27,8 @@ module Octopress
       require 'octopress-ink/commands'
     end
 
-    def self.register_plugin(plugin, name, type='plugin', local=nil)
-      Plugins.register_plugin(plugin, name, type, local)
+    def self.register_plugin(plugin)
+      Plugins.register_plugin(plugin)
     end
 
     def self.version
@@ -62,7 +62,7 @@ module Octopress
         return false
       end
     end
-    
+
     # Prints a list of plugins and details
     #
     # options - a Hash of options from the Info command
@@ -156,6 +156,6 @@ Liquid::Template.register_tag('_', Octopress::Ink::Tags::LineCommentTag)
 require 'octopress-ink/plugins/ink'
 require 'octopress-ink/plugins/asset_pipeline'
 
-Octopress::Ink.register_plugin(Ink, 'ink', 'plugin')
-Octopress::Ink.register_plugin(Octopress::Ink::AssetPipelinePlugin, 'asset-pipeline', 'plugin', true)
+Octopress::Ink.register_plugin(Ink)
+Octopress::Ink.register_plugin(Octopress::Ink::AssetPipelinePlugin)
 

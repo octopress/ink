@@ -1,7 +1,9 @@
 class TestPlugin < Octopress::Ink::Plugin
-  def initialize(name, type)
-    @assets_path = File.expand_path(File.join(File.dirname(__FILE__)))
+  def initialize
+    @assets_path = File.expand_path(File.dirname(__FILE__))
     @description = "Test some plugins y'all"
+    @slug        = 'awesome-sauce'
+    @name        = 'Awesome Sauce'
     super
   end
 
@@ -12,5 +14,5 @@ class TestPlugin < Octopress::Ink::Plugin
   end
 end
 
-Octopress::Ink.register_plugin(TestPlugin, 'awesome-sauce')
+Octopress::Ink.register_plugin(TestPlugin)
 
