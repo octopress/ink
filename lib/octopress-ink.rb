@@ -156,6 +156,6 @@ Liquid::Template.register_tag('_', Octopress::Ink::Tags::LineCommentTag)
 require 'octopress-ink/plugins/ink'
 require 'octopress-ink/plugins/asset_pipeline'
 
-#Octopress::Ink.register_plugin(Ink)
+Octopress::Ink.register_plugin(Ink)
 Octopress::Ink.register_plugin(Octopress::Ink::AssetPipelinePlugin)
 
