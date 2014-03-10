@@ -3,6 +3,7 @@ require 'sass'
 require 'digest/md5'
 
 require 'octopress-ink/version'
+require 'octopress-ink/ext/attribute_accessors'
 require 'octopress-ink/generators/plugin_assets'
 require 'octopress-ink/jekyll/hooks'
 require 'octopress-ink/version'
@@ -62,7 +63,7 @@ module Octopress
         return false
       end
     end
-    
+
     # Prints a list of plugins and details
     #
     # options - a Hash of options from the Info command
