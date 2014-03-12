@@ -1,9 +1,9 @@
 class TestPlugin < Octopress::Ink::Plugin
-  @config = {
-    assets_path: File.expand_path(File.dirname(__FILE__)),
-    description: "Test some plugins y'all",
+  CONFIG = {
+    name:        'Awesome Sauce',
     slug:        'awesome-sauce',
-    name:        'Awesome Sauce'
+    assets_path: File.expand_path(File.dirname(__FILE__)),
+    description: "Test some plugins y'all"
   }
   def initialize
     super

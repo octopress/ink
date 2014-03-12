@@ -1,7 +1,7 @@
 require 'octopress-ink'
 
 class TestTheme < Octopress::Ink::Plugin
-  @config = {
+  CONFIG = {
     type:        "theme",
     description: "Test theme y'all",
     name:        "Classic Theme",

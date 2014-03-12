@@ -10,17 +10,10 @@ module Octopress
 
       attr_reader   :name, :type, :assets_path, :local, :website, :description, :version,
                     :layouts_dir, :css_dir, :javascripts_dir, :files_dir, :includes_dir, :images_dir,
-                    :layouts, :includes, :images, :fonts, :files, :pages, :docs, :config
-
-      class << self
-        attr_accessor :config
-      end
+                    :layouts, :includes, :images, :fonts, :files, :pages, :docs
 
       def initialize
-
-        if self.class.config
-          DEFAULT_CONFIG.merge(self.class.config).each {|k,v| set_config(k,v) }
-        end
+        DEFAULT_CONFIG.merge(self.class::CONFIG).each { |k,v| set_config(k,v) }
 
         @layouts_dir       = 'layouts'
         @files_dir         = 'files'
@@ -43,7 +36,6 @@ module Octopress
         @fonts             = []
         @files             = []
         @pages             = []
-        @type            ||= 'plugin'
         @slug            ||= @name
       end
 
@@ -58,7 +50,6 @@ module Octopress
 
       def register
         unless @assets_path.nil?
-          add_config
           disable_assets
           add_assets
           add_layouts
@@ -78,14 +69,14 @@ module Octopress
         css.clone.concat sass
       end
 
-      def add_config
-        @config = Assets::Config.new(self, @config_file).read
+      def config
+        @config ||= Assets::Config.new(self, @config_file).read
       end
 
       def disable_assets
         disabled = []
-        @config['disable'] ||= {}
-        @config['disable'].each do |key,val| 
+        config['disable'] ||= {}
+        config['disable'].each do |key,val| 
           next unless can_disable.include? key
           if !!val == val
             disabled << key if val
@@ -95,11 +86,11 @@ module Octopress
             disabled << File.join(key, val)
           end
         end
-        @config['disable'] = disabled
+        config['disable'] = disabled
       end
 
       def disabled?(dir, file)
-        @config['disable'].include?(dir) || @config['disable'].include?(File.join(dir, file))
+        config['disable'].include?(dir) || config['disable'].include?(File.join(dir, file))
       end
 
       def slug

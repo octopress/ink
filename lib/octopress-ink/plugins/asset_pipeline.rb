@@ -4,14 +4,14 @@
 module Octopress
   module Ink
     class AssetPipelinePlugin < Plugin
-      @config = {
+      CONFIG = {
         name:        "Octopress Asset Pipeline",
         description: "Add your CSS and JS to the asset pipeline.",
         local:       true
       }
 
-      def initialize
-        super
+      def config
+        @config ||= Ink.config
       end
 
       def register_assets
@@ -21,11 +21,11 @@ module Octopress
 
         remove_jekyll_assets @sass if @sass
 
-        if Ink.config['concat_js']
+        if config['concat_js']
           remove_jekyll_assets @javascripts if @javascripts
         end
 
-        if Ink.config['concat_css']
+        if config['concat_css']
           remove_jekyll_assets @css if @css
         end
       end
@@ -33,9 +33,9 @@ module Octopress
       def disabled?(dir, file)
         case dir
         when stylesheets_dir
-          Ink.config['disable'].include?('site_stylesheets')
+          config['disable'].include?('site_stylesheets')
         when javascripts_dir
-          Ink.config['disable'].include?('site_javascripts')
+          config['disable'].include?('site_javascripts')
         end
       end
 
@@ -65,11 +65,11 @@ module Octopress
       end
 
       def javascripts_dir
-        Ink.config['javascripts_dir']
+        config['javascripts_dir']
       end
 
       def stylesheets_dir
-        Ink.config['stylesheets_dir']
+        config['stylesheets_dir']
       end
 
       def local_stylesheets
@@ -83,7 +83,6 @@ module Octopress
       end
 
       def local_files(type, dir)
-        config = Ink.config
         source = Plugins.site.source
         
         # If they manually specify files
