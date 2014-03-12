@@ -1,12 +1,14 @@
 require 'octopress-ink'
 
 class TestTheme < Octopress::Ink::Plugin
-  CONFIG = {
-    type:        "theme",
-    description: "Test theme y'all",
-    name:        "Classic Theme",
-    assets_path:  File.expand_path(File.dirname(__FILE__))
-  }
+  def configuration
+    {
+      type:        "theme",
+      description: "Test theme y'all",
+      name:        "Classic Theme",
+      assets_path:  File.expand_path(File.dirname(__FILE__))
+    }
+  end
   
   def add_assets
     add_css_files ['theme-test.css', 'theme-test2.css']

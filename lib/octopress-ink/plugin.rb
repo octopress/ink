@@ -13,7 +13,7 @@ module Octopress
                     :layouts, :includes, :images, :fonts, :files, :pages, :docs
 
       def initialize
-        DEFAULT_CONFIG.merge(self.class::CONFIG).each { |k,v| set_config(k,v) }
+        DEFAULT_CONFIG.merge(configuration).each { |k,v| set_config(k,v) }
 
         @layouts_dir       = 'layouts'
         @files_dir         = 'files'
@@ -38,6 +38,8 @@ module Octopress
         @pages             = []
         @slug            ||= @name
       end
+
+      def configuration; {}; end
 
       def set_config(name,value)
         instance_variable_set("@#{name}", value)

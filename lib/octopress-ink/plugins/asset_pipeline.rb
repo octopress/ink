@@ -4,11 +4,13 @@
 module Octopress
   module Ink
     class AssetPipelinePlugin < Plugin
-      CONFIG = {
-        name:        "Octopress Asset Pipeline",
-        description: "Add your CSS and JS to the asset pipeline.",
-        local:       true
-      }
+      def configuration
+        {
+          name:        "Octopress Asset Pipeline",
+          description: "Add your CSS and JS to the asset pipeline.",
+          local:       true
+        }
+      end
 
       def config
         @config ||= Ink.config
