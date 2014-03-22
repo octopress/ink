@@ -142,7 +142,7 @@ module Octopress
       puts "Updated #{dest} from #{source}"
     end
 
-    def sefl.doc_title(input)
+    def self.doc_title(input)
       <<-YAML
 ---
 title: "#{input.strip}"
