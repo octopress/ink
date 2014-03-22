@@ -136,7 +136,7 @@ module Octopress
 
     def self.copy_doc(source, dest)
       contents = File.open(source).read
-      contents.sub!(/^# (.*)$/, "#{title('\1').strip}")
+      contents.sub!(/^# (.*)$/, "#{doc_title('\1').strip}")
       FileUtils.mkdir_p File.dirname(dest)
       File.open(dest, 'w') {|f| f.write(contents) }
       puts "Updated #{dest} from #{source}"
