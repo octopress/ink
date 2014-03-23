@@ -45,7 +45,7 @@ module Octopress
 
     def self.site(options={})
       log_level = Jekyll.logger.log_level
-      Jekyll.logger.log_level = Jekyll::Stevenson::WARN
+      Jekyll.logger.log_level = Jekyll::Stevenson::ERROR
       @site ||= Jekyll::Site.new(Jekyll.configuration(options))
       Jekyll.logger.log_level = log_level
       @site

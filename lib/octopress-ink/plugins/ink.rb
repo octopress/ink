@@ -13,5 +13,13 @@ class Ink < Octopress::Ink::Plugin
   def docs_base_path
     'docs/ink'
   end
+
+  def info(options)
+    if options['docs']
+      super
+    else
+      ''
+    end
+  end
 end
 

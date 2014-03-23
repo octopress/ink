@@ -23,7 +23,7 @@ module Octopress
         end
 
         def plugin_path
-          File.join(plugin_dir, dir, file)
+          File.join(plugin_dir, page_dir, file)
         end
 
         def source_dir
