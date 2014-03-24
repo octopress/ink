@@ -134,6 +134,10 @@ module Octopress
       end
     end
 
+    def self.gem_dir(*subdirs)
+      File.expand_path(File.join(File.dirname(__FILE__), '../..', *subdirs))
+    end
+
     def self.copy_doc(source, dest)
       contents = File.open(source).read
       contents.sub!(/^# (.*)$/, "#{doc_title('\1').strip}")
@@ -168,6 +172,7 @@ Liquid::Template.register_tag('yield', Octopress::Ink::Tags::YieldTag)
 Liquid::Template.register_tag('wrap', Octopress::Ink::Tags::WrapTag)
 Liquid::Template.register_tag('abort', Octopress::Ink::Tags::AbortTag)
 Liquid::Template.register_tag('_', Octopress::Ink::Tags::LineCommentTag)
+Liquid::Template.register_tag('doc_url', Octopress::Ink::Tags::DocUrlTag)
 
 require 'octopress-ink/plugins/ink'
 require 'octopress-ink/plugins/asset_pipeline'

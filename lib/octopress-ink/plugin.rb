@@ -9,7 +9,7 @@ module Octopress
       }
 
       attr_reader   :name, :type, :assets_path, :local, :website, :description, :version,
-                    :layouts_dir, :css_dir, :javascripts_dir, :files_dir, :includes_dir, :images_dir,
+                    :layouts_dir, :stylesheets_dir, :javascripts_dir, :files_dir, :includes_dir, :images_dir,
                     :layouts, :includes, :images, :fonts, :files, :pages, :docs
 
       def initialize
@@ -23,8 +23,7 @@ module Octopress
         @images_dir        = 'images'
         @includes_dir      = 'includes'
         @javascripts_dir   = 'javascripts'
-        @css_dir           = 'stylesheets'
-        @sass_dir          = 'stylesheets'
+        @stylesheets_dir   = 'stylesheets'
         @config_file       = 'config.yml'
         @layouts           = []
         @includes          = []
@@ -62,13 +61,14 @@ module Octopress
           add_docs
           add_files
           add_pages
+          add_stylesheets
         end
       end
 
       def add_assets; end
 
       def stylesheets
-        css.clone.concat sass
+        css.clone.concat sass_without_partials
       end
 
       def config
@@ -110,17 +110,19 @@ module Octopress
       #
       def doc_pages
         if !@docs.empty?
-          @docs.clone.map do |d|
-            page_data = d.page.data
-            title   = page_data['link_title'] || page_data['title']
-            title ||= File.basename(d.file, '.*')
-            url = File.join(docs_base_path, d.file)
+          @docs.clone.map { |d|
+            page = d.page
+            title   = page.data['link_title'] || page.data['title'] || page.basename
+            url = File.join('/', docs_base_path, page.url.sub('index.html', ''))
 
             {
               'title' => title,
               'url' => url
             }
-          end
+          }.sort_by { |i| 
+            # Sort by depth of url
+            i['url'].split('/').size
+          }
         end
       end
 
@@ -194,6 +196,12 @@ module Octopress
         message = ''
         no_assets = []
 
+        if options['stylesheets']
+          options['css'] = true
+          options['sass'] = true
+          options.delete('stylesheets')
+        end
+
         select_assets(options).each do |name, assets|
           next if assets.size == 0
           if name == 'docs'
@@ -243,46 +251,59 @@ module Octopress
         end
       end
 
+      def add_stylesheets
+        find_assets(@stylesheets_dir).each do |asset|
+          if File.extname(asset) =~ /s[ca]ss/
+            @sass << Assets::Sass.new(self, @stylesheets_dir, asset)
+          else
+            @css << Assets::Stylesheet.new(self, @stylesheets_dir, asset)
+          end
+        end
+      end
+
       def add_layouts
-        @layouts = find_assets(@layouts_dir, Assets::Layout)
+        @layouts = add_new_assets(@layouts_dir, Assets::Layout)
       end
 
       def add_includes
-        @includes = find_assets(@includes_dir, Assets::Asset)
+        @includes = add_new_assets(@includes_dir, Assets::Asset)
       end
 
       def add_pages
-        @pages = find_assets(@pages_dir, Assets::PageAsset)
+        @pages = add_new_assets(@pages_dir, Assets::PageAsset)
       end
 
       def add_docs
-        @docs = find_assets(@docs_dir, Assets::DocPageAsset)
+        @docs = add_new_assets(@docs_dir, Assets::DocPageAsset)
       end
 
       def add_files
-        @files = find_assets(@files_dir, Assets::FileAsset)
+        @files = add_new_assets(@files_dir, Assets::FileAsset)
       end
 
       def add_javascripts
-        @javascripts = find_assets(@javascripts_dir, Assets::Javascript)
+        @javascripts = add_new_assets(@javascripts_dir, Assets::Javascript)
       end
 
       def add_fonts
-        @fonts = find_assets(@fonts_dir, Assets::Asset)
+        @fonts = add_new_assets(@fonts_dir, Assets::Asset)
       end
 
       def add_images
-        @images = find_assets(@images_dir, Assets::Asset)
+        @images = add_new_assets(@images_dir, Assets::Asset)
       end
 
-      def find_assets(dir, asset_type)
-        found = []
-        full_dir = File.join(@assets_path, dir)
-        glob_assets(full_dir).each do |file|
-          asset = file.sub(full_dir+'/', '')
-          found << asset_type.new(self, dir, asset)
+      def add_new_assets(dir, asset_type)
+        find_assets(dir).map do |asset|
+          asset_type.new(self, dir, asset)
         end
-        found
+      end
+
+      def find_assets(dir)
+        full_dir = File.join(@assets_path, dir)
+        glob_assets(full_dir).map do |file|
+          file.sub(full_dir+'/', '')
+        end
       end
 
       def glob_assets(dir)
@@ -290,21 +311,21 @@ module Octopress
         Find.find(dir).to_a.reject {|f| File.directory? f }
       end
 
-      def add_css(file, media=nil)
-        @css << Assets::Stylesheet.new(self, @css_dir, file, media)
-      end
+      #def add_css(file, media=nil)
+        #@css << Assets::Stylesheet.new(self, @stylesheets_dir, file, media)
+      #end
 
-      def add_sass(file, media=nil)
-        @sass << Assets::Sass.new(self, @sass_dir, file, media)
-      end
+      #def add_sass(file, media=nil)
+        #@sass << Assets::Sass.new(self, @sass_dir, file, media)
+      #end
 
-      def add_css_files(files, media=nil)
-        files.each { |f| add_css(f, media) }
-      end
+      #def add_css_files(files, media=nil)
+        #files.each { |f| add_css(f, media) }
+      #end
 
-      def add_sass_files(files, media=nil)
-        files.each { |f| add_sass(f, media) }
-      end
+      #def add_sass_files(files, media=nil)
+        #files.each { |f| add_sass(f, media) }
+      #end
 
       def remove_jekyll_assets(files)
         files.each {|f| f.remove_jekyll_asset }
@@ -318,6 +339,13 @@ module Octopress
 
       def copy_asset_files(path, options)
         copied = []
+
+        if options['stylesheets']
+          options['css'] = true
+          options['sass'] = true
+          options.delete('stylesheets')
+        end
+
         select_assets(options).each do |name, assets|
           next if name == 'docs'
           assets.each { |a| copied << a.copy(path) }
@@ -343,6 +371,10 @@ module Octopress
 
       def sass
         @sass.reject{|f| f.disabled? }
+      end
+
+      def sass_without_partials
+        sass.reject{|f| f.file =~ /^_/ }
       end
 
       def javascripts

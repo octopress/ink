@@ -3,7 +3,7 @@ class Ink < Octopress::Ink::Plugin
     {
       name:        "Octopress Ink",
       slug:        "ink",
-      assets_path: File.expand_path(File.join(File.dirname(__FILE__), '../../../assets')),
+      assets_path: Octopress::Ink.gem_dir('assets'),
       version:     Octopress::Ink::VERSION,
       description: "Octopress Ink is a plugin framework for Jekyll",
       website:     "http://octopress.org/docs/ink"

@@ -2,4 +2,4 @@ source 'https://rubygems.org'
 
 gem "octopress-ink", path: "../"
 gem "pry-debugger"
-#gem "octopress", path: "../../cli"
+gem "octopress", path: "../../cli"

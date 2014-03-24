@@ -2,7 +2,7 @@ module Octopress
   module Ink
     module Assets
       class Sass < Stylesheet
-        def initialize(plugin, base, file, media)
+        def initialize(plugin, base, file)
           @plugin = plugin
           @base = base
           @file = file

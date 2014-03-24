@@ -3,7 +3,7 @@ module Octopress
     module Assets
       class Stylesheet < Asset
 
-        def initialize(plugin, base, file, media)
+        def initialize(plugin, base, file)
           @plugin = plugin
           @file = file
           @base = base

@@ -40,7 +40,8 @@ module Octopress
           @page.data['layout'] = 'docs'
           @page.data['plugin'] = { 
             'name' => @plugin.name, 
-            'slug' => @plugin.slug
+            'slug' => @plugin.slug,
+            'docs_base_path' => plugin.docs_base_path
           }
           @page.data['doc_pages'] = @plugin.doc_pages
           @page

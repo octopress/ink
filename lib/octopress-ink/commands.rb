@@ -1,7 +1,7 @@
 module Octopress
   module Ink
     module Commands
-      require 'octopress-ink/commands/info'
+      require 'octopress-ink/commands/list'
       require 'octopress-ink/commands/copy'
 
       class Ink < Octopress::Command
@@ -9,10 +9,14 @@ module Octopress
         def self.init_with_program(p)
           p.command(:ink) do |c|
             c.version Octopress::Ink::VERSION
-            c.description "Get informationa about and work with Octopress Ink plugins."
+            c.description "Work with your Octopress Ink plugins."
             c.syntax "ink <subcommand>"
 
-            Info.process_command(c)
+            c.action do |args, options|
+              puts c if args.empty?
+            end
+
+            List.process_command(c)
             Copy.process_command(c)
           end
         end

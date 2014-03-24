@@ -14,6 +14,7 @@ module Octopress
       autoload :WrapTag,              'octopress-ink/tags/wrap'
       autoload :AbortTag,             'octopress-ink/tags/abort'
       autoload :LineCommentTag,       'octopress-ink/tags/line_comment'
+      autoload :DocUrlTag,            'octopress-ink/tags/doc_url'
     end
   end
 end
