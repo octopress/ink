@@ -23,10 +23,15 @@ module Octopress
         def self.expand(file, context)
           root = context.registers[:site].source
 
-          # If local file, e.g. ./somefile
-          if file =~ /^\.\/(.+)/
-            local_dir = File.dirname context.registers[:page]['path']
-            File.join root, local_dir, $1
+          # If relative path, e.g. ./somefile, ../somefile
+          if file =~ /^\.+\//
+            page = context['page']
+            if local_dir = page['dir']
+              File.expand_path(File.join(local_dir, file))
+            else
+              local_dir = File.dirname page['path']
+              File.expand_path(File.join(root, local_dir, file))
+            end
 
           # If absolute or relative to a user directory, e.g. /Users/Bob/somefile or ~/somefile
           elsif file =~ /^[\/~]/

@@ -274,7 +274,11 @@ module Octopress
       end
 
       def add_docs
-        @docs = add_new_assets(@docs_dir, Assets::DocPageAsset)
+        find_assets(@docs_dir).each do |asset|
+          unless asset =~ /^_/
+            @docs << Assets::DocPageAsset.new(self, @docs_dir, asset)
+          end
+        end
       end
 
       def add_files

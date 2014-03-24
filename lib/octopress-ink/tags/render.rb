@@ -53,7 +53,7 @@ module Octopress
           path = markup.match(SYNTAX)[1]
           @path = Helpers::Path.expand(path, context)
           begin
-            Pathname.new(@path).read
+            File.open(@path).read
           rescue
             raise IOError.new "Render failed: {% #{@tag_name} #{@og_markup}%}. The file '#{path}' could not be found at #{@path}."
           end
