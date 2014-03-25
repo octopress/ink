@@ -1,6 +1,6 @@
 ---
 layout: theme:default
-url_config: page_urls.test
+permalink_config: page_two
 ---
 
 Testing pages. **strong** *emphasized* [a link](http://example.com)

@@ -1,5 +1,5 @@
 test: config from theme
 test_override: also config from theme
-page_urls:
-  sub: /test-pages/sub/test.html
-  test: /test-pages/index.html
+page_permalinks:
+  feed: /test-pages/index.html
+  page_two: /test-pages/sub/test.html

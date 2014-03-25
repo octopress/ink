@@ -1,8 +1,7 @@
 test_override: config from theme override
-page_urls:
-  test: test_pages/theme_page.html
-feed:
-  url: test_pages/feed/
+page_permalinks:
+  page_two: test_pages/theme_page.html
+  feed: test_pages/feed/
 
 disable:
   fonts: true

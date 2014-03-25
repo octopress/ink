@@ -1,4 +1,4 @@
 ---
-url_config: feed.url
+permalink_config: feed
 ---
 <tag>fooo</tag>

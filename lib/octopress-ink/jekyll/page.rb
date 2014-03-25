@@ -28,9 +28,8 @@ module Octopress
           @url
         else
           begin
-            if path_config = self.data['url_config']
-              config = @config
-              path_config.split('.').each { |key| config = config[key] }
+            if path_config = self.data['permalink_config']
+              config = @config['page_permalinks'][path_config]
               @url = config if config.is_a? String
             end
           rescue; end
