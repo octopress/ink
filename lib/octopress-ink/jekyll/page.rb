@@ -31,6 +31,7 @@ module Octopress
             if path_config = self.data['permalink_config']
               config = @config['page_permalinks'][path_config]
               @url = config if config.is_a? String
+              self.data['permalink'] = nil
             end
           rescue; end
 
