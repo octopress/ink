@@ -135,23 +135,22 @@ module Octopress
     end
 
     def self.gem_dir(*subdirs)
-      File.expand_path(File.join(File.dirname(__FILE__), '../..', *subdirs))
+      File.expand_path(File.join(File.dirname(__FILE__), '../', *subdirs))
     end
 
-    def self.copy_doc(source, dest)
+    def self.copy_doc(source, dest, permalink=nil)
       contents = File.open(source).read
-      contents.sub!(/^# (.*)$/, "#{doc_title('\1').strip}")
+      contents.sub!(/^# (.*)$/, "#{doc_yaml('\1', permalink).strip}")
       FileUtils.mkdir_p File.dirname(dest)
       File.open(dest, 'w') {|f| f.write(contents) }
       puts "Updated #{dest} from #{source}"
     end
 
-    def self.doc_title(input)
-      <<-YAML
----
-title: "#{input.strip}"
----  
-    YAML
+    def self.doc_yaml(title, permalink)
+      yaml  = "---\n"
+      yaml += "title: \"#{title.strip}\"\n"
+      yaml += "permalink: #{permalink.strip}\n" if permalink
+      yaml += "---"
     end
   end
 end
@@ -177,6 +176,6 @@ Liquid::Template.register_tag('doc_url', Octopress::Ink::Tags::DocUrlTag)
 require 'octopress-ink/plugins/ink'
 require 'octopress-ink/plugins/asset_pipeline'
 
-Octopress::Ink.register_plugin(Ink)
+Octopress::Ink.register_plugin(Octopress::Ink::InkPlugin)
 Octopress::Ink.register_plugin(Octopress::Ink::AssetPipelinePlugin)
 

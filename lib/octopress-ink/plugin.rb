@@ -110,7 +110,7 @@ module Octopress
       #
       def doc_pages
         if !@docs.empty?
-          @docs.clone.map { |d|
+          @doc_pages ||= @docs.clone.map { |d|
             page = d.page
             title   = page.data['link_title'] || page.data['title'] || page.basename
             url = File.join('/', docs_base_path, page.url.sub('index.html', ''))

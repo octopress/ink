@@ -35,6 +35,8 @@ module Octopress
             end
           rescue; end
 
+          super
+
           if @url && @url =~ /\/$/
             if self.ext == '.xml'
               @url = File.join(@url, "index.xml")
@@ -43,10 +45,9 @@ module Octopress
             end
           end
 
-          super
+          @url
         end
       end
     end
   end
 end
-

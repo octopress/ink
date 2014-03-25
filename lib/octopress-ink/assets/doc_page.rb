@@ -44,7 +44,6 @@ module Octopress
             'docs_base_path' => plugin.docs_base_path,
           }
           @page.data['dir'] = File.dirname(plugin_path)
-          @page.data['doc_pages'] = @plugin.doc_pages
           @page
         end
 

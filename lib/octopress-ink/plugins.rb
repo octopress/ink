@@ -97,16 +97,16 @@ module Octopress
       # returns: Array of plugin doc pages
       #
       def self.doc_pages
-        plugins.clone.map { |p|
+        plugin_docs = {}
+        plugins.clone.map do |p|
           if pages = p.doc_pages
-            { 
+            plugin_docs[p.slug] = {
               "name" => p.name,
               "pages" => pages
             }
-          else
-            nil
           end
-        }.compact
+        end
+        plugin_docs
       end
 
       def self.include(name, file)
