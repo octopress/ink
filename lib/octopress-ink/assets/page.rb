@@ -27,7 +27,7 @@ module Octopress
         end
 
         def url_info
-          "path: #{page.url.sub(/^\//,'')}"
+          "/#{page.url.sub(/^\//,'')}"
         end
 
         def user_dir

@@ -1,6 +1,6 @@
 test_override: config from theme override
 page_permalinks:
-  page_two: test_pages/theme_page.html
+  two: test_pages/theme_page.html
   feed: test_pages/feed/
 
 disable:
