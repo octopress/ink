@@ -1,4 +1,4 @@
-/* Theme: classic */
+/* Theme: Classic Theme */
 body {
   margin: 2px;
   padding: 2px;
@@ -18,7 +18,7 @@ body {
   color: #fff;
 }
 
-/* Plugin: asset-pipeline */
+/* Plugin: Octopress Asset Pipeline */
 .css-plugin {
   background: #fed;
 }

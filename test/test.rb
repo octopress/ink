@@ -166,22 +166,22 @@ test_javascripts('concat_js')
 test_configs('expected')
 test_root_assets('expected')
 
-Octopress::Ink.copy_plugin_assets('theme', '_copy', {'force'=> true})
+Octopress::Ink.copy_plugin_assets('theme', {'path' => '_copy', 'force'=> true})
 test_copy_assets('copy_test')
 
-Octopress::Ink.copy_plugin_assets('theme', '_copy', {'force'=> true, 'layouts' => true, 'pages' => true})
+Octopress::Ink.copy_plugin_assets('theme', {'path' => '_copy', 'force'=> true, 'layouts' => true, 'pages' => true})
 test_copy_assets('copy_layouts_pages')
 
 build octopress_config: '_concat_false.yml'
 test_stylesheets('concat_css_false', false)
 test_javascripts('concat_js_false', false)
-#test_disabled('site')
+test_disabled('site')
 
-#build config: '_sass_compact.yml'
-#test_stylesheets('sass_compact')
+build config: '_sass_compact.yml'
+test_stylesheets('sass_compact')
 
-#build config: '_sass_expanded.yml'
-#test_stylesheets('sass_expanded')
+build config: '_sass_expanded.yml'
+test_stylesheets('sass_expanded')
 
 print_failures
 

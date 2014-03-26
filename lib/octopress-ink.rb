@@ -97,9 +97,9 @@ module Octopress
       end
     end
 
-    def self.copy_plugin_assets(name, path, options)
+    def self.copy_plugin_assets(name, options)
       Plugins.register site(options)
-      if path
+      if path = options.delete('path')
         full_path = File.join(Plugins.site.source, path)
         if !Dir["#{full_path}/*"].empty? && options['force'].nil?
           abort "Error: directory #{path} is not empty. Use --force to overwrite files."

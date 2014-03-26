@@ -1,3 +1,5 @@
+/* Theme: Classic Theme */
 * { background: none; color: #000; }
 
+/* Plugin: Awesome Sauce */
 article a:after { content: attr(href); }
