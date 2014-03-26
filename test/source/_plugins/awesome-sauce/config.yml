@@ -1,4 +1,4 @@
 test_override: config from plugin override
 page_permalinks:
-  one: test_pages/plugin_page_override.html
-  two: test_pages/plugin_page.html
+  a: test_pages/plugin_page_override.html
+  b: test_pages/plugin_page.html
