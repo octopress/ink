@@ -6,43 +6,46 @@ module Octopress
           p.command(:new) do |c|
             c.syntax "new <PLUGIN_NAME> [options]"
             c.description "Create a new Octopress Ink plugin with Ruby gem scaffolding."
-            c.option "path", "--path PATH", "Create a plugin at a specified path (defaults to current directory)"
-            c.option "theme", "--theme", "Create a new theme"
-            #c.option "force", "--force", "Overwrite files"
+            c.option "path", "--path PATH", "Create a plugin at a specified path (defaults to current directory)."
+            c.option "theme", "--theme", "Create a new theme."
+            c.option "class", "--class", "Scaffold plugin as a subclass of Octopress::Ink::Plugin."
 
             c.action do |args, options|
               if args.empty?
                 raise "Please provide a plugin name, e.g. my_awesome_plugin."
               else
                 options['name'] = args[0]
-                new_plugin options
+                @options = options
+                new_plugin
               end
             end
           end
         end
 
-        def self.new_plugin(options)
-          path = options['path'] || Dir.pwd
-          name = options['name']
-          type = options['theme'] ? 'theme' : 'plugin'
+        def self.new_plugin
+          path = @options['path'] ||= Dir.pwd
+          @gem_dir = File.join(path, @options['name'])
 
           if !Dir.exist?(path)
             raise "Directory not found: #{File.expand_path(path)}."
           end
 
+          if !Dir["#{@gem_dir}/*"].empty?
+            raise "Directory not empty: #{File.expand_path(@gem_dir)}."
+          end
+
           FileUtils.cd path do
-            create_gem(name)
+            create_gem
             add_dependency
-            add_plugin(type)
+            add_plugin
             add_asset_dirs
           end
         end
 
-        def self.create_gem(name)
-          puts output = `bundle gem #{name}`
+        def self.create_gem
+          puts output = `bundle gem #{@options['name']}`
           @gemspec_file = output.match(/^\s*\w+\s+(.+.gemspec)/)[1]
           @module_file = output.match(/^\s*\w+\s+(.+.rb)/)[1]
-          @gem_dir = @gemspec_file.match(/(.+?)\//)[1]
         end
 
         # Add Octopress Ink dependency to Gemspec
@@ -60,17 +63,18 @@ module Octopress
 
         # Add Octopress Ink plugin to core module file
         #
-        def self.add_plugin(type)
+        def self.add_plugin
           mod = File.open(@module_file).read
           
           # Find the inner most module name
           @modules  = mod.scan(/module\s+(.+?)\n/).flatten
           @mod_path = @modules.join('::')
-
-          pos = mod.index("\nmodule")
-          mod = insert_before(mod, pos, "require \"octopress-ink\"\n")
-          mod = add_plugin_class(mod, type)
-          mod += "\nOctopress::Ink.register_plugin(#{@mod_path}::InkPlugin)"
+          
+          if @options['class']
+            mod = add_plugin_class mod
+          else
+            mod = add_simple_plugin mod
+          end
 
           File.open(@module_file, 'w+') {|f| f.write(mod) }
         end
@@ -82,13 +86,19 @@ module Octopress
           end
         end
 
-        # Add plugin class definition
+        # New plugin uses a simple configuration hash
         #
-        def self.add_plugin_class(mod, type)
-          plugin_name = format_name(@modules.last)
-          plugin_slug = Filters.sluggify(plugin_name)
-          depth = @module_file.count('/') - 1
-          assets_path = ("../" * depth) + 'assets'
+        def self.add_simple_plugin(mod)
+          mod  = mod.scan(/require.+\n/)[0]
+          mod += 'require "octopess-ink"'
+          mod += "\n\nOctopress::Ink.new_plugin({\n#{indent(plugin_config)}\n)}"
+        end
+
+        # New plugin should subclass of Octopress::Ink::Plugin
+        #
+        def self.add_plugin_class(mod)
+          pos = mod.index("\nmodule")
+          mod = insert_before(mod, pos, "require \"octopress-ink\"\n")
 
           plugin = <<-HERE
 class InkPlugin < Octopress::Ink::Plugin
@@ -97,23 +107,39 @@ class InkPlugin < Octopress::Ink::Plugin
   #
   def configuration
     {
-      name:          "#{plugin_name}",
-      slug:          "#{plugin_slug}",
-      assets_path:   File.expand_path(File.join(File.dirname(__FILE__), "#{assets_path}")),
-      type:          "#{type}",
-      version:       #{@mod_path}::VERSION,
-      description:   "",
-      website:       ""
+#{indent(plugin_config, 3).rstrip}
     }
   end
 end
 HERE
           # match indentation
-          plugin = "\n" + plugin.gsub(/^/, '  ' * @modules.length)
-          mod.sub(/\s*# Your code goes here.+/, plugin)
+          plugin = "\n" + indent(plugin, @modules.size)
+          mod.sub!(/\s*# Your code goes here.+/, plugin)
+
+          mod + "\nOctopress::Ink.register_plugin(#{@mod_path}::InkPlugin)"
         end
 
+        def self.plugin_config
+          plugin_name = format_name(@modules.last)
+          plugin_slug = Filters.sluggify(plugin_name)
+          depth = @module_file.count('/') - 1
+          assets_path = ("../" * depth) + 'assets'
+          type = @options['theme'] ? 'theme' : 'plugin'
 
+          <<-HERE
+name:          "#{plugin_name}",
+slug:          "#{plugin_slug}",
+assets_path:   File.expand_path(File.join(File.dirname(__FILE__), "#{assets_path}")),
+type:          "#{type}",
+version:       #{@mod_path}::VERSION,
+description:   "",
+website:       ""
+          HERE
+        end
+
+        def self.indent(input, level=1)
+          input.gsub(/^/, '  ' * level)
+        end
         # Add spaces between capital letters
         #
         def self.format_name(name)
