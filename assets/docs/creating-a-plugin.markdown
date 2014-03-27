@@ -3,55 +3,44 @@ title: "Create an Octopress Ink Plugin"
 permalink: /guides/creating-a-plugin/
 ---
 
-If you haven't created a Ruby gem for your plugin, check out [Creating a Gem]({% doc_url /guides/creating-a-gem/ %}).
+*This guide assumes you have already installed Git, and Ruby 1.9.3 or greater.*
 
-In this section we'll create an Octopress Ink plugin. Take a look at `lib/baconnaise.rb`. You should see
-something like this:
+Octopress Ink plugins are distributed as ruby gems so you'll probably need to create an acconut at [RubyGems.org](https://rubygems.org/sign_up) if you haven't yet. Also, be sure to install the [bundler](http://bundler.io) gem.
 
-```ruby
-require "baconnaise/version"
+## Creating a Plugin
 
-module Baconnaise
-  # Your code goes here...
-end
+To create a new plugin from scratch run:
+
+```sh
+octopress ink new cool_plugin
 ```
 
-We'll require octopress-ink add a configuration method, and register the plugin with Octopress Ink plugin. Here's what `lib/baconnaise.rb` after we've done that.
+This will add scaffolding for a gem-based plugin in the `cool_plugin` directory. To create a theme, add the `--theme` flag.  Here's what that will look like.
 
-```ruby
-require "baconnaise/version"
-require "octopress-ink"
-
-module Baconnaise
-  class InkPlugin < Octopress::Ink::Plugin
-    def configuration
-      {
-        # your configuration goes here.
-      }
-    end
-  end
-end
-
-# Register the plugin with Octopress Ink
-Octopress::Ink.register_plugin(Baconnaise::InkPlugin)
+```
+assets/
+  files/
+  fonts/
+  images/
+  includes/
+  javascripts/
+  layouts/
+  pages/
+  stylesheets/
+lib/
+  cool_plugin/
+    version.rb
+  cool_plugin.rb
+cool_plugin.gemspec
+Gemfile
+LICENSE.txt
+Rakefile
+README.md
 ```
 
-Now when Jekyll requires your plugin, it will register with Octopress Ink. The configuration options are as follows:
+This is basically Bundler's gem scaffolding with a few additions.
 
-{% render ./_configuration.markdown %}
+- Empty asset directories are added.
+- The gemspec requires `octopress-ink` as a runtime dependency.
+- A basic Octopress Ink plugin is added to `lib/cool_plugin.rb`.
 
-For Baconnaise, our configuration medthod will look like this:
-
-```ruby
-def configuration
-  {
-    name:        "Baconnaise",
-    slug:        "baconnaise",
-    assets_path: File.expand_path(File.join(File.dirname(__FILE__), '../assets')),
-    type:        "plugin",
-    version:     Baconnaise::VERSION,
-    description: "Baconnaise, because mistakes have never been this spreadable.",
-    website:     "http://baconnaise-craze.info/or/something/"
-  }
-end
-```
