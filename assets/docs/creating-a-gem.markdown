@@ -22,7 +22,8 @@ Now we'll use Bundler to create a gem project for our new plugin.
 bundle gem baconnaise
 ```
 
-That's right, this plugin will be called `baconnaise`. That command will generate a bunch of files into the new `baconnaise` directory. Take a peek inside and you'll see somethig like this:
+
+That's right, this plugin will be called `baconnaise`. When considering a name for a gem, here are some helpful [gem naming guidenlies](http://guides.rubygems.org/name-your-gem/). That command will generate a bunch of files into the new `baconnaise` directory. Take a peek inside and you'll see somethig like this:
 
 ```
 lib/

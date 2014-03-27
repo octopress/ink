@@ -3,7 +3,7 @@ title: "Create an Octopress Ink Plugin"
 permalink: /guides/creating-a-plugin/
 ---
 
-If you haven't created a ruby gem for your plugin, check out [Creating a Gem]({% doc_url /guides/creating-a-gem/ %}).
+If you haven't created a Ruby gem for your plugin, check out [Creating a Gem]({% doc_url /guides/creating-a-gem/ %}).
 
 In this section we'll create an Octopress Ink plugin. Take a look at `lib/baconnaise.rb`. You should see
 something like this:

@@ -3,7 +3,7 @@ title: "Octopress Ink Plugin Reference"
 permalink: /plugin-reference/
 ---
 
-Octopress Ink plugins should be distributed as ruby gems. If you don't know how to create a ruby gem, [follow this walkthrough]({% doc_url /guides/create-a-gem/ %}).
+Octopress Ink plugins should be distributed as Ruby gems. If you don't know how to create a ruby gem, [follow this walkthrough]({% doc_url /guides/create-a-gem/ %}).
 
 ### Plugin Template
 

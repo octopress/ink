@@ -3,6 +3,7 @@ module Octopress
     module Commands
       require 'octopress-ink/commands/list'
       require 'octopress-ink/commands/copy'
+      require 'octopress-ink/commands/new'
 
       class Ink < Octopress::Command
 
@@ -18,6 +19,7 @@ module Octopress
 
             List.process_command(c)
             Copy.process_command(c)
+            New.process_command(c)
           end
         end
       end
