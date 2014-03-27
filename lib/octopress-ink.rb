@@ -27,8 +27,20 @@ module Octopress
       require 'octopress-ink/commands'
     end
 
+    # Register a new plugin
+    # 
+    # plugin - A subclass of Plugin
+    #
     def self.register_plugin(plugin)
       Plugins.register_plugin(plugin)
+    end
+
+    # Create a new plugin from a configuration hash
+    # 
+    # options - A hash of configuration options.
+    #
+    def self.new_plugin(options)
+      Plugins.register_plugin Plugin, options
     end
 
     def self.version

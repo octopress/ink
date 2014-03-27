@@ -59,8 +59,8 @@ module Octopress
         @site
       end
 
-      def self.register_plugin(plugin)
-        new_plugin = plugin.new
+      def self.register_plugin(plugin, options=nil)
+        new_plugin = plugin.new(options)
 
         case new_plugin.type
         when 'theme'
