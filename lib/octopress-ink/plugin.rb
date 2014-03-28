@@ -157,7 +157,7 @@ module Octopress
       def info(options={})
         if options['minimal']
           message = " #{@name}"
-          message += " (theme)" if @type == 'theme'
+          message += " (#{slug})"
           message += " - v#{@version}" if @version
           if @description
             message = "#{message.ljust(30)} #{@description}"

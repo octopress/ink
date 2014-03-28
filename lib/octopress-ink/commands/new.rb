@@ -61,9 +61,10 @@ module Octopress
         def self.add_dependency
           minor_version = VERSION.scan(/\d\.\d/)[0]
           @gemspec = File.open(@gemspec_file).read
-          dependency = "\n  spec.add_runtime_dependency 'octopress-ink', '~> #{minor_version}', '>= #{VERSION}'\n"
+          dependency  = "  spec.add_runtime_dependency 'octopress-ink', '~> #{minor_version}', '>= #{VERSION}'\n"
+          dependency += "\n  spec.add_development_dependency 'octopress'\n"
 
-          pos = @gemspec.index("\n  spec.add_development_dependency")
+          pos = @gemspec.index("  spec.add_development_dependency")
           @gemspec = insert_before(@gemspec, pos, dependency)
 
           File.open(@gemspec_file, 'w+') {|f| f.write(@gemspec) }
@@ -93,7 +94,7 @@ module Octopress
 
         def self.add_asset_dirs
           %w{images fonts pages files layouts includes stylesheets javascripts}.each do |asset|
-            dir = File.join(@gem_dir, 'assets', asset)
+            dir = File.join(@options['name'], 'assets', asset)
             FileUtils.mkdir_p dir
           end
         end
@@ -102,8 +103,8 @@ module Octopress
         #
         def self.add_simple_plugin(mod)
           mod  = mod.scan(/require.+\n/)[0]
-          mod += 'require "octopess-ink"'
-          mod += "\n\nOctopress::Ink.new_plugin({\n#{indent(plugin_config)}\n)}"
+          mod += 'require "octopress-ink"'
+          mod += "\n\nOctopress::Ink.new_plugin({\n#{indent(plugin_config)}\n})"
         end
 
         # New plugin should subclass of Octopress::Ink::Plugin
