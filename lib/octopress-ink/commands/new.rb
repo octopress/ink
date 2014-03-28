@@ -24,7 +24,10 @@ module Octopress
 
         def self.new_plugin
           path = @options['path'] ||= Dir.pwd
-          @gem_dir = File.join(path, @options['name'])
+          gem_name = @options['name']
+
+          @gem_dir = File.join(path, gem_name)
+          @gemspec_file = "#{gem_name}/#{gem_name}.gemspec"
 
           if !Dir.exist?(path)
             raise "Directory not found: #{File.expand_path(path)}."
@@ -43,27 +46,36 @@ module Octopress
         end
 
         def self.create_gem
-          puts output = `bundle gem #{@options['name']}`
-          @gemspec_file = output.match(/^\s*\w+\s+(.+.gemspec)/)[1]
-          @module_file = output.match(/^\s*\w+\s+(.+.rb)/)[1]
+          begin
+            require 'bundler/cli'
+            bundler = Bundler::CLI.new
+          rescue LoadError
+            raise "To use this feautre you'll need to install the bundler gem with `gem install bundler`."
+          end
+
+          bundler.gem(@options['name'])
         end
 
         # Add Octopress Ink dependency to Gemspec
         #
         def self.add_dependency
           minor_version = VERSION.scan(/\d\.\d/)[0]
-          gemspec = File.open(@gemspec_file).read
+          @gemspec = File.open(@gemspec_file).read
           dependency = "\n  spec.add_runtime_dependency 'octopress-ink', '~> #{minor_version}', '>= #{VERSION}'\n"
 
-          pos = gemspec.index("\n  spec.add_development_dependency")
-          gemspec = insert_before(gemspec, pos, dependency)
+          pos = @gemspec.index("\n  spec.add_development_dependency")
+          @gemspec = insert_before(@gemspec, pos, dependency)
 
-          File.open(@gemspec_file, 'w+') {|f| f.write(gemspec) }
+          File.open(@gemspec_file, 'w+') {|f| f.write(@gemspec) }
         end
 
         # Add Octopress Ink plugin to core module file
         #
         def self.add_plugin
+          # Grab the module directory from the version.rb require.
+          # If a gem is created with dashes e.g. "some-gem", Bundler puts the module file at lib/some/gem.rb
+          module_subpath = @gemspec.scan(/['"](.+)\/version['"]/).flatten[0]
+          @module_file = File.join(@options['name'], 'lib', "#{module_subpath}.rb")
           mod = File.open(@module_file).read
           
           # Find the inner most module name
@@ -107,7 +119,7 @@ class InkPlugin < Octopress::Ink::Plugin
   #
   def configuration
     {
-#{indent(plugin_config, 3).rstrip}
+#{indent(plugin_config, 3)}
     }
   end
 end
@@ -126,7 +138,7 @@ HERE
           assets_path = ("../" * depth) + 'assets'
           type = @options['theme'] ? 'theme' : 'plugin'
 
-          <<-HERE
+          config = <<-HERE
 name:          "#{plugin_name}",
 slug:          "#{plugin_slug}",
 assets_path:   File.expand_path(File.join(File.dirname(__FILE__), "#{assets_path}")),
@@ -135,6 +147,7 @@ version:       #{@mod_path}::VERSION,
 description:   "",
 website:       ""
           HERE
+          config.rstrip
         end
 
         def self.indent(input, level=1)
