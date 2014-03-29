@@ -156,35 +156,47 @@ module Octopress
 
       def info(options={})
         if options['minimal']
-          message = " #{@name}"
-          message += " (theme)" if @type == 'theme'
-          message += " - v#{@version}" if @version
-          if @description
-            message = "#{message.ljust(30)} #{@description}"
-          end
-          message += "\n"
+          minimal_info
         else
-          asset_info = assets_info(options)
-          return '' if asset_info.empty?
-
-          name = "Plugin: #{@name}"
-          name += " (theme)" if @type == 'theme'
-          name += " - v#{@version}" if @version
-          name  = name
-          message = name
-          message += "\nSlug: #{slug}"
-
-          if @description
-            message += "\n#{@description}"
-          end
-
-          lines = ''
-          80.times { lines += '=' }
-
-          message = "\n#{message}\n#{lines}\n"
-          message += asset_info
-          message += "\n"
+          detailed_info(options)
         end
+      end
+
+      def minimal_info
+        message = " #{@name}"
+        message += " (#{slug})"
+        message += " - v#{@version}" if @version
+        if @description && !@description.empty?
+          message = "#{message.ljust(30)} - #{@description}"
+        end
+        message += "\n"
+      end
+
+      def detailed_info(options)
+        asset_info = assets_info(options)
+        return '' if asset_info.empty?
+
+        name = "Plugin: #{@name}"
+        name += " (theme)" if @type == 'theme'
+        name += " - v#{@version}" if @version
+        name  = name
+        message = name
+        message += "\nSlug: #{slug}"
+
+        if @description && !@description.empty?
+          message += "\n#{@description}"
+        end
+
+        if @website && !@website.empty?
+          message += "\n#{@website}"
+        end
+
+        lines = ''
+        80.times { lines += '=' }
+
+        message = "\n#{message}\n#{lines}\n"
+        message += asset_info
+        message += "\n"
       end
 
       def pad_line(line)
