@@ -8,7 +8,6 @@ module Octopress
             c.description "Create a new Octopress Ink plugin with Ruby gem scaffolding."
             c.option "path", "--path PATH", "Create a plugin at a specified path (defaults to current directory)."
             c.option "theme", "--theme", "Create a new theme."
-            c.option "class", "--class", "Scaffold plugin as a subclass of Octopress::Ink::Plugin."
 
             c.action do |args, options|
               if args.empty?
@@ -42,6 +41,7 @@ module Octopress
             add_dependency
             add_plugin
             add_asset_dirs
+            add_demo_files
           end
         end
 
@@ -83,11 +83,7 @@ module Octopress
           @modules  = mod.scan(/module\s+(.+?)\n/).flatten
           @mod_path = @modules.join('::')
           
-          if @options['class']
-            mod = add_plugin_class mod
-          else
-            mod = add_simple_plugin mod
-          end
+          mod = add_simple_plugin mod
 
           File.open(@module_file, 'w+') {|f| f.write(mod) }
         end
@@ -107,34 +103,9 @@ module Octopress
           mod += "\n\nOctopress::Ink.new_plugin({\n#{indent(plugin_config)}\n})"
         end
 
-        # New plugin should subclass of Octopress::Ink::Plugin
-        #
-        def self.add_plugin_class(mod)
-          pos = mod.index("\nmodule")
-          mod = insert_before(mod, pos, "require \"octopress-ink\"\n")
-
-          plugin = <<-HERE
-class InkPlugin < Octopress::Ink::Plugin
-  
-  # Define the configuration for your plugin
-  #
-  def configuration
-    {
-#{indent(plugin_config, 3)}
-    }
-  end
-end
-HERE
-          # match indentation
-          plugin = "\n" + indent(plugin, @modules.size)
-          mod.sub!(/\s*# Your code goes here.+/, plugin)
-
-          mod + "\nOctopress::Ink.register_plugin(#{@mod_path}::InkPlugin)"
-        end
-
         def self.plugin_config
           plugin_name = format_name(@modules.last)
-          plugin_slug = Filters.sluggify(plugin_name)
+          plugin_slug = Filters.sluggify(@options['name'])
           depth = @module_file.count('/') - 1
           assets_path = ("../" * depth) + 'assets'
           type = @options['theme'] ? 'theme' : 'plugin'
@@ -149,6 +120,22 @@ description:   "",
 website:       ""
           HERE
           config.rstrip
+        end
+
+        def self.add_demo_files
+          dir = File.join(@options['name'], 'demo')
+          Jekyll::Commands::New.process([dir], {blank: true})
+
+          gemfile = <<-HERE
+source 'https://rubygems.org'
+
+group :octopress do
+  gem 'octopress'
+  gem '#{@options['name']}', path: '../'
+end
+          HERE
+
+          File.open(File.join(dir, 'Gemfile'), 'w+') {|f| f.write(gemfile) }
         end
 
         def self.indent(input, level=1)
