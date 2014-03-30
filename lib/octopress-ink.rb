@@ -3,10 +3,12 @@ require 'sass'
 require 'digest/md5'
 
 require 'octopress-ink/version'
+
+require 'octopress-ink/ext/titlecase'
+require 'octopress-ink/ext/hash'
 require 'octopress-ink/generators/plugin_assets'
 require 'octopress-ink/jekyll/hooks'
 require 'octopress-ink/version'
-require 'octopress-ink/helpers/titlecase'
 
 module Octopress
   module Ink
@@ -39,7 +41,7 @@ module Octopress
     # 
     # options - A hash of configuration options.
     #
-    def self.new_plugin(options)
+    def self.add_plugin(options={})
       Plugins.register_plugin Plugin, options
     end
 

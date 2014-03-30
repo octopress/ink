@@ -12,8 +12,10 @@ module Octopress
                     :layouts_dir, :stylesheets_dir, :javascripts_dir, :files_dir, :includes_dir, :images_dir,
                     :layouts, :includes, :images, :fonts, :files, :pages, :docs
 
-      def initialize(options={})
-        DEFAULT_CONFIG.merge(options || configuration).each { |k,v| set_config(k,v) }
+      def initialize(options)
+        options = (options || configuration).to_symbol_keys
+
+        DEFAULT_CONFIG.merge(options).each { |k,v| set_config(k,v) }
 
         @layouts_dir       = 'layouts'
         @files_dir         = 'files'
