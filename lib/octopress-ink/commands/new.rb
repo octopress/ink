@@ -23,34 +23,31 @@ module Octopress
 
         def self.new_plugin
           path = @options['path'] ||= Dir.pwd
-          @gem_name = @options['name']
-          @gem_dir  = @gem_name
+          gem_name = @options['name']
           @plugin_type = @options['theme'] ? 'theme' : 'plugin'
-
-          @gem_path = File.join(path, @gem_dir)
-          @gemspec_path = "#{@gem_dir}/#{@gem_name}.gemspec"
+          path_to_gem = File.join(path, gem_name)
 
           if !Dir.exist?(path)
             raise "Directory not found: #{File.expand_path(path)}."
           end
 
-          if !Dir["#{@gem_path}/*"].empty?
-            raise "Directory not empty: #{File.expand_path(@gem_path)}."
+          if !Dir["#{path_to_gem}/*"].empty?
+            raise "Directory not empty: #{File.expand_path(path_to_gem)}."
           end
 
           FileUtils.cd path do
-            create_gem
-            read_gem_settings
-            add_dependency
-            add_plugin
-            add_asset_dirs
-            add_demo_files
+            create_gem(gem_name)
+            settings = gem_settings(path_to_gem)
+            add_dependency(settings)
+            add_plugin(settings)
+            add_asset_dirs(settings)
+            add_demo_files(settings)
           end
         end
 
         # Create a new gem with Bundle's gem command
         #
-        def self.create_gem
+        def self.create_gem(name)
           begin
             require 'bundler/cli'
             bundler = Bundler::CLI.new
@@ -58,28 +55,16 @@ module Octopress
             raise "To use this feautre you'll need to install the bundler gem with `gem install bundler`."
           end
 
-          bundler.gem(@gem_name)
-        end
-
-        # Read the gemspec file 
-        def self.read_gem_settings
-          @gemspec = File.open(@gemspec_path).read
-          @spec_var = @gemspec.scan(/(\w+)\.name/).flatten[0]
-          @require_version = @gemspec.scan(/require.+version.+$/)[0]
-          @gem_version = @gemspec.scan(/version.+=\s+(.+)$/).flatten[0]
-          @gem_name = gemspec.scan(/name.+['"](.+)['"]/).flatten[0]
-          @module_subpath = @require_version.scan(/['"](.+)\/version/).flatten[0]
-          @module_file = File.join('lib', @module_subpath + '.rb')
-          @module_name = format_name @gem_version.split('::')[-2]
+          bundler.gem(name)
         end
 
         # Add Octopress Ink dependency to Gemspec
         #
-        def self.add_dependency
-          pos = @gemspec.rindex("end")
-          @gemspec = insert_before(@gemspec, pos, dependencies(@spec_var))
+        def self.add_dependency(settings)
+          pos = settings[:gemspec].rindex("end")
+          settings[:gemspec] = insert_before(settings[:gemspec], pos, indent(dependencies(settings[:spec_var])))
 
-          File.open(@gemspec_path, 'w+') {|f| f.write(@gemspec) }
+          File.open(settings[:gemspec_path], 'w+') {|f| f.write(settings[:gemspec]) }
         end
 
         # Returns lines which need to be added as a dependency
@@ -87,35 +72,35 @@ module Octopress
         # spec_var - variable used to assign gemspec attributes,
         # e.g. "spec" as in spec.name = "gem name"
         #
-        def self.dependencies(spec_var)
+        def self.dependencies(settings)
           minor_version = VERSION.scan(/\d\.\d/)[0]
-          d  = "  #{spec_var}.add_development_dependency \"octopress\"\n\n"
-          d += "  #{spec_var}.add_runtime_dependency \"octopress-ink\", \"~> #{minor_version}\", \">= #{VERSION}\"\n"
+          d  = "#{settings[:spec_var]}.add_development_dependency \"octopress\"\n\n"
+          d += "#{settings[:spec_var]}.add_runtime_dependency \"octopress-ink\", \"~> #{minor_version}\", \">= #{VERSION}\"\n"
         end
 
         # Add Octopress Ink plugin to core module file
         #
-        def self.add_plugin
+        def self.add_plugin(settings)
           # Grab the module directory from the version.rb require.
           # If a gem is created with dashes e.g. "some-gem", Bundler puts the module file at lib/some/gem.rb
-          file = File.join(@gem_dir, @module_file)
+          file = File.join(settings[:path], settings[:module_path])
           mod = File.open(file).read
           mod = add_simple_plugin mod
 
           File.open(file, 'w+') {|f| f.write(mod) }
         end
 
-        def self.add_asset_dirs
+        def self.add_asset_dirs(settings)
           dirs = %w{images fonts pages files layouts includes stylesheets javascripts}.map do |asset|
-            File.join(@gem_dir, 'assets', asset)
+            File.join(settings[:path], 'assets', asset)
           end
           create_empty_dirs dirs
         end
 
         # New plugin uses a simple configuration hash
         #
-        def self.add_simple_plugin(mod)
-          mod  = "#{@require_version}\n"
+        def self.add_simple_plugin(settings, mod)
+          mod  = "#{settings[:require_version]}\n"
           mod += "require 'octopress-ink'\n"
           mod += "\nOctopress::Ink.add_plugin({\n#{indent(plugin_config)}\n})"
         end
@@ -123,16 +108,16 @@ module Octopress
 
         # Return an Ink Plugin configuration hash desinged for this gem
         #
-        def self.plugin_config
-          depth = @module_file.count('/')
+        def self.plugin_config(settings)
+          depth = settings[:module_path].count('/')
           assets_path = ("../" * depth) + 'assets'
 
           config = <<-HERE
-name:          "#{@module_name}",
-slug:          "#{@gem_name}",
+name:          "#{settings[:module_name]}",
+slug:          "#{settings[:name]}",
 assets_path:   File.expand_path(File.join(File.dirname(__FILE__), "#{assets_path}")),
-type:          "#{@plugin_type}",
-version:       #{@gem_version},
+type:          "#{settings[:plugin_type]}",
+version:       #{settings[:version]},
 description:   "",
 website:       ""
           HERE
@@ -141,8 +126,8 @@ website:       ""
 
         # Creates a blank Jekyll site for testing out a new plugin
         #
-        def self.add_demo_files
-          demo_dir = File.join(@gem_dir, 'demo')
+        def self.add_demo_files(settings)
+          demo_dir = File.join(settings[:path], 'demo')
 
           dirs = %w{_layouts _posts}.map! do |d|
             File.join(demo_dir, d)
@@ -160,7 +145,7 @@ source 'https://rubygems.org'
 
 group :octopress do
   gem 'octopress'
-  gem '#{@gem_name}', path: '../'
+  gem '#{settings[:name]}', path: '../'
 end
           HERE
 
@@ -182,15 +167,48 @@ end
           end
         end
 
-        def self.indent(input, level=1)
-          input.gsub(/^/, '  ' * level)
+        # Read gem settings from the gemspec
+        #
+        def self.gem_settings(gem_path)
+          gemspec_path = Dir.glob(File.join(gem_path, "/*.gemspec")).first
+
+          if gemspec_path.nil?
+            raise "No gemspec file found at #{gem_path}/. To create a new plugin use `octopress ink new <PLUGIN_NAME>`"
+          end
+
+          gemspec = File.open(gemspec_path).read
+          require_version = gemspec.scan(/require.+version.+$/)[0]
+          module_subpath = require_version.scan(/['"](.+)\/version/).flatten[0]
+          version = gemspec.scan(/version.+=\s+(.+)$/).flatten[0]
+          module_name = format_name(version.split('::')[-2])
+
+          {
+            path: gem_path,
+            gemspec: gemspec,
+            spec_var: gemspec.scan(/(\w+)\.name/).flatten[0],
+            version: gemspec.scan(/version.+=\s+(.+)$/).flatten[0],
+            name: gemspec.scan(/name.+['"](.+)['"]/).flatten[0],
+            version: version,
+            require_version: require_version,
+            module_path: File.join('lib', module_subpath + '.rb'),
+            module_name: module_name
+          }
         end
+
         # Add spaces between capital letters
         #
         def self.format_name(name)
           name.scan(/.*?[a-z](?=[A-Z]|$)/).join(' ')
         end
 
+        # Indent each line of a string
+        #
+        def self.indent(input, level=1)
+          input.gsub(/^/, '  ' * level)
+        end
+
+        # Insert a string before a position
+        #
         def self.insert_before(str, pos, input)
           if pos
             str[0..(pos - 1)] + input + str[pos..-1]

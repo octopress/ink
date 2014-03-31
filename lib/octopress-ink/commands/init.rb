@@ -20,27 +20,21 @@ module Octopress
         end
 
         def self.init_plugin
-          @gem_dir = @options['path']
-          @gemspec_path = Dir.glob(File.join(@gem_dir, "/*.gemspec")).first
+          settings = New.gem_settings(@options['path'])
 
-          if @gemspec_path.nil?
-            raise "No gemspec file found at #{@gem_dir}/. To create a new plugin use `octopress ink new <PLUGIN_NAME>`"
-          end
+          New.add_asset_dirs(settings)
+          New.add_demo_files(settings)
 
-          New.read_gem_settings
-          gemspec = File.open(@gemspec_path).read
-          gem_name = gemspec.scan(/name.+['"](.+)['"]/).flatten.first
+          puts "\nTo finish setting up your Octopress Ink plugin:\n".bold
+          puts "1. Add gem requirements to your gemspec:\n\n"
+          puts New.dependencies(settings).sub("\n\n", "\n").yellow
+          puts "2. Add a plugin template to your gem, making changes as necessary:\n\n"
 
-          New.add_asset_dirs
-          New.add_demo_files
-
-          puts "\nTo finish setting up your Octopress Ink plugin, add the following plugin template to your gem:\n\n"
           template = <<-HERE
 require "octopress-ink"
 
-# Make changes as necessary
 Octopress::Ink.add_plugin({
-#{New.plugin_config}
+#{New.indent(New.plugin_config(settings))}
 })
           HERE
 
