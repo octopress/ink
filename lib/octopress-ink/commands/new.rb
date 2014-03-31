@@ -25,6 +25,7 @@ module Octopress
           path = @options['path'] ||= Dir.pwd
           @gem_name = @options['name']
           @gem_dir  = @gem_name
+          @plugin_type = @options['theme'] ? 'theme' : 'plugin'
 
           @gem_path = File.join(path, @gem_dir)
           @gemspec_path = "#{@gem_dir}/#{@gem_name}.gemspec"
@@ -39,13 +40,16 @@ module Octopress
 
           FileUtils.cd path do
             create_gem
+            read_gem_settings
             add_dependency
             add_plugin
-            add_asset_dirs @gem_dir
-            add_demo_files @gem_dir, @gem_name
+            add_asset_dirs
+            add_demo_files
           end
         end
 
+        # Create a new gem with Bundle's gem command
+        #
         def self.create_gem
           begin
             require 'bundler/cli'
@@ -55,20 +59,38 @@ module Octopress
           end
 
           bundler.gem(@gem_name)
+        end
+
+        # Read the gemspec file 
+        def self.read_gem_settings
           @gemspec = File.open(@gemspec_path).read
+          @spec_var = @gemspec.scan(/(\w+)\.name/).flatten[0]
+          @require_version = @gemspec.scan(/require.+version.+$/)[0]
+          @gem_version = @gemspec.scan(/version.+=\s+(.+)$/).flatten[0]
+          @gem_name = gemspec.scan(/name.+['"](.+)['"]/).flatten[0]
+          @module_subpath = @require_version.scan(/['"](.+)\/version/).flatten[0]
+          @module_file = File.join('lib', @module_subpath + '.rb')
+          @module_name = format_name @gem_version.split('::')[-2]
         end
 
         # Add Octopress Ink dependency to Gemspec
         #
         def self.add_dependency
-          minor_version = VERSION.scan(/\d\.\d/)[0]
-          dependency  = "  spec.add_runtime_dependency 'octopress-ink', '~> #{minor_version}', '>= #{VERSION}'\n"
-          dependency += "\n  spec.add_development_dependency 'octopress'\n"
-
-          pos = @gemspec.index("  spec.add_development_dependency")
-          @gemspec = insert_before(@gemspec, pos, dependency)
+          pos = @gemspec.rindex("end")
+          @gemspec = insert_before(@gemspec, pos, dependencies(@spec_var))
 
           File.open(@gemspec_path, 'w+') {|f| f.write(@gemspec) }
+        end
+
+        # Returns lines which need to be added as a dependency
+        #
+        # spec_var - variable used to assign gemspec attributes,
+        # e.g. "spec" as in spec.name = "gem name"
+        #
+        def self.dependencies(spec_var)
+          minor_version = VERSION.scan(/\d\.\d/)[0]
+          d  = "  #{spec_var}.add_development_dependency \"octopress\"\n\n"
+          d += "  #{spec_var}.add_runtime_dependency \"octopress-ink\", \"~> #{minor_version}\", \">= #{VERSION}\"\n"
         end
 
         # Add Octopress Ink plugin to core module file
@@ -76,22 +98,16 @@ module Octopress
         def self.add_plugin
           # Grab the module directory from the version.rb require.
           # If a gem is created with dashes e.g. "some-gem", Bundler puts the module file at lib/some/gem.rb
-          module_subpath = @gemspec.scan(/['"](.+)\/version['"]/).flatten[0]
-          @module_file = File.join(@gem_dir, 'lib', "#{module_subpath}.rb")
-          mod = File.open(@module_file).read
-          
-          # Find the inner most module name
-          @modules  = mod.scan(/module\s+(.+?)\n/).flatten
-          @mod_path = @modules.join('::')
-          
+          file = File.join(@gem_dir, @module_file)
+          mod = File.open(file).read
           mod = add_simple_plugin mod
 
-          File.open(@module_file, 'w+') {|f| f.write(mod) }
+          File.open(file, 'w+') {|f| f.write(mod) }
         end
 
-        def self.add_asset_dirs(root)
+        def self.add_asset_dirs
           dirs = %w{images fonts pages files layouts includes stylesheets javascripts}.map do |asset|
-            File.join(root, 'assets', asset)
+            File.join(@gem_dir, 'assets', asset)
           end
           create_empty_dirs dirs
         end
@@ -99,24 +115,24 @@ module Octopress
         # New plugin uses a simple configuration hash
         #
         def self.add_simple_plugin(mod)
-          mod  = mod.scan(/require.+\n/)[0]
-          mod += 'require "octopress-ink"'
-          mod += "\n\nOctopress::Ink.add_plugin({\n#{indent(plugin_config)}\n})"
+          mod  = "#{@require_version}\n"
+          mod += "require 'octopress-ink'\n"
+          mod += "\nOctopress::Ink.add_plugin({\n#{indent(plugin_config)}\n})"
         end
 
+
+        # Return an Ink Plugin configuration hash desinged for this gem
+        #
         def self.plugin_config
-          plugin_name = format_name(@modules.last)
-          plugin_slug = Filters.sluggify(@gem_name)
-          depth = @module_file.count('/') - 1
+          depth = @module_file.count('/')
           assets_path = ("../" * depth) + 'assets'
-          type = @options['theme'] ? 'theme' : 'plugin'
 
           config = <<-HERE
-name:          "#{plugin_name}",
-slug:          "#{plugin_slug}",
+name:          "#{@module_name}",
+slug:          "#{@gem_name}",
 assets_path:   File.expand_path(File.join(File.dirname(__FILE__), "#{assets_path}")),
-type:          "#{type}",
-version:       #{@mod_path}::VERSION,
+type:          "#{@plugin_type}",
+version:       #{@gem_version},
 description:   "",
 website:       ""
           HERE
@@ -125,8 +141,8 @@ website:       ""
 
         # Creates a blank Jekyll site for testing out a new plugin
         #
-        def self.add_demo_files(root, name)
-          demo_dir = File.join(root, 'demo')
+        def self.add_demo_files
+          demo_dir = File.join(@gem_dir, 'demo')
 
           dirs = %w{_layouts _posts}.map! do |d|
             File.join(demo_dir, d)
@@ -144,7 +160,7 @@ source 'https://rubygems.org'
 
 group :octopress do
   gem 'octopress'
-  gem '#{name}', path: '../'
+  gem '#{@gem_name}', path: '../'
 end
           HERE
 
