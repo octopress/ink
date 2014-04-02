@@ -1,6 +1,6 @@
 require 'octopress-ink'
 
-Octopress::Ink.new_plugin({
+Octopress::Ink.add_plugin({
   name:        "Classic Theme",
   type:        "theme",
   description: "Test theme y'all",

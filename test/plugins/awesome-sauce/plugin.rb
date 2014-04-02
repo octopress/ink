@@ -1,6 +1,6 @@
 require 'octopress-ink'
 
-Octopress::Ink.new_plugin({
+Octopress::Ink.add_plugin({
   name:        'Awesome Sauce',
   slug:        'awesome-sauce',
   assets_path: File.expand_path(File.dirname(__FILE__)),
