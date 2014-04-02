@@ -93,7 +93,7 @@ module Octopress
         end
 
         def self.add_asset_dirs(settings)
-          dirs = %w{images fonts pages files layouts includes stylesheets javascripts}.map do |asset|
+          dirs = %w{docs images fonts pages files layouts includes stylesheets javascripts}.map do |asset|
             File.join(settings[:path], 'assets', asset)
           end
           create_empty_dirs dirs
