@@ -30,7 +30,7 @@ module Octopress
           puts "\nTo finish setting up your Octopress Ink plugin:\n".bold
           puts "1. Add gem requirements to your gemspec:\n\n"
           puts New.dependencies(settings).sub("\n\n", "\n").yellow
-          puts "2. Add a plugin template to your gem, making changes as necessary:\n\n"
+          puts "2. Add an Octopress Ink plugin to your gem, making changes as necessary:\n\n"
 
           template = <<-HERE
 require "octopress-ink"
