@@ -24,7 +24,6 @@ module Octopress
         def self.new_plugin
           path = @options['path'] ||= Dir.pwd
           gem_name = @options['name']
-          @plugin_type = @options['theme'] ? 'theme' : 'plugin'
           path_to_gem = File.join(path, gem_name)
 
           if !Dir.exist?(path)
@@ -37,7 +36,10 @@ module Octopress
 
           FileUtils.cd path do
             create_gem(gem_name)
+
             settings = gem_settings(path_to_gem)
+            settings[:type] = @options['theme'] ? 'theme' : 'plugin'
+
             add_dependency(settings)
             add_plugin(settings)
             add_asset_dirs(settings)
@@ -116,7 +118,7 @@ module Octopress
 name:          "#{settings[:module_name]}",
 slug:          "#{settings[:name]}",
 assets_path:   File.expand_path(File.join(File.dirname(__FILE__), "#{assets_path}")),
-type:          "#{settings[:plugin_type]}",
+type:          "#{settings[:type]}",
 version:       #{settings[:version]},
 description:   "",
 website:       ""

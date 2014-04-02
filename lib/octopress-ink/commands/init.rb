@@ -6,6 +6,7 @@ module Octopress
           p.command(:init) do |c|
             c.syntax "init <PATH> [options]"
             c.description "Add Octopress Ink scaffolding to an existing gem based plugin."
+            c.option "theme", "--theme", "Plugin will be a theme."
 
             c.action do |args, options|
               if args.empty?
@@ -21,6 +22,7 @@ module Octopress
 
         def self.init_plugin
           settings = New.gem_settings(@options['path'])
+          settings[:type] = @options['theme'] ? 'theme' : 'plugin'
 
           New.add_asset_dirs(settings)
           New.add_demo_files(settings)
