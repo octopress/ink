@@ -12,23 +12,26 @@ module Octopress
           @file = path
         end
 
-        def user_dir
-          File.join Plugins.site.source, Plugins.custom_dir, dir
-        end
-
-        def local_plugin_path
-          File.join Plugins.site.source, dir, file
+        def info
+          config = plugin_path
+          if exists? config
+            " configuration defaults:\n" +
+            File.open(plugin_path).read.gsub(/^/,'    ')
+          else
+            " No configuration."
+          end
         end
 
         def read
           config = {}
           default = plugin_path
           if exists? default
-            config = YAML.safe_load(File.open(default))
+            config = YAML.safe_load(File.open(default)) || {}
           end
 
           if exists? user_path
-            config = config.deep_merge YAML.safe_load(File.open(user_path))
+            user_config = YAML.safe_load(File.open(user_path)) || {}
+            config = config.deep_merge(user_config)
           end
 
           config

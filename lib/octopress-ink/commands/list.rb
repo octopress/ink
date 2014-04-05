@@ -8,7 +8,7 @@ module Octopress
             c.description "Get a list of installed octopress ink plugins for this site."
             c.option "all", "--all", "List all plugins and their assets."
             CommandHelpers.add_asset_options(c, 'List')
-            c.option "docs", "--docs", "List only documentation pages."
+            c.option "docs", "--docs", "List documentation pages."
 
             c.action do |args, options|
               if args.empty?

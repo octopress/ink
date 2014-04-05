@@ -6,7 +6,6 @@ module Octopress
           p.command(:copy) do |c|
             c.syntax "copy <PLUGIN> [options]"
             c.description "Copy plugin assets to _plugins/PLUGIN/."
-            c.option "all", "--all", "Copy all plugin assets."
             c.option "force", "--force", "Overwrite files."
             c.option "path", "--path PATH", "Copy plugin assets to an alternate path."
             CommandHelpers.add_asset_options(c, 'Copy')
