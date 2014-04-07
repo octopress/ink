@@ -129,11 +129,9 @@ from the gem once again.
 
 This same system works for any type of asset listed with the `octopress ink list` command.
 
-
 ### Disabling plugin assets
 
-You can disable assets from your plugin's configuration file. You can disable individual assets, or all of one type of asset. Here's an example of how to disable assets
-on a theme.
+You can disable assets from your plugin's configuration file. Disable individual assets, or all of one type of asset. Here's an example of how to disable assets on a theme.
 
 ```yaml
 # _plugins/theme/config.yml
@@ -145,7 +143,9 @@ disable:
     - feed.xml
 ```
 
-Any asset can be disabled except for layouts and includes, because they are not automatically copied to your site anyway.
+Any asset can be disabled except for layouts, includes and Sass partials. Layouts and includes are only added to a site when you manually
+include them, so disabling them isn't necessary. Sass partials can't be disabled because they aren't added directly to Jekyll,
+but are instead included by Sass files.
 
 You can verify that you've disabled assets by running `octopress ink list <PLUGIN>`. Assets which are disabled will be marked like this.
 
