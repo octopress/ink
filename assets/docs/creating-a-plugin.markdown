@@ -183,4 +183,4 @@ assets/
     navigation.html
 ```
 
-To include this partial, use a regular include tag, but add the plugin slug before the filename like this `{% include plugin_slug:navigation %}`.
+To include this partial, use an include tag, but add the plugin slug before the filename like this `{% include plugin_slug:navigation %}`.
