@@ -52,6 +52,10 @@ module Octopress
           end
         end
 
+        def read
+          path.read
+        end
+
         def source_dir
           if exists? user_override_path
             user_dir

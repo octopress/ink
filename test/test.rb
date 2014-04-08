@@ -49,11 +49,11 @@ end
 
 def diff_file(file, target_dir='expected', source_dir='site')
   diff = `diff #{target_dir}/#{file} #{source_dir}/#{file}`
-  if diff =~ /(<.+?\n)?(---\n)?(>.+)/
+  if diff.size > 0
     @failures << <<-DIFF
 Failure in #{file}
 ---------
-#{($1||'').red + $3.green}
+#{diff.gsub(/\A.+?\n/,'').gsub(/(<.+?)$/){|m| m.red}.gsub(/>.+/){|m| m.green}}
 ---------
 DIFF
   else
@@ -184,4 +184,3 @@ build config: '_sass_expanded.yml'
 test_stylesheets('sass_expanded')
 
 print_failures
-

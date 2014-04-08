@@ -372,23 +372,23 @@ module Octopress
       end
 
       def stylesheet_paths
-        get_paths @css.reject{|f| f.disabled? }
+        get_paths @css.reject{|f| f.disabled? }.compact
       end
 
       def javascript_paths
-        get_paths @javascripts.reject{|f| f.disabled? }
+        get_paths @javascripts.reject{|f| f.disabled? }.compact
       end
 
       def stylesheet_tags
-        get_tags @css.reject{|f| f.disabled? }
+        get_tags stylesheets
       end
 
       def css
-        @css.reject{|f| f.disabled? }
+        @css.reject{|f| f.disabled? }.compact
       end
 
       def sass
-        @sass.reject{|f| f.disabled? }
+        @sass.reject{|f| f.disabled? }.compact
       end
 
       def sass_without_partials
@@ -396,15 +396,15 @@ module Octopress
       end
 
       def javascripts
-        @javascripts.reject{|f| f.disabled? }
+        @javascripts.reject{|f| f.disabled? }.compact
       end
 
       def sass_tags
-        get_tags @sass
+        get_tags sass
       end
 
       def javascript_tags
-        get_tags @javascripts
+        get_tags javascripts
       end
 
       def get_paths(files)

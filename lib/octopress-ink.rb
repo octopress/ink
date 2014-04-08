@@ -1,5 +1,6 @@
 require 'jekyll'
 require 'sass'
+require 'autoprefixer-rails'
 require 'digest/md5'
 
 require 'octopress-ink/version'
@@ -22,6 +23,7 @@ module Octopress
     autoload :StaticFileContent,    'octopress-ink/jekyll/static_file_content'
     autoload :Plugins,              'octopress-ink/plugins'
     autoload :Plugin,               'octopress-ink/plugin'
+    autoload :AssetPipeline,        'octopress-ink/asset_pipeline'
     autoload :Tags,                 'octopress-ink/tags'
 
     if defined? Octopress::Command
