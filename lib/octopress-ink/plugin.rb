@@ -74,7 +74,9 @@ module Octopress
       end
 
       def config
-        @config ||= Assets::Config.new(self, @config_file).read
+        @config ||= Assets::Config.new(self, @config_file)
+        @config_hash ||= @config.read
+        @config_hash
       end
 
       def disable_assets
@@ -102,8 +104,7 @@ module Octopress
       end
 
       def docs_base_path
-        type = @type == 'plugin' ? 'plugins' : @type
-        File.join('docs', type, slug)
+        File.join('docs', 'plugins', slug)
       end
 
       # Docs pages for easy listing in an index
@@ -152,7 +153,8 @@ module Octopress
           'javascripts' => @javascripts, 
           'images'      => @images, 
           'fonts'       => @fonts, 
-          'files'       => @files
+          'files'       => @files,
+          'config'      => @config
         }
       end
 
@@ -217,21 +219,22 @@ module Octopress
         end
 
         select_assets(options).each do |name, assets|
-          next if assets.size == 0
-          if name == 'docs'
+          next if assets.is_a?(Array) && assets.size == 0
+
+          if name == 'config'
+            message += assets.info
+            next
+          elsif name == 'docs'
             message += " documentation: /#{docs_base_path}/\n"
-            if assets.size > 1
-              assets.each do |asset|
-                message += "  - #{asset.info}\n"
-              end
-            end
           else
             message += " #{name}:\n"
-            assets.each do |asset|
-              message += "  - #{asset.info}\n"
-            end
           end
-          message += "\n"
+
+          assets.each do |asset|
+            message += "  - #{asset.info}\n"
+          end
+
+          message += "\n" unless message == ''
         end
 
         message
@@ -329,22 +332,6 @@ module Octopress
         Find.find(dir).to_a.reject {|f| File.directory? f }
       end
 
-      #def add_css(file, media=nil)
-        #@css << Assets::Stylesheet.new(self, @stylesheets_dir, file, media)
-      #end
-
-      #def add_sass(file, media=nil)
-        #@sass << Assets::Sass.new(self, @sass_dir, file, media)
-      #end
-
-      #def add_css_files(files, media=nil)
-        #files.each { |f| add_css(f, media) }
-      #end
-
-      #def add_sass_files(files, media=nil)
-        #files.each { |f| add_sass(f, media) }
-      #end
-
       def remove_jekyll_assets(files)
         files.each {|f| f.remove_jekyll_asset }
       end
@@ -366,9 +353,13 @@ module Octopress
 
         select_assets(options).each do |name, assets|
           next if name == 'docs'
-          assets.each { |a| copied << a.copy(path) }
+          if name == 'config'
+            copied << assets.copy(path)
+          else
+            assets.each { |a| copied << a.copy(path) }
+          end
         end
-        copied
+        copied.compact
       end
 
       def stylesheet_paths

@@ -166,10 +166,10 @@ test_javascripts('concat_js')
 test_configs('expected')
 test_root_assets('expected')
 
-Octopress::Ink.copy_plugin_assets('theme', {'path' => '_copy', 'force'=> true})
+system "octopress ink copy theme --path _copy --force"
 test_copy_assets('copy_test')
 
-Octopress::Ink.copy_plugin_assets('theme', {'path' => '_copy', 'force'=> true, 'layouts' => true, 'pages' => true})
+system "octopress ink copy theme --layouts --pages --path _copy --force"
 test_copy_assets('copy_layouts_pages')
 
 build octopress_config: '_concat_false.yml'
