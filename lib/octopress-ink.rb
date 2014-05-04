@@ -190,7 +190,7 @@ Liquid::Template.register_tag('_', Octopress::Ink::Tags::LineCommentTag)
 Liquid::Template.register_tag('doc_url', Octopress::Ink::Tags::DocUrlTag)
 
 require 'octopress-ink/plugins/ink'
-require 'octopress-ink/plugins/asset_pipeline'
+require 'octopress-ink/plugins/local_asset_pipeline'
 
 Octopress::Ink.register_plugin(Octopress::Ink::InkPlugin)
 Octopress::Ink.register_plugin(Octopress::Ink::AssetPipelinePlugin)
