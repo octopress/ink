@@ -24,7 +24,7 @@ module Octopress
         end
 
         def add
-          Plugins.site.static_files << StaticFileContent.new(compile, destination)
+          Plugins.static_files << StaticFileContent.new(compile, destination)
         end
       end
     end

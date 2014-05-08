@@ -1,6 +1,8 @@
 module Octopress
   module Ink
     module Plugins
+
+      @static_files = []
       @plugins = []
       @user_plugins = []
       @site = nil
@@ -11,6 +13,10 @@ module Octopress
 
       def self.each(&block)
         plugins.each(&block)
+      end
+
+      def self.static_files
+        @static_files
       end
 
       def self.size

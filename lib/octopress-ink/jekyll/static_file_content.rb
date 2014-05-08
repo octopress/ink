@@ -9,18 +9,6 @@ module Octopress
 
         true
       end
-
-      def to_liquid
-        {
-          "path"          => '',
-          "modified_time" => Time.now.to_s,
-          "extname"       => ''
-        }
-      end
-
-      def relative_path
-        @relative_path ||= '.'
-      end
     end
   end
 end

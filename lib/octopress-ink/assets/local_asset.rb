@@ -24,7 +24,7 @@ module Octopress
         end
 
         def add
-          Plugins.site.static_files << StaticFile.new(path, destination)
+          Plugins.static_files << StaticFile.new(path, destination)
         end
 
         # Copy is unncessary with local assets

@@ -36,4 +36,16 @@ module Jekyll
       do_layout(payload, { no_layout: nil })
     end
   end
+
+  class Site
+    alias_method :write_orig, :write
+    # Called after write
+    # 
+    def write
+      write_orig
+      Octopress::Ink::Plugins.static_files.each do |f| 
+        f.write(config['destination'])
+      end
+    end
+  end
 end

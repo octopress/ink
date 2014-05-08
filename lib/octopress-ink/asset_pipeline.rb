@@ -142,7 +142,7 @@ module Octopress
       end
 
       def self.write_files(source, dest)
-        Plugins.site.static_files << StaticFileContent.new(source, dest)
+        Plugins.static_files << StaticFileContent.new(source, dest)
       end
 
       def self.fingerprint(paths)
