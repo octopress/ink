@@ -27,7 +27,7 @@ module Octopress
           if file =~ /^\.+\//
             page = context['page']
             if local_dir = page['dir']
-              File.expand_path(File.join(local_dir, file))
+              File.expand_path(File.join(Plugins.site.source, local_dir, file))
             else
               local_dir = File.dirname page['path']
               File.expand_path(File.join(root, local_dir, file))

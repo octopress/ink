@@ -10,6 +10,10 @@ module Octopress
         File.join(dest, @dest)
       end
 
+      def relative_path
+        @relative_path ||= path.sub(/\A#{Plugins.site.source}/, '')
+      end
+
       def path
         @source
       end
@@ -21,6 +25,14 @@ module Octopress
         FileUtils.cp(@source, dest_path)
 
         true
+      end
+
+      def to_liquid
+        {
+          "path"          => path,
+          "modified_time" => Time.now.to_s,
+          "extname"       => ''
+        }
       end
     end
   end

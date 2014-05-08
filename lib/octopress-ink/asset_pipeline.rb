@@ -20,7 +20,7 @@ module Octopress
           'line_numbers' => false
         }
 
-        options = defaults.deep_merge(config || {}).symbolize_keys
+        options = defaults.deep_merge(config || {}).to_symbol_keys
         options = options.each{ |k,v| options[k] = v.to_sym if v.is_a? String }
         options
       end

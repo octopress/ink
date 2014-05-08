@@ -24,7 +24,7 @@ module Octopress
         else
           file = '_octopress.yml'
           if File.exist? file
-            YAML.safe_load(File.open(file).read || {})
+            SafeYAML.load(File.open(file).read || {})
           else
             {}
           end

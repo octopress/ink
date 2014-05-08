@@ -25,7 +25,7 @@ module Octopress
           content = read(markup, context)
 
           if content =~ /\A-{3}(.+[^\A])-{3}\n(.+)/m
-            local_vars = YAML.safe_load($1.strip)
+            local_vars = SafeYAML.load($1.strip)
             content = $2.strip
           end
 

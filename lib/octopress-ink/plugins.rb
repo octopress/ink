@@ -158,10 +158,6 @@ module Octopress
         end
       end
 
-      def self.write_files(source, dest)
-        Plugins.site.static_files << StaticFileContent.new(source, dest)
-      end
-
       def self.fingerprint(paths)
         paths = [paths] unless paths.is_a? Array
         Digest::MD5.hexdigest(paths.clone.map! { |path| "#{File.mtime(path).to_i}" }.join)
