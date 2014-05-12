@@ -34,6 +34,8 @@ module Octopress
             config = config.deep_merge(user_config)
           end
 
+          config['permalinks'] ||= {}
+
           config
         end
       end

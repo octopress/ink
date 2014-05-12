@@ -117,7 +117,7 @@ module Octopress
           fingerprint(javascripts.clone.map {|f| f.path })
       end
 
-      def self.combined_javascripts
+      def self.combine_javascripts
         if @combined_javascript
           @combined_javascript
         else
@@ -137,7 +137,7 @@ module Octopress
       end
 
       def self.write_combined_javascript
-        js = combined_javascripts
+        js = combine_javascripts
         write_files(js, combined_javascript_path) unless js == ''
       end
 
