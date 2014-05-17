@@ -11,7 +11,16 @@ module Octopress
         'javascripts_dir' => '_javascripts',
         'stylesheets' => [],
         'javascripts' => [],
-        'disable' => []
+        'disable' => [],
+        'date_format' => 'ordinal',
+        'linkpost' => {
+          'marker' => "→",
+          'marker_position' => 'after'
+        },
+        'post' => {
+          'marker' => false,
+          'marker_position' => 'before'
+        }
       }
 
       def self.config
