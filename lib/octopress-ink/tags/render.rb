@@ -36,7 +36,9 @@ module Octopress
           partial = Liquid::Template.parse(content)
           content = context.stack {
             context['include'] = include_tag.parse_params(context)
-            context['page'] = context['page'].deep_merge(local_vars) if local_vars
+            if local_vars
+              context['page'] = Jekyll::Utils.deep_merge_hashes(context['page'], local_vars)
+            end
             partial.render!(context)
           }.strip
 

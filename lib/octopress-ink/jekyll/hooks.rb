@@ -36,7 +36,9 @@ module Jekyll
         config = Octopress::Ink.config['post']
       end
 
-      page['title'] = page['title'].titlecase if Octopress::Ink.config['titlecase']
+      if Octopress::Ink.config['titlecase']
+        Octopress::Utils.titlecase!(page['title'])
+      end
 
       page.merge({
         'title_text' => title_text(config, page['title']),

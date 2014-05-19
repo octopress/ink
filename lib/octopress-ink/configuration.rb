@@ -23,7 +23,7 @@ module Octopress
       }
 
       def self.config
-        @config ||= DEFAULTS.deep_merge(octopress_config)
+        @config ||= Jekyll::Utils.deep_merge_hashes(DEFAULTS, octopress_config)
       end
 
       def self.octopress_config

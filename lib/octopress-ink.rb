@@ -5,8 +5,7 @@ require 'digest/md5'
 
 require 'octopress-ink/version'
 
-require 'octopress-ink/ext/titlecase'
-require 'octopress-ink/ext/hash'
+require 'octopress-ink/utils'
 require 'octopress-ink/generators/plugin_assets'
 require 'octopress-ink/jekyll/hooks'
 require 'octopress-ink/version'

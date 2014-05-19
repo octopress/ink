@@ -106,7 +106,7 @@ module Octopress
 
       # Returns a title cased string based on John Gruber's title case http://daringfireball.net/2008/08/title_case_update
       def titlecase(input)
-        input.titlecase
+        Octopress::Utils.titlecase!(input)
       end
 
       # Formats a string for use as a css classname, removing illegal characters

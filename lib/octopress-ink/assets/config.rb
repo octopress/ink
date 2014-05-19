@@ -30,7 +30,7 @@ module Octopress
 
           if exists? user_path
             user_config = SafeYAML.load_file(user_path) || {}
-            config = config.deep_merge(user_config)
+            config = Jekyll::Utils.deep_merge_hashes(config, user_config)
           end
 
           config['permalinks'] ||= {}

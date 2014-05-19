@@ -13,7 +13,7 @@ module Octopress
                     :layouts, :includes, :images, :fonts, :files, :pages, :docs
 
       def initialize(options)
-        options = (options || configuration).to_symbol_keys
+        options = Jekyll::Utils.symbolize_hash_keys(options || configuration)
 
         DEFAULT_CONFIG.merge(options).each { |k,v| set_config(k,v) }
 
