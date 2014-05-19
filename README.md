@@ -7,7 +7,7 @@ Use Ink to help you build themes and plugins for Jekyll.
 
 ### Features
 - Installing Ink plugins is easy.
-- Users won't need to install or managae plugin assets.
+- Users won't need to install or manage plugin assets.
 - Jekyll will read your plugin's layouts, javascripts, stylesheets and more directly from your gem.
 - Ink allows users to modify a theme or plugin by adding a modified version to source/_custom directory.
 
@@ -29,11 +29,6 @@ Or install it yourself as:
 
 This is still evolving quite a bit. If you want to use it, you
 should probably talk to me directly.
-
-## Roadmap
-- Write an example theme
-- Write an example plugin
-- Add support for compiling and stitching javascript/coffeescript.
 
 ## Contributing
 
