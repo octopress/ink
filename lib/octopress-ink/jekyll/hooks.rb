@@ -90,7 +90,7 @@ module Jekyll
         input
       when String
         Time.parse(input) rescue Time.at(input.to_i)
-      when Number
+      when Numeric
         Time.at(input)
       else
         raise "Invalid Date:", "'#{input}' is not a valid datetime."
@@ -108,9 +108,9 @@ module Jekyll
       title = Octopress::Ink::Filters.unorphan(title)
 
       if config['marker_position'] == 'before'
-        marker + ' ' + title
+        "#{marker} #{title}"
       else
-        title + ' ' + marker
+        "#{title} #{marker}"
       end
     end
 

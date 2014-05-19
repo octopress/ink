@@ -5,7 +5,6 @@ module Octopress
       @static_files = []
       @plugins = []
       @user_plugins = []
-      @site = nil
 
       def self.theme
         @theme
@@ -15,6 +14,8 @@ module Octopress
         plugins.each(&block)
       end
 
+      # Store static files to be written
+      #
       def self.static_files
         @static_files
       end
@@ -39,18 +40,14 @@ module Octopress
         [@theme].concat(@plugins).concat(@user_plugins).compact
       end
 
-      def self.register(site)
-        unless @site
-          @site = site
-          plugins.each do |p| 
-            p.register
-          end
+      def self.register
+        plugins.each do |p| 
+          p.register
         end
       end
 
       def self.add_files
         add_assets(%w{images pages files fonts docs})
-        plugin('octopress-asset-pipeline').register_assets
         add_stylesheets
         add_javascripts
       end
@@ -59,10 +56,6 @@ module Octopress
         plugins.each do |p| 
           p.add_asset_files(assets)
         end
-      end
-
-      def self.site
-        @site
       end
 
       def self.register_plugin(plugin, options=nil)
@@ -115,13 +108,17 @@ module Octopress
         plugin_docs
       end
 
+      # Inclue partials from plugins
+      #
       def self.include(name, file)
         p = plugin(name)
         p.include(file)
       end
 
+      # Read plugin dir from site configs
+      #
       def self.custom_dir
-        site.config['plugins']
+        Ink.site.config['plugins']
       end
 
       # Copy/Generate Stylesheets
@@ -163,12 +160,6 @@ module Octopress
           js
         end
       end
-
-      def self.fingerprint(paths)
-        paths = [paths] unless paths.is_a? Array
-        Digest::MD5.hexdigest(paths.clone.map! { |path| "#{File.mtime(path).to_i}" }.join)
-      end
-
     end
   end
 end

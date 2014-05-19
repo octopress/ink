@@ -31,6 +31,14 @@ module Octopress
       require 'octopress-ink/commands'
     end
 
+    def self.version
+      version = "Jekyll v#{Jekyll::VERSION}, "
+      if defined? Octopress::VERSION
+        version << "Octopress v#{Octopress::VERSION} "
+      end
+      version << "Octopress Ink v#{Octopress::Ink::VERSION}"
+    end
+
     # Register a new plugin
     # 
     # plugin - A subclass of Plugin
@@ -47,24 +55,24 @@ module Octopress
       Plugins.register_plugin Plugin, options
     end
 
-    def self.version
-      version = "Jekyll v#{Jekyll::VERSION}, "
-      if defined? Octopress::VERSION
-        version << "Octopress v#{Octopress::VERSION} "
-      end
-      version << "Octopress Ink v#{Octopress::Ink::VERSION}"
-    end
-
     def self.config
-      Configuration.config
+      @config ||= Configuration.config
     end
 
     def self.site(options={})
+      @site ||= init_site(options)
+    end
+
+    def self.site=(site)
+      @site = site
+    end
+
+    def self.init_site(options)
       log_level = Jekyll.logger.log_level
       Jekyll.logger.log_level = :error
-      @site ||= Jekyll::Site.new(Jekyll.configuration(options))
+      site = Jekyll::Site.new(Jekyll.configuration(options))
       Jekyll.logger.log_level = log_level
-      @site
+      site
     end
 
     def self.plugins
@@ -89,13 +97,14 @@ module Octopress
     #
     #
     def self.list(options={})
-      Plugins.register site(options)
+      site(options)
+      Plugins.register
       options = {'minimal'=>true} if options.empty?
       message = "Octopress Ink - v#{VERSION}\n"
 
       if plugins.size > 0
         plugins.each do |plugin|
-          message += plugin.info(options)
+          message += plugin.list(options)
         end
       else
         message += "You have no plugins installed."
@@ -103,25 +112,27 @@ module Octopress
       puts message
     end
 
-    def self.plugin_info(name, options)
-      Plugins.register site(options)
+    def self.plugin_list(name, options)
+      site(options)
+      Plugins.register
       options.delete('config')
       if p = plugin(name)
-        puts p.info(options)
+        puts p.list(options)
       else
         not_found(name)
       end
     end
 
     def self.copy_plugin_assets(name, options)
-      Plugins.register site(options)
+      site(options)
+      Plugins.register
       if path = options.delete('path')
-        full_path = File.join(Plugins.site.source, path)
+        full_path = File.join(Ink.site.source, path)
         if !Dir["#{full_path}/*"].empty? && options['force'].nil?
           abort "Error: directory #{path} is not empty. Use --force to overwrite files."
         end
       else
-        full_path = File.join(Plugins.site.source, Plugins.custom_dir, name)
+        full_path = File.join(Ink.site.source, Plugins.custom_dir, name)
       end
       if p = plugin(name)
         copied = p.copy_asset_files(full_path, options)
@@ -135,13 +146,9 @@ module Octopress
       end
     end
 
-    def self.not_found(plugin)
-      puts "Plugin '#{plugin}' not found."
-      list_plugins
-    end
-
     def self.list_plugins(options={})
-      Plugins.register site(options)
+      site(options)
+      Plugins.register
       puts "\nCurrently installed plugins:"
       if plugins.size > 0
         plugins.each { |plugin| puts plugin.name }
@@ -154,12 +161,29 @@ module Octopress
       File.expand_path(File.join(File.dirname(__FILE__), '../', *subdirs))
     end
 
+    # Makes it easy for Ink plugins to copy README and CHANGELOG
+    # files to doc folder to be used as a documentation asset file
+    # 
+    # Usage: In rakefile require 'octopress-ink'
+    #        then add task calling Octopress::Ink.copy_doc for each file
+    #
     def self.copy_doc(source, dest, permalink=nil)
       contents = File.open(source).read
+
+      # Convert H1 to title and add permalink in YAML front-matter
+      #
       contents.sub!(/^# (.*)$/, "#{doc_yaml('\1', permalink).strip}")
+
       FileUtils.mkdir_p File.dirname(dest)
       File.open(dest, 'w') {|f| f.write(contents) }
       puts "Updated #{dest} from #{source}"
+    end
+
+    private
+
+    def self.not_found(plugin)
+      puts "Plugin '#{plugin}' not found."
+      list_plugins
     end
 
     def self.doc_yaml(title, permalink)

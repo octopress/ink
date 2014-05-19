@@ -23,16 +23,17 @@ module Octopress
         end
 
         def disabled?
-          plugin.disabled?('css', filename) ||
-          plugin.disabled?('stylesheets', filename)
-        end
-
-        def destination
-          File.join(base, plugin.slug, file.sub(/@(.+?)\./,'.'))
+          is_disabled('css', filename) || is_disabled('stylesheets', filename)
         end
 
         def tag
           "<link href='#{Filters.expand_url(File.join(dir, file))}' media='#{media}' rel='stylesheet' type='text/css'>"
+        end
+
+        private
+
+        def destination
+          File.join(base, plugin.slug, file.sub(/@(.+?)\./,'.'))
         end
       end
     end

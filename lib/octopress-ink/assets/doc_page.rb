@@ -18,6 +18,33 @@ module Octopress
           file_check
         end
 
+        def path
+          File.join(plugin_dir, page_dir, file)
+        end
+        
+        # Add doc page to Jekyll pages
+        #
+        def add
+          if Ink.config['docs_mode']
+            Ink.site.pages << page
+          end
+        end
+
+        private
+
+        def page
+          return @page if @page
+          @page = Page.new(Ink.site, source_dir, page_dir, file, {'path'=>plugin.docs_base_path})
+          @page.data['layout'] = 'docs'
+          @page.data['plugin'] = { 
+            'name' => @plugin.name, 
+            'slug' => @plugin.slug,
+            'docs_base_path' => plugin.docs_base_path,
+          }
+          @page.data['dir'] = File.dirname(plugin_path)
+          @page
+        end
+
         def page_dir
           dir == '.' ? '' : dir
         end
@@ -30,30 +57,6 @@ module Octopress
           File.join root, base
         end
 
-        def path
-          File.join(plugin_dir, page_dir, file)
-        end
-
-        def page
-          return @page if @page
-          @page = Page.new(Plugins.site, source_dir, page_dir, file, {'path'=>plugin.docs_base_path})
-          @page.data['layout'] = 'docs'
-          @page.data['plugin'] = { 
-            'name' => @plugin.name, 
-            'slug' => @plugin.slug,
-            'docs_base_path' => plugin.docs_base_path,
-          }
-          @page.data['dir'] = File.dirname(plugin_path)
-          @page
-        end
-
-        # Add doc page to Jekyll pages
-        #
-        def add
-          if Ink.config['docs_mode']
-            Plugins.site.pages << page
-          end
-        end
       end
     end
   end

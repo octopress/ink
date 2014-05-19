@@ -17,31 +17,38 @@ module Octopress
           "<link href='#{Filters.expand_url(File.join(dir, file))}' media='#{@media}' rel='stylesheet' type='text/css'>"
         end
 
-        # TODO: see if this is done TODO: choose user path before local path.
+        def read
+          @compiled ||= compile
+        end
+
+        def content
+          path.read
+        end
+
+        def ext
+          path.extname
+        end
+
+        def load_paths
+          [user_load_path, theme_load_path]
+        end
+
+        def disabled?
+          is_disabled('sass', filename) || is_disabled('stylesheets', filename)
+        end
+
+        private
+
+        def compile
+          AssetPipeline.compile_sass(self)
+        end
+
         def user_load_path
-          File.join(Plugins.site.source, Plugins.custom_dir, dir, File.dirname(file)).sub /\/\.$/, ''
+          File.join(Ink.site.source, Plugins.custom_dir, dir, File.dirname(file)).sub /\/\.$/, ''
         end
 
         def theme_load_path
           File.expand_path(File.join(root, base))
-        end
-
-        def disabled?
-          plugin.disabled?('sass', filename) ||
-          plugin.disabled?('stylesheets', filename)
-        end
-
-        def read
-          compile
-        end
-
-        def compile
-          unless @compiled
-            options = AssetPipeline.sass_options
-            options[:load_paths] = [user_load_path, theme_load_path]
-            @compiled = AssetPipeline.compile_sass(path.read, options)
-          end
-          @compiled
         end
 
         def user_override_path
@@ -61,10 +68,6 @@ module Octopress
 
         def destination
           File.join(base, plugin.slug, file.sub(/@(.+?)\./,'.').sub(/s.ss/, 'css'))
-        end
-
-        def add
-          #Plugins.site.static_files << StaticFileContent.new(compile, destination)
         end
       end
     end

@@ -5,7 +5,7 @@ module Octopress
       # Returns the site's config root or '/' if the config isn't set
       #
       def root
-        root_url = Plugins.site.config['root']
+        root_url = Ink.site.config['root']
         root_url.nil? ? '/' : File.join('/', root_url)
       end
 
@@ -52,7 +52,7 @@ module Octopress
       # e.g. /images/awesome.gif => http://example.com/images/awesome.gif
       #
       def full_urls(input)
-        url = Plugins.site.config['url']
+        url = Ink.site.config['url']
         if url.nil?
           raise IOError.new "Could not expand urls: Please add your published url to your _config.yml, eg url: http://example.com/"
         else
@@ -68,7 +68,7 @@ module Octopress
       # e.g. /images/awesome.gif => http://example.com/images/awesome.gif
       #
       def full_url(input)
-        url = Plugins.site.config['url']
+        url = Ink.site.config['url']
         if url.nil?
           raise IOError.new "Could not expand url in #{input}: Please add your site's published url to your _config.yml, eg url: http://example.com/"
         else

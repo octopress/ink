@@ -1,7 +1,7 @@
 module Octopress
   module Ink
     module Assets
-      class LocalSass < LocalStylesheet
+      class LocalCoffeescript < LocalAsset
         def read
           compile
         end
@@ -10,16 +10,12 @@ module Octopress
           file.content
         end
 
-        def ext
-          file.ext
-        end
-
         def path
           File.join(file.site.source, file.path)
         end
 
         def compile
-          AssetPipeline.compile_sass(self)
+          ::CoffeeScript.compile(content)
         end
       end
     end

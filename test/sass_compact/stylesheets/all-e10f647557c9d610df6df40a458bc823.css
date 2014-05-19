@@ -8,7 +8,7 @@ body { background: black; }
 /* Plugin: Awesome Sauce */
 .plugin-widget { background: red; color: #fff; }
 
-/* Plugin: Octopress Asset Pipeline */
+/* Plugin: Octopress Ink Asset Pipeline */
 .css-plugin { background: #fed; }
 
 body { display: table; }

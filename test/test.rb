@@ -53,7 +53,7 @@ def diff_file(file, target_dir='expected', source_dir='site')
     @failures << <<-DIFF
 Failure in #{file}
 ---------
-#{diff.gsub(/\A.+?\n/,'').gsub(/(<.+?)$/){|m| m.red}.gsub(/>.+/){|m| m.green}}
+#{diff.gsub(/\A.+?\n/,'').gsub(/^(<.+?)$/){|m| m.red}.gsub(/>.+/){|m| m.green}}
 ---------
 DIFF
   else
@@ -110,9 +110,8 @@ def test_javascripts(dir, concat=true)
     javascripts = %w{all-*}
     javascripts.each { |file| test("javascripts/#{file}.js", dir) }
   else
-    javascripts = %w{bar foo}
-    javascripts.each { |file| test("javascripts/theme/#{file}.js", dir) }
-    test("javascripts/site.js", dir)
+    %w{bar foo}.each { |file| test("javascripts/theme/#{file}.js", dir) }
+    %w{site test}.each { |file| test("javascripts/#{file}.js", dir) }
   end
 end
 

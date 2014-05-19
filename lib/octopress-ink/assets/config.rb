@@ -12,13 +12,12 @@ module Octopress
           @file = path
         end
 
+        # If config plugin config file exists, return contents for list command
         def info
-          config = plugin_path
-          if exists? config
-            " configuration defaults:\n" +
-            File.open(plugin_path).read.gsub(/^/,'    ')
+          if exists?(config = plugin_path)
+            File.open(config).read.gsub(/^/,'    ')
           else
-            " No configuration."
+            "  none"
           end
         end
 
@@ -26,11 +25,11 @@ module Octopress
           config = {}
           default = plugin_path
           if exists? default
-            config = SafeYAML.load(File.open(default)) || {}
+            config = SafeYAML.load_file(default) || {}
           end
 
           if exists? user_path
-            user_config = SafeYAML.load(File.open(user_path)) || {}
+            user_config = SafeYAML.load_file(user_path) || {}
             config = config.deep_merge(user_config)
           end
 

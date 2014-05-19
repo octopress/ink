@@ -6,8 +6,8 @@ module Octopress
     class AssetPipelinePlugin < Plugin
       def configuration
         {
-          name:        "Octopress Asset Pipeline",
-          description: "Add your CSS and JS to the asset pipeline.",
+          name:        "Octopress Ink Asset Pipeline",
+          description: "Adds your Sass, CSS, Coffeescript and Javascript to the Octopres asset pipeline.",
           local:       true
         }
       end
@@ -16,85 +16,80 @@ module Octopress
         @config ||= Ink.config
       end
 
-      def register_assets
-
-        local_stylesheets.each {|f| add_stylesheet(f) }
-        local_javascripts.each {|f| add_javascript(f) }
-
-        remove_jekyll_assets @sass if @sass
-
-        if config['concat_js']
-          remove_jekyll_assets @javascripts if @javascripts
-        end
-
-        if config['concat_css']
-          remove_jekyll_assets @css if @css
-        end
-      end
-
-      def disabled?(dir, file)
-        case dir
-        when stylesheets_dir
-          config['disable'].include?('site_stylesheets')
-        when javascripts_dir
-          config['disable'].include?('site_javascripts')
-        end
-      end
-
-      def add_javascript(file)
-        @javascripts << Assets::LocalJavascript.new(self, javascripts_dir, file)
-      end
-
-      def add_stylesheet(file)
-        # accept ['file', 'media_type']
+      def register
+        # Tell Jekyll to read static files and pages
+        # This is necessary when Jekyll isn't being asked to build a site,
+        # like when a user runs the list command to list assets
         #
-        if file.is_a? Array
-          if file.first =~ /\.css/
-            @css << Assets::LocalStylesheet.new(self, stylesheets_dir, file.first, file.last)
-          else
-            @sass << Assets::LocalSass.new(self, stylesheets_dir, file.first, file.last)
-          end
-          
-        # accept 'file'
-        #
-        else
-          if file =~ /\.css/
-            @css << Assets::LocalStylesheet.new(self, stylesheets_dir, file)
-          else
-            @sass << Assets::LocalSass.new(self, stylesheets_dir, file)
+        if Ink.site.pages.empty? && Ink.site.posts.empty?
+          Ink.site.read_directories 
+        end
+
+        if Ink.config['concat_css']
+          add_stylesheets
+        end
+        if Ink.config['concat_js']
+          add_javascripts
+        end
+      end
+
+      def stylesheets
+        @css.clone.concat @sass
+      end
+
+      def javascripts
+        @js.clone.concat @coffee
+      end
+
+      private
+
+      def add_stylesheets
+        add_sass
+        add_css
+      end
+
+      def add_javascripts
+        add_js
+        add_coffee
+      end
+
+      # Finds all Sass files registered by Jekyll
+      #
+      def add_sass
+        Ink.site.pages.each do |f| 
+          if f.ext =~ /\.s[ca]ss/ 
+            @sass << Assets::LocalSass.new(self, Ink.site.pages.delete(f))
           end
         end
       end
 
-      def javascripts_dir
-        config['javascripts_dir']
-      end
-
-      def stylesheets_dir
-        config['stylesheets_dir']
-      end
-
-      def local_stylesheets
-        local_files('stylesheets', stylesheets_dir).reject do |f|
-          File.basename(f) =~ /^_.*?s[ac]ss/
+      # Finds all CSS files registered by Jekyll
+      #
+      def add_css
+        Ink.site.static_files.each do |f| 
+          if f.path =~ /\.css$/ 
+            @css << Assets::LocalStylesheet.new(self, Ink.site.static_files.delete(f))
+          end
         end
       end
 
-      def local_javascripts
-        local_files('javascripts', javascripts_dir)
+      # Finds all Coffeescript files registered by Jekyll
+      #
+      def add_coffee
+        Ink.site.pages.each do |f| 
+          if f.ext =~ /\.coffee$/ 
+            @coffee << Assets::LocalCoffeescript.new(self, Ink.site.pages.delete(f))
+          end
+        end
       end
 
-      def local_files(type, dir)
-        source = Plugins.site.source
-        
-        # If they manually specify files
-        #
-        if config[type].is_a?(Array) && !config[type].empty?
-          config[type]
-        else
-          dir = File.join(source, dir)
-          files = glob_assets(dir)
-          files.map { |f| f.split(dir).last }
+      # Finds all Javascript files registered by Jekyll
+      #
+      def add_js
+        Ink.site.static_files.each do |f| 
+          if f.path =~ /\.js$/ 
+            @js << Assets::LocalAsset.new(self, Ink.site.static_files.delete(f))
+          end
         end
       end
     end

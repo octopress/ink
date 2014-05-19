@@ -2,27 +2,44 @@ module Octopress
   module Ink
     module AssetPipeline
 
-      def self.compile_sass_file(path, options=nil)
-        options ||= sass_options
-        ::Sass.compile_file(path, options)
+      # Compile CSS to take advantage of Sass's compression settings
+      #
+      def self.compile_css(content)
+        configs = sass_converter.sass_configs
+        configs[:syntax] = :scss
+
+        ::Sass.compile(content, configs)
       end
 
-      def self.compile_sass(contents, options)
-        ::Sass.compile(contents, options)
+      def self.compile_sass(sass)
+        ::Sass.compile(sass.content, sass_configs(sass))
       end
 
-      def self.sass_options
-        config = Plugins.site.config['sass']
-        
-        defaults = {
-          'style'        => :compressed,
-          'trace'        => false,
-          'line_numbers' => false
-        }
+      # Gets default Sass configuration hash from Jekyll
+      #
+      def self.sass_configs(sass)
+        configs = sass_converter.sass_configs
 
-        options = defaults.deep_merge(config || {}).to_symbol_keys
-        options = options.each{ |k,v| options[k] = v.to_sym if v.is_a? String }
-        options
+        configs[:syntax] = sass.ext.sub(/^\./,'').to_sym
+
+        if sass.respond_to? :load_paths
+          configs[:load_paths] = sass.load_paths
+        end
+
+        configs
+      end
+      
+      # Access Jekyll's built in Sass converter
+      #
+      def self.sass_converter
+        if @sass_converter
+          @sass_converter
+        else
+          Ink.site.converters.each do |c|
+            @sass_converter = c if c.kind_of?(Jekyll::Converters::Sass) 
+          end
+          @sass_converter
+        end
       end
 
       # Return a link tag, for all plugins' stylesheets
@@ -70,7 +87,7 @@ module Octopress
       def self.write_combined_stylesheet
         css = combine_stylesheets
         css.keys.each do |media|
-          contents = compile_sass(css[media], sass_options)
+          contents = compile_css(css[media])
           contents = AutoprefixerRails.process(contents)
           write_files(contents, combined_stylesheet_path(media)) 
         end
@@ -109,7 +126,7 @@ module Octopress
 
       def self.javascripts
         @javascripts ||=
-          Plugins.plugins.clone.map { |p| p.javascripts }.flatten 
+          Plugins.plugins.clone.map { |p| p.javascripts }.flatten
       end
 
       def self.javascript_fingerprint

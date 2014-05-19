@@ -8,8 +8,6 @@ module Octopress
         'docs_mode' => false,
         'concat_css' => true,
         'concat_js' => true,
-        'stylesheets_dir' => '_stylesheets',
-        'javascripts_dir' => '_javascripts',
         'stylesheets' => [],
         'javascripts' => [],
         'disable' => [],
@@ -33,8 +31,8 @@ module Octopress
           Octopress.config
         else
           file = '_octopress.yml'
-          if File.exist? file
-            SafeYAML.load(File.open(file).read || {})
+          if File.exist?(file)
+            SafeYAML.load_file(file) || {}
           else
             {}
           end

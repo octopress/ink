@@ -27,7 +27,7 @@ module Octopress
           if file =~ /^\.+\//
             page = context['page']
             if local_dir = page['dir']
-              File.expand_path(File.join(Plugins.site.source, local_dir, file))
+              File.expand_path(File.join(Ink.site.source, local_dir, file))
             else
               local_dir = File.dirname page['path']
               File.expand_path(File.join(root, local_dir, file))
@@ -44,7 +44,7 @@ module Octopress
         end
 
         def self.site_dir
-          File.expand_path(Plugins.site.config['destination'])
+          File.expand_path(Ink.site.config['destination'])
         end
 
         def self.page_destination(page)
@@ -56,14 +56,14 @@ module Octopress
         end
 
         def self.find_page_by_dest(dest)
-          Plugins.site.pages.clone.each do |p|
+          Ink.site.pages.clone.each do |p|
             return p if page_destination(p) == dest
           end
           return false
         end
 
         def self.remove_page(dest)
-          Plugins.site.pages.reject! do |p|
+          Ink.site.pages.reject! do |p|
             page_destination(p) == dest
           end
         end

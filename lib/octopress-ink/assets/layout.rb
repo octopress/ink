@@ -8,13 +8,15 @@ module Octopress
           register
         end
 
+        private
+
         def register
           dir = user_dir
           if !exists?(File.join(dir, file))
             dir = plugin_dir
           end
 
-          Plugins.site.layouts[name] = Jekyll::Layout.new(Plugins.site, dir, file)
+          Ink.site.layouts[name] = Jekyll::Layout.new(Ink.site, dir, file)
         end
 
         def name

@@ -6,3 +6,6 @@ destination: site
 include_test: foo.html
 render_test: kittens
 timezone: America/Chicago
+
+sass:
+  style: compressed

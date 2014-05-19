@@ -30,7 +30,8 @@ module Octopress
         @layouts           = []
         @includes          = []
         @css               = []
-        @javascripts       = []
+        @js                = []
+        @coffee            = []
         @images            = []
         @sass              = []
         @docs              = []
@@ -38,17 +39,6 @@ module Octopress
         @files             = []
         @pages             = []
         @slug            ||= @name
-      end
-
-      def configuration; {}; end
-
-      def set_config(name,value)
-        instance_variable_set("@#{name}", value)
-        instance_eval(<<-EOS, __FILE__, __LINE__ + 1)
-          def #{name}
-            @#{name}
-          end
-        EOS
       end
 
       def register
@@ -67,43 +57,25 @@ module Octopress
         end
       end
 
-      def add_assets; end
-
-      def stylesheets
-        css.clone.concat sass_without_partials
-      end
-
-      def config
-        @config ||= Assets::Config.new(self, @config_file).read
-      end
-
-      def disable_assets
-        disabled = []
-        config['disable'] ||= {}
-        config['disable'].each do |key,val| 
-          next unless can_disable.include? key
-          if !!val == val
-            disabled << key if val
-          elsif val.is_a? Array
-            val.each { |v| disabled << File.join(key, v) }
-          elsif val.is_a? String
-            disabled << File.join(key, val)
-          end
-        end
-        config['disable'] = disabled
-      end
-
-      def disabled?(dir, file)
-        config['disable'].include?(dir) || config['disable'].include?(File.join(dir, file))
-      end
-
+      # Themes should always have the slug "theme"
+      #
       def slug
-        Filters.sluggify @type == 'theme' ? @type : @slug
+        Filters.sluggify @type == 'theme' ? 'theme' : @slug
       end
 
+      # Path where doc pages will be hosted
+      #
+      # - returns: String, eg: docs/plugins/plugin-slug
+      #
       def docs_base_path
-        type = @type == 'plugin' ? 'plugins' : @type
-        File.join('docs', type, slug)
+
+        if @type == 'theme'
+          base = 'theme'
+        else
+          base = File.join('plugins', slug)
+        end
+
+        File.join('docs', base)
       end
 
       # Docs pages for easy listing in an index
@@ -128,6 +100,102 @@ module Octopress
         end
       end
 
+      # List info about plugin's assets
+      #
+      # returs: String filled with asset info
+      #
+      def list(options={})
+        if options['minimal']
+          minimal_list
+        else
+          detailed_list(options)
+        end
+      end
+
+      # Add asset files which aren't disabled
+      #
+      def add_asset_files(options)
+        select_assets(options).each do |name, assets|
+          next if name == 'defaults'
+          assets.each {|file| file.add unless file.disabled? }
+        end
+      end
+
+      # Copy asset files to plugin override path
+      #
+      def copy_asset_files(path, options)
+        copied = []
+
+        select_assets(options).each do |name, assets|
+          next if name == 'docs'
+          assets.each { |a| copied << a.copy(path) }
+        end
+        copied
+      end
+
+      # stylesheets should include Sass and CSS
+      #
+      def stylesheets
+        css.clone.concat sass_without_partials
+      end
+
+      def javascripts
+        js.clone.concat coffee
+      end
+
+      # Plugin configuration
+      #
+      # returns: Hash of merged user and default config.yml files
+      #
+      def config
+        @config ||= defaults.read
+      end
+
+      # Remove files from Jekyll since they'll be proccessed by Ink instead
+      #
+      def remove_jekyll_assets(files)
+        files.each {|f| f.remove_jekyll_asset }
+      end
+
+      def stylesheet_tags
+        get_tags stylesheets
+      end
+
+      def javascript_tags
+        get_tags javascripts
+      end
+
+      def include(file)
+        @includes.find{|i| i.filename == file }.path
+      end
+
+      private
+
+      def get_paths(files)
+        files.dup.map { |f| f.path }.compact
+      end
+
+      def disable_assets
+        disabled = []
+        config['disable'] ||= {}
+        config['disable'].each do |key,val| 
+          next unless can_disable.include? key
+          if !!val == val
+            disabled << key if val
+          elsif val.is_a? Array
+            val.each { |v| disabled << File.join(key, v) }
+          elsif val.is_a? String
+            disabled << File.join(key, val)
+          end
+        end
+        config['disable'] = disabled
+      end
+
+      def defaults
+        @defaults ||= Assets::Config.new(self, @config_file)
+      end
+
+
       def can_disable
         [ 
           'pages',
@@ -135,6 +203,8 @@ module Octopress
           'css',
           'stylesheets',
           'javascripts',
+          'js',
+          'coffee',
           'images',
           'fonts',
           'files'
@@ -149,22 +219,49 @@ module Octopress
           'pages'       => @pages, 
           'sass'        => @sass, 
           'css'         => @css,
-          'javascripts' => @javascripts, 
+          'js'          => @js, 
+          'coffee'      => @coffee, 
           'images'      => @images, 
           'fonts'       => @fonts, 
-          'files'       => @files
+          'files'       => @files,
+          'defaults'    => [@defaults]
         }
       end
+      
+      # Return information about each asset 
+      def assets_list(options)
+        message = ''
+        no_assets = []
 
-      def info(options={})
-        if options['minimal']
-          minimal_info
-        else
-          detailed_info(options)
+        select_assets(options).each do |name, assets|
+          next if assets.compact.size == 0
+
+          case name
+          when 'docs'
+            header = "documentation: /#{docs_base_path}/"
+            message += asset_list(assets, header)
+          when 'defaults'
+            message += asset_list(assets, 'default configuration')
+          else
+            message += asset_list(assets, name)
+          end
+
+          message += "\n"
         end
+
+        message
       end
 
-      def minimal_info
+      def asset_list(assets, heading)
+        list = " #{heading}:\n"
+        assets.each do |asset|
+          list += "#{asset.info}\n"
+        end
+
+        list
+      end
+
+      def minimal_list
         message = " #{@name}"
         message += " (#{slug})"
         message += " - v#{@version}" if @version
@@ -174,9 +271,9 @@ module Octopress
         message += "\n"
       end
 
-      def detailed_info(options)
-        asset_info = assets_info(options)
-        return '' if asset_info.empty?
+      def detailed_list(options)
+        list = assets_list(options)
+        return '' if list.empty?
 
         name = "Plugin: #{@name}"
         name += " (theme)" if @type == 'theme'
@@ -197,44 +294,12 @@ module Octopress
         80.times { lines += '=' }
 
         message = "\n#{message}\n#{lines}\n"
-        message += asset_info
+        message += list
         message += "\n"
       end
 
       def pad_line(line)
         line = "| #{line.ljust(76)} |"
-      end
-
-      # Return information about each asset 
-      def assets_info(options)
-        message = ''
-        no_assets = []
-
-        if options['stylesheets']
-          options['css'] = true
-          options['sass'] = true
-          options.delete('stylesheets')
-        end
-
-        select_assets(options).each do |name, assets|
-          next if assets.size == 0
-          if name == 'docs'
-            message += " documentation: /#{docs_base_path}/\n"
-            if assets.size > 1
-              assets.each do |asset|
-                message += "  - #{asset.info}\n"
-              end
-            end
-          else
-            message += " #{name}:\n"
-            assets.each do |asset|
-              message += "  - #{asset.info}\n"
-            end
-          end
-          message += "\n"
-        end
-
-        message
       end
 
       # Return selected assets
@@ -245,19 +310,43 @@ module Octopress
       # Output a hash of assets instances {'files' => @files }
       #
       def select_assets(asset_types)
-        # Accept options from the CLI (as a hash of asset: true)
+
+        # Accept options from the CLI (as a hash of asset_name: true)
         # Or from Ink modules as an array of asset names
         #
         if asset_types.is_a? Hash
+           
+          # Show Sass and CSS when 'stylesheets' is chosen
+          if asset_types['stylesheets']
+            asset_types['css'] = true
+            asset_types['sass'] = true
+            asset_types.delete('stylesheets')
+          end
+
+          if asset_types['javascripts']
+            asset_types['js'] = true
+            asset_types['coffee'] = true
+            asset_types.delete('javascripts')
+          end
+
           asset_types = asset_types.keys
         end
 
-        asset_types = [asset_types] if asset_types.is_a? String
+        # Args should allow a single asset as a string too
+        #
+        if asset_types.is_a? String
+          asset_types = [asset_types] 
+        end
         
-        # Remove options which don't belong
+        # Match asset_types against list of assets and
+        # remove asset_types which don't belong
         #
         asset_types.select!{|asset| assets.include?(asset)}
 
+        # If there are no asset_types, return all assets
+        # This will happen if list command is used with
+        # no filtering arguments
+        #
         if asset_types.nil? || asset_types.empty?
           assets
         else
@@ -300,7 +389,13 @@ module Octopress
       end
 
       def add_javascripts
-        @javascripts = add_new_assets(@javascripts_dir, Assets::Javascript)
+        find_assets(@javascripts_dir).each do |asset|
+          if File.extname(asset) =~ /\.js$/
+            @js << Assets::Javascript.new(self, @javascripts_dir, asset)
+          elsif File.extname(asset) =~ /\.coffee$/
+            @coffee << Assets::Coffeescript.new(self, @javascripts_dir, asset)
+          end
+        end
       end
 
       def add_fonts
@@ -329,60 +424,6 @@ module Octopress
         Find.find(dir).to_a.reject {|f| File.directory? f }
       end
 
-      #def add_css(file, media=nil)
-        #@css << Assets::Stylesheet.new(self, @stylesheets_dir, file, media)
-      #end
-
-      #def add_sass(file, media=nil)
-        #@sass << Assets::Sass.new(self, @sass_dir, file, media)
-      #end
-
-      #def add_css_files(files, media=nil)
-        #files.each { |f| add_css(f, media) }
-      #end
-
-      #def add_sass_files(files, media=nil)
-        #files.each { |f| add_sass(f, media) }
-      #end
-
-      def remove_jekyll_assets(files)
-        files.each {|f| f.remove_jekyll_asset }
-      end
-
-      def add_asset_files(options)
-        select_assets(options).each do |name, assets|
-          assets.each {|file| file.add unless file.disabled? }
-        end
-      end
-
-      def copy_asset_files(path, options)
-        copied = []
-
-        if options['stylesheets']
-          options['css'] = true
-          options['sass'] = true
-          options.delete('stylesheets')
-        end
-
-        select_assets(options).each do |name, assets|
-          next if name == 'docs'
-          assets.each { |a| copied << a.copy(path) }
-        end
-        copied
-      end
-
-      def stylesheet_paths
-        get_paths @css.reject{|f| f.disabled? }.compact
-      end
-
-      def javascript_paths
-        get_paths @javascripts.reject{|f| f.disabled? }.compact
-      end
-
-      def stylesheet_tags
-        get_tags stylesheets
-      end
-
       def css
         @css.reject{|f| f.disabled? }.compact
       end
@@ -395,29 +436,31 @@ module Octopress
         sass.reject{|f| f.file =~ /^_/ }
       end
 
-      def javascripts
-        @javascripts.reject{|f| f.disabled? }.compact
+      def js
+        @js.reject{|f| f.disabled? }.compact
       end
 
-      def sass_tags
-        get_tags sass
-      end
-
-      def javascript_tags
-        get_tags javascripts
-      end
-
-      def get_paths(files)
-        files.dup.map { |f| f.path }.compact
+      def coffee
+        @coffee.reject{|f| f.disabled? }.compact
       end
 
       def get_tags(files)
         files.dup.map { |f| f.tag }
       end
 
-      def include(file)
-        @includes.find{|i| i.filename == file }.path
+      def configuration; {}; end
+
+      def set_config(name, value)
+        instance_variable_set("@#{name}", value)
+        instance_eval(<<-EOS, __FILE__, __LINE__ + 1)
+          def #{name}
+            @#{name}
+          end
+        EOS
       end
+
+      def add_assets; end
+
     end
   end
 end
