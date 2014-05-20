@@ -25,7 +25,7 @@ module Octopress
             shortpath = File.join(Plugins.custom_dir, dir)
             message += "from: #{shortpath}/#{filename}"
           end
-          message
+          "  - #{message}"
         end
 
         def filename
@@ -33,7 +33,12 @@ module Octopress
         end
 
         def disabled?
-          plugin.disabled?(base, filename)
+          is_disabled(base, filename)
+        end
+
+        def is_disabled(base, file)
+          config = @plugin.config['disable']
+          config.include?(base) || config.include?(File.join(base, filename))
         end
 
         def path
@@ -46,6 +51,7 @@ module Octopress
             files = files.flatten.reject { |f| !exists? f }
 
             if files.empty?
+              require 'pry-debugger'; binding.pry
               raise IOError.new "Could not find #{File.basename(file)} at #{file}"
             end
             @found_file = Pathname.new files[0]
@@ -56,20 +62,8 @@ module Octopress
           path.read
         end
 
-        def source_dir
-          if exists? user_override_path
-            user_dir
-          else
-            plugin_dir
-          end
-        end
-
-        def destination
-          File.join(dir, file)
-        end
-
         def add
-          Plugins.site.static_files << StaticFile.new(path, destination)
+          Plugins.static_files << StaticFile.new(path, destination)
         end
 
         # Copy asset to user override directory
@@ -86,6 +80,49 @@ module Octopress
           "+ ".green + "#{File.join(target_dir, filename)}"
         end
 
+        # Remove files from Jekyll's static_files array so it doesn't end up in the
+        # compiled site directory. 
+        #
+        def remove_jekyll_asset
+          Ink.site.static_files.clone.each do |sf|
+            if sf.kind_of?(Jekyll::StaticFile) && sf.path == path.to_s
+              Ink.site.static_files.delete(sf)
+            end
+          end
+        end
+
+        private
+
+        def source_dir
+          if exists? user_override_path
+            user_dir
+          else
+            plugin_dir
+          end
+        end
+
+        def destination
+          File.join(dir, file)
+        end
+
+        # Render file through Liquid if it contains YAML front-matter
+        #
+        def render
+          content = path.read
+
+          if content =~ /\A(---\s*\n.*?\n?)^((---|\.\.\.)\s*$\n?)/m
+            payload = Ink.site.site_payload
+            content = $POSTMATCH
+            payload['page'] = SafeYAML.load($1)
+            render_liquid(content, payload)
+          else
+            content
+          end
+        end
+
+        def render_liquid(content, payload={})
+          Liquid::Template.parse(content).render!(Ink.payload(payload), {})
+        end
 
         def plugin_dir
           File.join root, base
@@ -96,11 +133,11 @@ module Octopress
         end
 
         def user_dir
-          File.join Plugins.site.source, Plugins.custom_dir, dir
+          File.join Ink.site.source, Plugins.custom_dir, dir
         end
 
         def local_plugin_path
-          File.join Plugins.site.source, dir, file
+          File.join Ink.site.source, dir, file
         end
 
         def user_override_path
@@ -109,17 +146,6 @@ module Octopress
 
         def user_path
           user_override_path
-        end
-
-        # Remove files from Jekyll's static_files array so it doesn't end up in the
-        # compiled site directory. 
-        #
-        def remove_jekyll_asset
-          Plugins.site.static_files.clone.each do |sf|
-            if sf.kind_of?(Jekyll::StaticFile) && sf.path == path.to_s
-              Plugins.site.static_files.delete(sf)
-            end
-          end
         end
 
         def file_check

@@ -15,7 +15,7 @@ module Octopress
                 Octopress::Ink.list(options)
               else
                 name = args.first
-                Octopress::Ink.plugin_info(name, options)
+                Octopress::Ink.plugin_list(name, options)
               end
             end
           end

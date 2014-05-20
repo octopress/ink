@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'yaml'
 
 module Octopress
@@ -6,16 +7,23 @@ module Octopress
       DEFAULTS = {
         'docs_mode' => false,
         'concat_css' => true,
+        'compress_css' => true,
         'concat_js' => true,
-        'stylesheets_dir' => '_stylesheets',
-        'javascripts_dir' => '_javascripts',
-        'stylesheets' => [],
-        'javascripts' => [],
-        'disable' => []
+        'compress_js' => true,
+        'disable' => [],
+        'date_format' => 'ordinal',
+        'linkpost' => {
+          'marker' => "→",
+          'marker_position' => 'after'
+        },
+        'post' => {
+          'marker' => false,
+          'marker_position' => 'before'
+        }
       }
 
       def self.config
-        @config ||= DEFAULTS.deep_merge(octopress_config)
+        @config ||= Jekyll::Utils.deep_merge_hashes(DEFAULTS, octopress_config)
       end
 
       def self.octopress_config
@@ -23,8 +31,8 @@ module Octopress
           Octopress.config
         else
           file = '_octopress.yml'
-          if File.exist? file
-            YAML.safe_load(File.open(file).read || {})
+          if File.exist?(file)
+            SafeYAML.load_file(file) || {}
           else
             {}
           end

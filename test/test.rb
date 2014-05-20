@@ -53,7 +53,7 @@ def diff_file(file, target_dir='expected', source_dir='site')
     @failures << <<-DIFF
 Failure in #{file}
 ---------
-#{diff.gsub(/\A.+?\n/,'').gsub(/(<.+?)$/){|m| m.red}.gsub(/>.+/){|m| m.green}}
+#{diff.gsub(/\A.+?\n/,'').gsub(/^(<.+?)$/){|m| m.red}.gsub(/>.+/){|m| m.green}}
 ---------
 DIFF
   else
@@ -94,9 +94,6 @@ def test_stylesheets(dir, concat=true)
     stylesheets = %w{all-* print-*}
     stylesheets.each { |file| test("stylesheets/#{file}.css", dir) }
   else
-    local_stylesheets = %w{site test}
-    local_stylesheets.each { |file| test("stylesheets/#{file}.css", dir) }
-
     plugin_stylesheets = %w{plugin-media-test plugin-test}
     plugin_stylesheets.each { |file| test("stylesheets/awesome-sauce/#{file}.css", dir) }
 
@@ -110,9 +107,7 @@ def test_javascripts(dir, concat=true)
     javascripts = %w{all-*}
     javascripts.each { |file| test("javascripts/#{file}.js", dir) }
   else
-    javascripts = %w{bar foo}
-    javascripts.each { |file| test("javascripts/theme/#{file}.js", dir) }
-    test("javascripts/site.js", dir)
+    %w{bar foo}.each { |file| test("javascripts/theme/#{file}.js", dir) }
   end
 end
 
@@ -165,22 +160,16 @@ test_stylesheets('concat_css')
 test_javascripts('concat_js')
 test_configs('expected')
 test_root_assets('expected')
+test_disabled('site')
 
-Octopress::Ink.copy_plugin_assets('theme', {'path' => '_copy', 'force'=> true})
+system "octopress ink copy theme --path _copy --force"
 test_copy_assets('copy_test')
 
-Octopress::Ink.copy_plugin_assets('theme', {'path' => '_copy', 'force'=> true, 'layouts' => true, 'pages' => true})
+system "octopress ink copy theme --layouts --pages --path _copy --force"
 test_copy_assets('copy_layouts_pages')
 
 build octopress_config: '_concat_false.yml'
 test_stylesheets('concat_css_false', false)
 test_javascripts('concat_js_false', false)
-test_disabled('site')
-
-build config: '_sass_compact.yml'
-test_stylesheets('sass_compact')
-
-build config: '_sass_expanded.yml'
-test_stylesheets('sass_expanded')
 
 print_failures

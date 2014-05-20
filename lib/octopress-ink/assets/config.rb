@@ -12,24 +12,28 @@ module Octopress
           @file = path
         end
 
-        def user_dir
-          File.join Plugins.site.source, Plugins.custom_dir, dir
-        end
-
-        def local_plugin_path
-          File.join Plugins.site.source, dir, file
+        # If config plugin config file exists, return contents for list command
+        def info
+          if exists?(config = plugin_path)
+            File.open(config).read.gsub(/^/,'    ')
+          else
+            "  none"
+          end
         end
 
         def read
           config = {}
           default = plugin_path
           if exists? default
-            config = YAML.safe_load(File.open(default))
+            config = SafeYAML.load_file(default) || {}
           end
 
           if exists? user_path
-            config = config.deep_merge YAML.safe_load(File.open(user_path))
+            user_config = SafeYAML.load_file(user_path) || {}
+            config = Jekyll::Utils.deep_merge_hashes(config, user_config)
           end
+
+          config['permalinks'] ||= {}
 
           config
         end

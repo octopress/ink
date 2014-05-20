@@ -1,5 +1,5 @@
 test_override: config from theme override
-page_permalinks:
+permalinks:
   two: test_pages/theme_page.html
   feed: test_pages/feed/
 

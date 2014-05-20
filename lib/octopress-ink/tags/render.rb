@@ -25,7 +25,7 @@ module Octopress
           content = read(markup, context)
 
           if content =~ /\A-{3}(.+[^\A])-{3}\n(.+)/m
-            local_vars = YAML.safe_load($1.strip)
+            local_vars = SafeYAML.load($1.strip)
             content = $2.strip
           end
 
@@ -36,7 +36,9 @@ module Octopress
           partial = Liquid::Template.parse(content)
           content = context.stack {
             context['include'] = include_tag.parse_params(context)
-            context['page'] = context['page'].deep_merge(local_vars) if local_vars
+            if local_vars
+              context['page'] = Jekyll::Utils.deep_merge_hashes(context['page'], local_vars)
+            end
             partial.render!(context)
           }.strip
 
