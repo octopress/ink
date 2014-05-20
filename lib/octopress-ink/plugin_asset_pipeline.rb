@@ -1,6 +1,6 @@
 module Octopress
   module Ink
-    module AssetPipeline
+    module PluginAssetPipeline
 
       # Compile CSS to take advantage of Sass's compression settings
       #

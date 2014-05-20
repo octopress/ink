@@ -22,7 +22,7 @@ module Octopress
     autoload :StaticFileContent,    'octopress-ink/jekyll/static_file_content'
     autoload :Plugins,              'octopress-ink/plugins'
     autoload :Plugin,               'octopress-ink/plugin'
-    autoload :AssetPipeline,        'octopress-ink/asset_pipeline'
+    autoload :PluginAssetPipeline,  'octopress-ink/plugin_asset_pipeline'
     autoload :Tags,                 'octopress-ink/tags'
 
     if defined? Octopress::Command
@@ -213,8 +213,5 @@ Liquid::Template.register_tag('_', Octopress::Ink::Tags::LineCommentTag)
 Liquid::Template.register_tag('doc_url', Octopress::Ink::Tags::DocUrlTag)
 
 require 'octopress-ink/plugins/ink'
-require 'octopress-ink/plugins/local_asset_pipeline'
 
 Octopress::Ink.register_plugin(Octopress::Ink::InkPlugin)
-Octopress::Ink.register_plugin(Octopress::Ink::AssetPipelinePlugin)
-

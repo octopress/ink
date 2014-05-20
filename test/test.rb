@@ -94,9 +94,6 @@ def test_stylesheets(dir, concat=true)
     stylesheets = %w{all-* print-*}
     stylesheets.each { |file| test("stylesheets/#{file}.css", dir) }
   else
-    local_stylesheets = %w{site test}
-    local_stylesheets.each { |file| test("stylesheets/#{file}.css", dir) }
-
     plugin_stylesheets = %w{plugin-media-test plugin-test}
     plugin_stylesheets.each { |file| test("stylesheets/awesome-sauce/#{file}.css", dir) }
 
@@ -111,7 +108,6 @@ def test_javascripts(dir, concat=true)
     javascripts.each { |file| test("javascripts/#{file}.js", dir) }
   else
     %w{bar foo}.each { |file| test("javascripts/theme/#{file}.js", dir) }
-    %w{site test}.each { |file| test("javascripts/#{file}.js", dir) }
   end
 end
 

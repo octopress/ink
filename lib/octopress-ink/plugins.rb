@@ -125,7 +125,7 @@ module Octopress
       #
       def self.add_stylesheets
         if Ink.config['concat_css']
-          AssetPipeline.write_combined_stylesheet
+          PluginAssetPipeline.write_combined_stylesheet
         else
           add_assets(%w{css sass})
         end
@@ -135,7 +135,7 @@ module Octopress
       #
       def self.add_javascripts
         if Ink.config['concat_js']
-          AssetPipeline.write_combined_javascript
+          PluginAssetPipeline.write_combined_javascript
         else
           add_assets(%w{javascripts})
         end
@@ -143,7 +143,7 @@ module Octopress
 
       def self.stylesheet_tags
         if Ink.config['concat_css']
-          AssetPipeline.combined_stylesheet_tag
+          PluginAssetPipeline.combined_stylesheet_tag
         else
           plugins.clone.map { |p| p.stylesheet_tags }.join('')
         end
@@ -151,7 +151,7 @@ module Octopress
 
       def self.javascript_tags
         if Ink.config['concat_js']
-          AssetPipeline.combined_javascript_tag
+          PluginAssetPipeline.combined_javascript_tag
         else
           js = []
           plugins.each do |plugin| 

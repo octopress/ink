@@ -17,20 +17,3 @@ body {
   background: red;
   color: #fff;
 }
-
-/* Plugin: Octopress Ink Asset Pipeline */
-.css-plugin {
-  background: #fed;
-}
-
-body {
-  display: table;
-}
-
-body {
-  background: #aaa111;
-}
-
-div {
-  display: table;
-}

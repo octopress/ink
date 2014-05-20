@@ -40,7 +40,7 @@ module Octopress
         private
 
         def compile
-          AssetPipeline.compile_sass(self)
+          PluginAssetPipeline.compile_sass(self)
         end
 
         def user_load_path
