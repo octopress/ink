@@ -172,10 +172,4 @@ build octopress_config: '_concat_false.yml'
 test_stylesheets('concat_css_false', false)
 test_javascripts('concat_js_false', false)
 
-build config: '_sass_compact.yml'
-test_stylesheets('sass_compact')
-
-build config: '_sass_expanded.yml'
-test_stylesheets('sass_expanded')
-
 print_failures

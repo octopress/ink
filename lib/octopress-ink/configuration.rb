@@ -7,9 +7,9 @@ module Octopress
       DEFAULTS = {
         'docs_mode' => false,
         'concat_css' => true,
+        'compress_css' => true,
         'concat_js' => true,
-        'stylesheets' => [],
-        'javascripts' => [],
+        'compress_js' => true,
         'disable' => [],
         'date_format' => 'ordinal',
         'linkpost' => {

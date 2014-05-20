@@ -1,2 +1,4 @@
 concat_css: false
 concat_js: false
+compress_css: false
+compress_js: false
