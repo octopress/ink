@@ -37,13 +37,13 @@ module Octopress
           FileUtils.cd path do
             create_gem(gem_name)
 
-            settings = gem_settings(path_to_gem)
-            settings[:type] = @options['theme'] ? 'theme' : 'plugin'
+            @settings = gem_settings(path_to_gem)
+            @settings[:type] = @options['theme'] ? 'theme' : 'plugin'
 
-            add_dependency(settings)
-            add_plugin(settings)
-            add_asset_dirs(settings)
-            add_demo_files(settings)
+            add_dependency
+            add_plugin
+            add_asset_dirs
+            add_demo_files
           end
         end
 
@@ -62,11 +62,11 @@ module Octopress
 
         # Add Octopress Ink dependency to Gemspec
         #
-        def self.add_dependency(settings)
-          pos = settings[:gemspec].rindex("end")
-          settings[:gemspec] = insert_before(settings[:gemspec], pos, indent(dependencies(settings[:spec_var])))
+        def self.add_dependency
+          pos = @settings[:gemspec].rindex("end")
+          @settings[:gemspec] = insert_before(@settings[:gemspec], pos, indent(dependencies))
 
-          File.open(settings[:gemspec_path], 'w+') {|f| f.write(settings[:gemspec]) }
+          File.open(@settings[:gemspec_path], 'w+') {|f| f.write(@settings[:gemspec]) }
         end
 
         # Returns lines which need to be added as a dependency
@@ -74,35 +74,35 @@ module Octopress
         # spec_var - variable used to assign gemspec attributes,
         # e.g. "spec" as in spec.name = "gem name"
         #
-        def self.dependencies(settings)
+        def self.dependencies
           minor_version = VERSION.scan(/\d\.\d/)[0]
-          d  = "#{settings[:spec_var]}.add_development_dependency \"octopress\"\n\n"
-          d += "#{settings[:spec_var]}.add_runtime_dependency \"octopress-ink\", \"~> #{minor_version}\", \">= #{VERSION}\"\n"
+          d  = "#{@settings[:spec_var]}.add_development_dependency \"octopress\"\n\n"
+          d += "#{@settings[:spec_var]}.add_runtime_dependency \"octopress-ink\", \"~> #{minor_version}\", \">= #{VERSION}\"\n"
         end
 
         # Add Octopress Ink plugin to core module file
         #
-        def self.add_plugin(settings)
+        def self.add_plugin
           # Grab the module directory from the version.rb require.
           # If a gem is created with dashes e.g. "some-gem", Bundler puts the module file at lib/some/gem.rb
-          file = File.join(settings[:path], settings[:module_path])
+          file = File.join(@settings[:path], @settings[:module_path])
           mod = File.open(file).read
           mod = add_simple_plugin mod
 
           File.open(file, 'w+') {|f| f.write(mod) }
         end
 
-        def self.add_asset_dirs(settings)
+        def self.add_asset_dirs
           dirs = %w{docs images fonts pages files layouts includes stylesheets javascripts}.map do |asset|
-            File.join(settings[:path], 'assets', asset)
+            File.join(@settings[:path], 'assets', asset)
           end
           create_empty_dirs dirs
         end
 
         # New plugin uses a simple configuration hash
         #
-        def self.add_simple_plugin(settings, mod)
-          mod  = "#{settings[:require_version]}\n"
+        def self.add_simple_plugin(mod)
+          mod  = "#{@settings[:require_version]}\n"
           mod += "require 'octopress-ink'\n"
           mod += "\nOctopress::Ink.add_plugin({\n#{indent(plugin_config)}\n})"
         end
@@ -110,16 +110,16 @@ module Octopress
 
         # Return an Ink Plugin configuration hash desinged for this gem
         #
-        def self.plugin_config(settings)
-          depth = settings[:module_path].count('/')
+        def self.plugin_config
+          depth = @settings[:module_path].count('/')
           assets_path = ("../" * depth) + 'assets'
 
           config = <<-HERE
-name:          "#{settings[:module_name]}",
-slug:          "#{settings[:name]}",
+name:          "#{@settings[:module_name]}",
+slug:          "#{@settings[:name]}",
 assets_path:   File.expand_path(File.join(File.dirname(__FILE__), "#{assets_path}")),
-type:          "#{settings[:type]}",
-version:       #{settings[:version]},
+type:          "#{@settings[:type]}",
+version:       #{@settings[:version]},
 description:   "",
 website:       ""
           HERE
@@ -128,8 +128,8 @@ website:       ""
 
         # Creates a blank Jekyll site for testing out a new plugin
         #
-        def self.add_demo_files(settings)
-          demo_dir = File.join(settings[:path], 'demo')
+        def self.add_demo_files
+          demo_dir = File.join(@settings[:path], 'demo')
 
           dirs = %w{_layouts _posts}.map! do |d|
             File.join(demo_dir, d)
@@ -142,22 +142,31 @@ website:       ""
           FileUtils.touch index
           puts "#{action}  #{index}"
 
-          gemfile = <<-HERE
+          gemfile_path = File.join(demo_dir, 'Gemfile')
+          gemfile_content = <<-HERE
 source 'https://rubygems.org'
 
 group :octopress do
   gem 'octopress'
-  gem '#{settings[:name]}', path: '../'
+  gem '#{@settings[:name]}', path: '../'
 end
           HERE
 
-          gemfile_path = File.join(demo_dir, 'Gemfile')
-          action = File.exist?(gemfile_path) ? "written".rjust(12).blue.bold : "create".rjust(12).green.bold
+          write(gemfile_path, gemfile_content)
 
-          File.open(gemfile_path, 'w+') do |f| 
-            f.write(gemfile)
+          config_path = File.join(demo_dir, '_config.yml')
+          config_content = "exclude: Gemfile*"
+
+          write(config_path, config_content)
+        end
+
+        def self.write(path, contents)
+          action = File.exist?(path) ? "written".rjust(12).blue.bold : "create".rjust(12).green.bold
+
+          File.open(path, 'w+') do |f| 
+            f.write(contents)
           end
-          puts "#{action}  #{gemfile_path}"
+          puts "#{action}  #{path}"
         end
 
         def self.create_empty_dirs(dirs)
@@ -187,6 +196,7 @@ end
           {
             path: gem_path,
             gemspec: gemspec,
+            gemspec_path: gemspec_path,
             spec_var: gemspec.scan(/(\w+)\.name/).flatten[0],
             version: gemspec.scan(/version.+=\s+(.+)$/).flatten[0],
             name: gemspec.scan(/name.+['"](.+)['"]/).flatten[0],
