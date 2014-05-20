@@ -105,6 +105,25 @@ module Octopress
           File.join(dir, file)
         end
 
+        # Render file through Liquid if it contains YAML front-matter
+        #
+        def render
+          content = path.read
+
+          if content =~ /\A(---\s*\n.*?\n?)^((---|\.\.\.)\s*$\n?)/m
+            payload = Ink.site.site_payload
+            content = $POSTMATCH
+            payload['page'] = SafeYAML.load($1)
+            render_liquid(content, payload)
+          else
+            content
+          end
+        end
+
+        def render_liquid(content, payload={})
+          Liquid::Template.parse(content).render!(Ink.payload(payload), {})
+        end
+
         def plugin_dir
           File.join root, base
         end

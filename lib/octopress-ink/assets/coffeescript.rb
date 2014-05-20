@@ -9,7 +9,7 @@ module Octopress
         private
 
         def compile
-          ::CoffeeScript.compile(path.read)
+          ::CoffeeScript.compile(render)
         end
 
         def destination

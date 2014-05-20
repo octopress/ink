@@ -66,6 +66,19 @@ module Octopress
       @site = site
     end
 
+    def self.payload(payload={})
+      config = Octopress::Ink::Plugins.config
+      payload['plugins']   = config['plugins']
+      payload['theme']     = config['theme']
+      payload['octopress'] = {}
+      payload['octopress']['version'] = Octopress::Ink.version
+      if Octopress::Ink.config['docs_mode']
+        payload['doc_pages'] = Octopress::Ink::Plugins.doc_pages
+      end
+
+      payload
+    end
+
     def self.init_site(options)
       log_level = Jekyll.logger.log_level
       Jekyll.logger.log_level = :error

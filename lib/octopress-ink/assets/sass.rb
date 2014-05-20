@@ -22,7 +22,7 @@ module Octopress
         end
 
         def content
-          path.read
+          render
         end
 
         def ext

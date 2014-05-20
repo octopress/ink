@@ -1,2 +1,5 @@
-@import 'colors';
+---
+import: colors
+---
+@import '{{ page.import }}';
 body { background: $bg; }
