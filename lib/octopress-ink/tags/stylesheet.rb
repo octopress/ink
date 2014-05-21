@@ -3,7 +3,7 @@ module Octopress
     module Tags
       class StylesheetTag < Liquid::Tag
         def render(context)
-          Plugins.stylesheet_tags
+          Plugins.css_tags
         end
       end
     end

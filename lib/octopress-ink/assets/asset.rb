@@ -51,7 +51,6 @@ module Octopress
             files = files.flatten.reject { |f| !exists? f }
 
             if files.empty?
-              require 'pry-debugger'; binding.pry
               raise IOError.new "Could not find #{File.basename(file)} at #{file}"
             end
             @found_file = Pathname.new files[0]

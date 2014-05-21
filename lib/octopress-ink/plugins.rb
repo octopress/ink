@@ -5,6 +5,8 @@ module Octopress
       @static_files = []
       @plugins = []
       @user_plugins = []
+      @css_tags = []
+      @js_tags = []
 
       def self.theme
         @theme
@@ -56,6 +58,14 @@ module Octopress
         plugins.each do |p| 
           p.add_asset_files(assets)
         end
+      end
+
+      def self.add_css_tag(tag)
+        @css_tags << tag
+      end
+
+      def self.add_js_tag(tag)
+        @js_tags << tag
       end
 
       def self.register_plugin(plugin, options=nil)
@@ -137,27 +147,23 @@ module Octopress
         if Ink.config['combine_js']
           PluginAssetPipeline.write_combined_javascript
         else
-          add_assets(%w{javascripts})
+          add_assets(%w{js coffee})
         end
       end
 
-      def self.stylesheet_tags
+      def self.css_tags
         if Ink.config['combine_css']
           PluginAssetPipeline.combined_stylesheet_tag
         else
-          plugins.clone.map { |p| p.stylesheet_tags }.join('')
+          @css_tags.join('')
         end
       end
 
-      def self.javascript_tags
+      def self.js_tags
         if Ink.config['combine_js']
           PluginAssetPipeline.combined_javascript_tag
         else
-          js = []
-          plugins.each do |plugin| 
-            js.concat plugin.javascript_tags
-          end
-          js
+          @js_tags.join('')
         end
       end
     end

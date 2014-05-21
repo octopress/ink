@@ -6,6 +6,11 @@ module Octopress
           "<script src='#{Filters.expand_url(File.join(dir, file))}'></script>"
         end
 
+        def add
+          Plugins.add_js_tag tag
+          super
+        end
+
         private
 
         def destination

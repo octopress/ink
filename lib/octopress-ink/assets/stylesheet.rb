@@ -12,7 +12,7 @@ module Octopress
           @dir = File.join(plugin.slug, 'stylesheets')
           @exists = {}
           file_check
-        end
+        css_tags
 
         def media
           m = @media
@@ -28,6 +28,11 @@ module Octopress
 
         def tag
           "<link href='#{Filters.expand_url(File.join(dir, file))}' media='#{media}' rel='stylesheet' type='text/css'>"
+        end
+
+        def add
+          Plugins.add_css_tag tag
+          super
         end
 
         private

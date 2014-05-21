@@ -8,11 +8,11 @@ module Octopress
         configs = sass_converter.sass_configs
         configs[:syntax] = :scss
 
-        ::Sass.compile(content, configs)
+        Sass.compile(content, configs)
       end
 
       def self.compile_sass(sass)
-        ::Sass.compile(sass.content, sass_configs(sass))
+        Sass.compile(sass.content, sass_configs(sass))
       end
 
       # Gets default Sass configuration hash from Jekyll

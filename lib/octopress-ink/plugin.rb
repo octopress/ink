@@ -157,14 +157,6 @@ module Octopress
         files.each {|f| f.remove_jekyll_asset }
       end
 
-      def stylesheet_tags
-        get_tags stylesheets
-      end
-
-      def javascript_tags
-        get_tags javascripts
-      end
-
       def include(file)
         @includes.find{|i| i.filename == file }.path
       end
@@ -442,10 +434,6 @@ module Octopress
 
       def coffee
         @coffee.reject{|f| f.disabled? }.compact
-      end
-
-      def get_tags(files)
-        files.dup.map { |f| f.tag }
       end
 
       def configuration; {}; end
