@@ -42,7 +42,7 @@ module Octopress
 
             add_dependency
             add_plugin
-            add_asset_dirs
+            add_assets
             add_demo_files
           end
         end
@@ -92,11 +92,14 @@ module Octopress
           File.open(file, 'w+') {|f| f.write(mod) }
         end
 
-        def self.add_asset_dirs
+        def self.add_assets
           dirs = %w{docs images fonts pages files layouts includes stylesheets javascripts}.map do |asset|
             File.join(@settings[:path], 'assets', asset)
           end
           create_empty_dirs dirs
+
+          # Add empty configuration file
+          FileUtils.touch File.join(@settings[:path], 'assets', 'config.yml')
         end
 
         # New plugin uses a simple configuration hash
