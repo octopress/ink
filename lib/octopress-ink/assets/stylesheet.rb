@@ -12,7 +12,7 @@ module Octopress
           @dir = File.join(plugin.slug, 'stylesheets')
           @exists = {}
           file_check
-        css_tags
+        end
 
         def media
           m = @media
