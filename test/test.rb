@@ -89,8 +89,8 @@ def test_configs(dir)
   configs.each { |file| test("test_config/#{file}.html", dir) }
 end
 
-def test_stylesheets(dir, concat=true)
-  if concat
+def test_stylesheets(dir, combine=true)
+  if combine
     stylesheets = %w{all-* print-*}
     stylesheets.each { |file| test("stylesheets/#{file}.css", dir) }
   else
@@ -102,8 +102,8 @@ def test_stylesheets(dir, concat=true)
   end
 end
 
-def test_javascripts(dir, concat=true)
-  if concat
+def test_javascripts(dir, combine=true)
+  if combine
     javascripts = %w{all-*}
     javascripts.each { |file| test("javascripts/#{file}.js", dir) }
   else
@@ -156,8 +156,8 @@ test_post('expected')
 test_tags('expected')
 test_pages('expected')
 test_layouts('expected')
-test_stylesheets('concat_css')
-test_javascripts('concat_js')
+test_stylesheets('combine_css')
+test_javascripts('combine_js')
 test_configs('expected')
 test_root_assets('expected')
 test_disabled('site')
@@ -168,8 +168,8 @@ test_copy_assets('copy_test')
 system "octopress ink copy theme --layouts --pages --path _copy --force"
 test_copy_assets('copy_layouts_pages')
 
-build octopress_config: '_concat_false.yml'
-test_stylesheets('concat_css_false', false)
-test_javascripts('concat_js_false', false)
+build octopress_config: '_combine_false.yml'
+test_stylesheets('combine_css_false', false)
+test_javascripts('combine_js_false', false)
 
 print_failures

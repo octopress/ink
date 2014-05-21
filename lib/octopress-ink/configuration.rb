@@ -6,9 +6,9 @@ module Octopress
     module Configuration
       DEFAULTS = {
         'docs_mode' => false,
-        'concat_css' => true,
+        'combine_css' => true,
         'compress_css' => true,
-        'concat_js' => true,
+        'combine_js' => true,
         'compress_js' => true,
         'disable' => [],
         'date_format' => 'ordinal',

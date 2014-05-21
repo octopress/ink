@@ -16,8 +16,8 @@ Test configurations
 
 - sass compression
 - sass line numbers
-- concat_css
-- concat_js
+- combine_css
+- combine_js
 
 {% assign separator = ' <span class='separator'></b> ' %}
 {% capture foo | join_lines:separator %}
