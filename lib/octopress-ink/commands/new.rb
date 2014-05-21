@@ -158,7 +158,7 @@ end
           write(gemfile_path, gemfile_content)
 
           config_path = File.join(demo_dir, '_config.yml')
-          config_content = "exclude: Gemfile*"
+          config_content = "exclude:\n  - Gemfile*"
 
           write(config_path, config_content)
         end
