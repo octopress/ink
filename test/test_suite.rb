@@ -111,7 +111,7 @@ def test_cmd(options)
       output = `#{cmd.join('; ')}`.gsub(/#{Dir.pwd}\/*/,'').strip
 
       # Remove character color codes
-      output.gsub!("\e",'').gsub!(/\[\d+m/,'').gsub!("\[0m",'')
+      output = output.gsub("\e",'').gsub(/\[\d+m/,'').gsub("\[0m",'')
     end
     if options[:expect] && options[:expect].strip == output
       pout '.'.green
