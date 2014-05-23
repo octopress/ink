@@ -6,6 +6,11 @@ module Octopress
           @compiled ||= compile
         end
 
+        def add
+          Plugins.add_js_tag tag
+          Plugins.static_files << StaticFileContent.new(read, destination)
+        end
+
         private
 
         def compile

@@ -163,6 +163,7 @@ module Octopress
       end
 
       def self.fingerprint(paths)
+        return '' if ENV['JEKYLL_ENV'] == 'test'
         paths = [paths] unless paths.is_a? Array
         Digest::MD5.hexdigest(paths.clone.map! { |path| "#{File.mtime(path).to_i}" }.join)
       end

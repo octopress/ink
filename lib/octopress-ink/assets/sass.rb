@@ -21,6 +21,13 @@ module Octopress
           @compiled ||= compile
         end
 
+        def add
+          unless file =~ /^_/
+            Plugins.add_css_tag tag
+            Plugins.static_files << StaticFileContent.new(read, destination)
+          end
+        end
+
         def content
           render
         end
