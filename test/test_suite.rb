@@ -39,8 +39,8 @@ def test_dirs(desc, dir1, dir2)
     if File.exist?(file2)
       if diff = diff_file(file, file2)
         @failures << {
-          desc: "#{desc}\nDiff of file: #{file.sub(dir1+'/', '')}",
-          diff: diff
+          desc: "#{desc}\nDiff of file: #{file.sub(dir1+'/', '')}\n",
+          result: format_diff(diff)
         }
         pout 'F'.red
       else
@@ -50,6 +50,13 @@ def test_dirs(desc, dir1, dir2)
   end
 end
 
+def format_diff(diff)
+  "#{diff.gsub(/\A.+?\n/,'').gsub(/^[^><].+/,'---').gsub(/^>.+/){|m| 
+    m.green
+  }.gsub(/^(<.+?)$/){ |m| 
+    m.red
+  }}"
+end
 
 # List differences between files in two directories
 #
@@ -69,8 +76,8 @@ def test_missing_files(desc, dir1, dir2)
 
   if !missing.empty?
     @failures << {
-      desc: "#{desc}\nMissing files:\n - ",
-      message: missing.join("\n - ")
+      desc: "#{desc}\nMissing files:\n",
+      result: " - " + missing.join("\n - ")
     }
 
     pout 'F'.red
@@ -118,9 +125,11 @@ def test_cmd(options)
     else
       pout 'F'.red
       @failures << {
-        desc: options[:desc],
-        expected: options[:expect],
-        result: output,
+        desc: options[:desc]+"\n",
+        result: <<-HERE
+expected: #{(options[:expect] || '').strip.green}
+result: #{(output || '').strip.red}
+HERE
       }
     end
   end
@@ -140,22 +149,7 @@ def print_results
   if !@failures.empty?
     @failures.each do |test|
       pout "\nFailed: #{test[:desc]}"
-
-      if test[:message]
-        puts test[:message].yellow
-      else
-        puts (test[:expected] || '').strip.green
-        puts (test[:result] || '').strip.red
-      end
-
-      if test[:diff]
-        pout "#{test[:diff].gsub(/^[^><].+/,'---').gsub(/^>.+/){|m| 
-          m.green
-        }.gsub(/^(<.+?)$/){ |m| 
-          m.red
-        }}"
-      end
-
+      puts test[:result]
       # print a newline for easier reading
       puts ""
     end
