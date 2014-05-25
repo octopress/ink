@@ -12,9 +12,10 @@ build({octopress_config: '_combine_false.yml'})
 test_dirs("Don't combine CSS", 'site/stylesheets', 'combine_css_false/stylesheets')
 test_dirs("Don't combine JS", 'site/javascripts', 'combine_js_false/javascripts')
 
-build({octopress_config: '_uglify_js_false.yml'})
+build({octopress_config: '_compress_false.yml'})
 
-test_dirs("Don't uglify JS", 'site/javascripts', 'uglify_js_false/javascripts')
+test_dirs("Don't compress JS", 'site/javascripts', 'compress_false/javascripts')
+test_dirs("Don't compress CSS", 'site/stylesheets', 'compress_false/stylesheets')
 
 test_cmd({
   desc: 'Copy all theme assets',

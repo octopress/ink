@@ -9,7 +9,8 @@ module Octopress
         'combine_css' => true,
         'compress_css' => true,
         'combine_js' => true,
-        'uglify_js' => {},
+        'compress_js' => true,
+        'uglifier' => {},
         'disable' => [],
         'date_format' => 'ordinal',
 

@@ -7,6 +7,7 @@ module Octopress
       def self.compile_css(content)
         configs = sass_converter.sass_configs
         configs[:syntax] = :scss
+        configs[:style] = :compressed if Ink.config['compress_css']
 
         Sass.compile(content, configs)
       end
@@ -156,8 +157,9 @@ module Octopress
       def self.write_combined_javascript
         js = combine_javascripts
         unless js == ''
-          if Ink.config['uglify_js']
-            js = Uglifier.new(Ink.config['uglify_js']).compile(js)
+          if Ink.config['compress_js']
+            settings = Jekyll::Utils.symbolize_hash_keys(Ink.config['uglifier'])
+            js = Uglifier.new(settings).compile(js)
           end
           write_files(js, combined_javascript_path)
         end
