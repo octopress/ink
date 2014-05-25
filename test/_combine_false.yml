@@ -1,4 +1,4 @@
 combine_css: false
 combine_js: false
 compress_css: false
-compress_js: false
+uglify_js: false

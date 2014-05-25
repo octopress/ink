@@ -9,13 +9,15 @@ module Octopress
         'combine_css' => true,
         'compress_css' => true,
         'combine_js' => true,
-        'compress_js' => true,
+        'uglify_js' => {},
         'disable' => [],
         'date_format' => 'ordinal',
+
         'linkpost' => {
           'marker' => "→",
           'marker_position' => 'after'
         },
+
         'post' => {
           'marker' => false,
           'marker_position' => 'before'

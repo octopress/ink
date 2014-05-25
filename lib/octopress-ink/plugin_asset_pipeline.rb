@@ -155,7 +155,12 @@ module Octopress
 
       def self.write_combined_javascript
         js = combine_javascripts
-        write_files(js, combined_javascript_path) unless js == ''
+        unless js == ''
+          if Ink.config['uglify_js']
+            js = Uglifier.new(Ink.config['uglify_js']).compile(js)
+          end
+          write_files(js, combined_javascript_path)
+        end
       end
 
       def self.write_files(source, dest)

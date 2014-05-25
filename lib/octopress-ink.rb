@@ -1,5 +1,6 @@
 require 'jekyll'
 require 'sass'
+require 'uglifier'
 require 'autoprefixer-rails'
 require 'digest/md5'
 
