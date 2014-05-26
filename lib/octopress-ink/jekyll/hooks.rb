@@ -13,7 +13,13 @@ module Jekyll
         end
 
         if page['date']
-          payload['page']['date_html'] = date_html(page['date'])
+          text      = format_date(page['date'])
+          xmlschema = datetime(page['date']).xmlschema
+          html      = date_html(text, xmlschema)
+
+          payload['page']['date_text'] = text
+          payload['page']['date_xml']  = xmlschema
+          payload['page']['date_html'] = html
         end
       end
 
@@ -41,8 +47,8 @@ module Jekyll
       })
     end
 
-    def date_html(date)
-      "<time class='entry-date' datetime='#{ datetime(date).xmlschema }' pubdate>#{ format_date(date) }</time>"
+    def date_html(text, xmlschema)
+      "<time class='entry-date' datetime='#{ xmlschema }' pubdate>#{ text }</time>"
     end
 
     def format_date(date)
