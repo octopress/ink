@@ -98,8 +98,11 @@ module Octopress
           end
           create_empty_dirs dirs
 
-          # Add empty configuration file
-          FileUtils.touch File.join(@settings[:path], 'assets', 'config.yml')
+          # Add Jekyll configuration file
+          #
+          config = "exclude:\n  - Gemfile*\ngems:\n  - #{@settings[:name]}"
+          path = File.join(@settings[:path], 'assets', 'config.yml')
+          write(path, config)
         end
 
         # New plugin uses a simple configuration hash
