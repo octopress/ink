@@ -1,33 +1,44 @@
 module Jekyll
   module Convertible
     alias_method :do_layout_orig, :do_layout
+    alias_method :read_yaml_orig, :read_yaml 
 
     def do_layout(payload, layouts)
       # The contentblock tags needs access to the converter to process it while rendering.
       payload = Octopress::Ink.payload(payload)
       payload['converter'] = self.converter
 
-      if page = payload['page']
-        if type == :post
-          payload['page'] = add_post_vars(page)
-        end
-
-        if page['date']
-          text      = format_date(page['date'])
-          xmlschema = datetime(page['date']).xmlschema
-          html      = date_html(text, xmlschema)
-
-          payload['page']['date_text'] = text
-          payload['page']['date_xml']  = xmlschema
-          payload['page']['date_html'] = html
-        end
-      end
-
       do_layout_orig(payload, layouts)
     end
 
-    def add_post_vars(page)
-      linkpost = page['external-url']
+    def read_yaml(base, name, opts = {})
+      read_yaml_orig(base, name, opts)
+
+      if type == :post
+        self.data.merge! add_post_vars(self.data)
+      end
+
+      if self.data['date']
+        text      = format_date(self.data['date'])
+        xmlschema = datetime(self.data['date']).xmlschema
+        html      = date_html(text, xmlschema)
+
+        self.data['date_xml']  = xmlschema
+        self.data['date_html'] = html
+      end
+
+      if self.data['updated']
+        text      = format_date(self.data['updated'])
+        xmlschema = datetime(self.data['updated']).xmlschema
+        html      = date_html(text, xmlschema)
+
+        self.data['updated_date_xml']  = xmlschema
+        self.data['updated_date_html'] = html
+      end
+    end
+
+    def add_post_vars(data)
+      linkpost = data['external-url']
 
       if linkpost
         config = Octopress::Ink.config['linkpost']
@@ -36,15 +47,15 @@ module Jekyll
       end
 
       if Octopress::Ink.config['titlecase']
-        Octopress::Utils.titlecase!(page['title'])
+        Octopress::Utils.titlecase!(data['title'])
       end
 
-      page.merge({
-        'title_text' => title_text(config, page['title']),
-        'title_html' => title_html(config, page['title']),
-        'title_url'  => linkpost || page['url'],
+      {
+        'title_text' => title_text(config, data['title']),
+        'title_html' => title_html(config, data['title']),
+        'title_url'  => linkpost || self.url,
         'linkpost'   => !linkpost.nil?
-      })
+      }
     end
 
     def date_html(text, xmlschema)
@@ -101,17 +112,17 @@ module Jekyll
     
 
     def title_html(config, title)
+      title = Octopress::Ink::Filters.unorphan(title)
+
       return title if !config['marker']
 
       marker = "<span class='post-marker post-marker-#{config['marker_position']}'>#{config['marker']}</span>"
       position = config['marker_position']
 
-      title = Octopress::Ink::Filters.unorphan(title)
-
       if config['marker_position'] == 'before'
-        "#{marker} #{title}"
+        "#{marker}&nbsp;#{title}"
       else
-        "#{title} #{marker}"
+        "#{title}&nbsp;#{marker}"
       end
     end
 
