@@ -60,7 +60,11 @@ module Octopress
     end
 
     def self.site(options={})
-      @site ||= init_site(options)
+      unless @site
+        @site ||= init_site(options)
+      end
+
+      @site
     end
 
     def self.site=(site)
@@ -139,16 +143,11 @@ module Octopress
     def self.copy_plugin_assets(name, options)
       site(options)
       Plugins.register
-      if path = options.delete('path')
-        full_path = File.join(Ink.site.source, path)
-        if !Dir["#{full_path}/*"].empty? && options['force'].nil?
-          abort "Error: directory #{path} is not empty. Use --force to overwrite files."
-        end
-      else
-        full_path = File.join(Ink.site.source, Plugins.custom_dir, name)
-      end
+      path = copy_path(name, options)
+
+
       if p = plugin(name)
-        copied = p.copy_asset_files(full_path, options)
+        copied = p.copy_asset_files(path, options)
         if !copied.empty?
           puts "Copied files:\n#{copied.join("\n")}"
         else
@@ -157,6 +156,19 @@ module Octopress
       else
         not_found(name)
       end
+    end
+
+    def self.copy_path(name, options)
+      if path = options.delete('path')
+        full_path = File.join(Ink.site.source, path)
+        if !Dir["#{full_path}/*"].empty? && options['force'].nil?
+          abort "Error: directory #{path} is not empty. Use --force to overwrite files."
+        end
+      else
+        full_path = File.join(Ink.site.source, Plugins.custom_dir, name)
+      end
+
+      full_path
     end
 
     def self.list_plugins(options={})

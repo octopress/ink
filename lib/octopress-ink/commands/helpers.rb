@@ -3,6 +3,7 @@ module Octopress
     module Commands
       module CommandHelpers
         def self.add_asset_options(c, action)
+          c.option "config-file", "--config-file", "#{action} plugin's default configuration"
           c.option "layouts", "--layouts", "#{action} only layouts"
           c.option "includes", "--includes", "#{action} only includes"
           c.option "pages", "--pages", "#{action} only pages"
@@ -15,8 +16,7 @@ module Octopress
           c.option "images", "--images", "#{action} only images"
           c.option "fonts", "--fonts", "#{action} only fonts"
           c.option "files", "--files", "#{action} only files"
-          c.option "defaults", "--defaults", "#{action} plugin's default configuration"
-          c.option "config", "--config <CONFIG_FILE>[,CONFIG_FILE2,...]", Array, "Custom configuration file"
+          c.option "config", "--config <CONFIG_FILE>[,CONFIG_FILE2,...]", Array, "Custom Jekyll configuration file"
         end
       end
     end

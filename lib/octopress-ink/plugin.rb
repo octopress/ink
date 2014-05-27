@@ -116,7 +116,7 @@ module Octopress
       #
       def add_asset_files(options)
         select_assets(options).each do |name, assets|
-          next if name == 'defaults'
+          next if name == 'config-file'
           assets.each {|file| file.add unless file.disabled? }
         end
       end
@@ -130,6 +130,7 @@ module Octopress
           next if name == 'docs'
           assets.each { |a| copied << a.copy(path) }
         end
+
         copied
       end
 
@@ -148,7 +149,7 @@ module Octopress
       # returns: Hash of merged user and default config.yml files
       #
       def config
-        @config ||= defaults.read
+        @read_config ||= config_defaults.read
       end
 
       # Remove files from Jekyll since they'll be proccessed by Ink instead
@@ -183,8 +184,8 @@ module Octopress
         config['disable'] = disabled
       end
 
-      def defaults
-        @defaults ||= Assets::Config.new(self, @config_file)
+      def config_defaults
+        @config ||= Assets::Config.new(self, @config_file)
       end
 
 
@@ -216,7 +217,7 @@ module Octopress
           'images'      => @images, 
           'fonts'       => @fonts, 
           'files'       => @files,
-          'defaults'    => [@defaults]
+          'config-file' => [@config]
         }
       end
       
@@ -232,7 +233,7 @@ module Octopress
           when 'docs'
             header = "documentation: /#{docs_base_path}/"
             message += asset_list(assets, header)
-          when 'defaults'
+          when 'config-file'
             message += asset_list(assets, 'default configuration')
           else
             message += asset_list(assets, name)
