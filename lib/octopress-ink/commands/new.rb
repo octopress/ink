@@ -35,7 +35,10 @@ module Octopress
           end
 
           FileUtils.cd path do
-            create_gem(gem_name)
+            name = gem_name.gsub(/-/,'_')
+            create_gem(name)
+
+            fix_name(path) if name != gem_name
 
             @settings = gem_settings(path_to_gem)
             @settings[:type] = @options['theme'] ? 'theme' : 'plugin'
@@ -45,6 +48,40 @@ module Octopress
             add_assets
             add_demo_files
           end
+        end
+
+        def self.fix_name(path)
+          name = @options['name'].gsub(/-/,'_')
+          path = rename(path, name)
+
+          rename(path, "lib/#{name}")
+
+          gemspec = rename(path, "#{name}.gemspec")
+          gem_file = rename(path, "lib/#{name}.rb")
+
+          rewrite_name(gemspec, name)
+          rewrite_name(gem_file, name)
+          rewrite_name(File.join(path, 'README.md'), name)
+          rewrite_name(File.join(path, 'Gemfile'), name)
+
+          action = "rename".rjust(12).green.bold
+          puts "#{action}  #{name} to #{@options['name']}"
+        end
+
+        def self.rewrite_name(path, name)
+          new_name = name.gsub(/_/, '-')
+          content = File.read(path).gsub(name, new_name)
+
+          File.open(path, 'w+') do |f|
+            f.write(content)
+          end
+        end
+
+        def self.rename(path, target)
+          old = File.join(path, target)
+          new = File.join(path, target.gsub(/_/, '-'))
+          FileUtils.mv(old, new)
+          new
         end
 
         # Create a new gem with Bundle's gem command
@@ -146,7 +183,7 @@ website:       ""
           index = File.join(demo_dir, 'index.html')
           action = File.exist?(index) ? "exists".rjust(12).blue.bold : "create".rjust(12).green.bold
           FileUtils.touch index
-          puts "#{action}  #{index}"
+          puts "#{action}  #{index.sub("#{Dir.pwd}/", '')}"
 
           gemfile_path = File.join(demo_dir, 'Gemfile')
           gemfile_content = <<-HERE
@@ -172,7 +209,7 @@ end
           File.open(path, 'w+') do |f| 
             f.write(contents)
           end
-          puts "#{action}  #{path}"
+          puts "#{action}  #{path.sub("#{Dir.pwd}/", '')}"
         end
 
         def self.create_empty_dirs(dirs)
@@ -180,7 +217,7 @@ end
             dir = File.join(d)
             action = Dir.exist?(dir) ? "exists".rjust(12).blue.bold : "create".rjust(12).green.bold
             FileUtils.mkdir_p dir
-            puts "#{action}  #{dir}/"
+            puts "#{action}  #{dir.sub("#{Dir.pwd}/", '')}/"
           end
         end
 

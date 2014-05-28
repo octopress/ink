@@ -2,11 +2,15 @@
 
 ## Current released version
 
+### 1.0.0 RC4 - 2014-05-28
+
+- Improved: Plugin scaffold does a better job of handling gem names with dashes.
+
+## Past versions
+
 ### 1.0.0 RC3 - 2014-05-27
 
 - Improved: Now copy and list commands use the flag --config-file instead of --defaults
-
-## Past versions
 
 ### 1.0.0 RC2 - 2014-05-26
 
