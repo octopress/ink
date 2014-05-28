@@ -122,7 +122,7 @@ def test_cmd(options)
     end
     if options[:expect] && options[:expect].strip == output
       pout '.'.green
-    else
+    elsif options[:expect]
       pout 'F'.red
       @failures << {
         desc: options[:desc]+"\n",

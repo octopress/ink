@@ -69,4 +69,24 @@ test_cmd({
 test_dirs('Copy theme', 'source/_copy', 'copy_layouts_pages/_copy')
 `rm -rf source/_copy`
 
+test_cmd({
+  desc: 'New plugin',
+  cmd: [
+    'octopress ink new test-plugin',
+    'rm -rf test-plugin/.git'
+  ]
+})
+
+test_dirs('New plugin', 'test-plugin', 'test-plugin-expected')
+
+test_cmd({
+  desc: 'New Theme',
+  cmd: [
+    'octopress ink new test-theme --theme',
+    'rm -rf test-theme/.git'
+  ]
+})
+
+test_dirs('New plugin', 'test-theme', 'test-theme-expected')
+
 print_results

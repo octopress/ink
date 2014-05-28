@@ -1,0 +1,4 @@
+exclude:
+  - Gemfile*
+gems:
+  - test-theme
