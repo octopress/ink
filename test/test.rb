@@ -77,7 +77,10 @@ test_cmd({
   ]
 })
 
+
 test_dirs('New plugin', 'test-plugin', 'test-plugin-expected')
+
+`rm -rf test-plugin`
 
 test_cmd({
   desc: 'New Theme',
@@ -88,5 +91,7 @@ test_cmd({
 })
 
 test_dirs('New plugin', 'test-theme', 'test-theme-expected')
+
+`rm -rf test-theme`
 
 print_results

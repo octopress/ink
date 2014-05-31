@@ -1,6 +1,0 @@
-source 'https://rubygems.org'
-
-group :octopress do
-  gem 'octopress'
-  gem 'test-theme', path: '../'
-end
