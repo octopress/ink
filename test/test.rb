@@ -2,6 +2,8 @@ require './test_suite'
 ENV['JEKYLL_ENV'] = 'test'
 
 @failures = []
+@git_user_name = `git config user.name`.chomp
+@git_user_email = `git config user.email`.chomp
 
 build
 
@@ -69,6 +71,9 @@ test_cmd({
 test_dirs('Copy theme', 'source/_copy', 'copy_layouts_pages/_copy')
 `rm -rf source/_copy`
 
+`git config user.name ''`
+`git config user.email ''`
+
 test_cmd({
   desc: 'New plugin',
   cmd: [
@@ -77,10 +82,15 @@ test_cmd({
   ]
 })
 
+`git config user.name "#{@git_user_name}"`
+`git config user.email #{@git_user_email}`
 
 test_dirs('New plugin', 'test-plugin', 'test-plugin-expected')
 
 `rm -rf test-plugin`
+
+`git config user.name ''`
+`git config user.email ''`
 
 test_cmd({
   desc: 'New Theme',
@@ -89,6 +99,9 @@ test_cmd({
     'rm -rf test-theme/.git'
   ]
 })
+
+`git config user.name "#{@git_user_name}"`
+`git config user.email #{@git_user_email}`
 
 test_dirs('New plugin', 'test-theme', 'test-theme-expected')
 
