@@ -2,7 +2,7 @@ module Octopress
   module Ink
     class Page < Jekyll::Page
 
-      # Override the destination for a page
+      # Purpose: Configs can override a page's permalink
       #
       # url - Path relative to destination directory.
       #       examples: 
@@ -15,10 +15,13 @@ module Octopress
       end
 
       def destination(dest)
-        if @config['path']
-          dest = File.join(dest, @config['path'])
+        unless @dest
+          if @config['path']
+            dest = File.join(dest, @config['path'])
+          end
+          @dest = File.join(dest, self.url)
         end
-        File.join(dest, self.url)
+        @dest
       end
 
       # Allow pages to read url from plugin configuration
@@ -28,7 +31,10 @@ module Octopress
           @url
         else
           begin
-            config = @config['permalinks'][File.basename(self.name, '.*')]
+
+            page_name = File.basename(self.name, '.*')
+            config = @config['permalinks'][page_name]
+
             if config.is_a? String
               @url = config
               self.data['permalink'] = nil
