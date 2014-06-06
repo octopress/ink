@@ -230,6 +230,9 @@ module Octopress
           next if assets.compact.size == 0
 
           case name
+          when 'pages'
+            header = "pages:".ljust(36) + "urls"
+            message += asset_list(assets, header)
           when 'docs'
             header = "documentation: /#{docs_base_path}/"
             message += asset_list(assets, header)

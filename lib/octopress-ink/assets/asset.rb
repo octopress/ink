@@ -90,6 +90,10 @@ module Octopress
           end
         end
 
+        def destination
+          File.join(dir, file)
+        end
+
         private
 
         def source_dir
@@ -98,10 +102,6 @@ module Octopress
           else
             plugin_dir
           end
-        end
-
-        def destination
-          File.join(dir, file)
         end
 
         # Render file through Liquid if it contains YAML front-matter

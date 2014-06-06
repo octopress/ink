@@ -26,6 +26,15 @@ module Octopress
           end
         end
 
+        def page
+          @page ||= Page.new(Ink.site, source_dir, page_dir, file, plugin.config)
+        end
+
+        def info
+          message = super
+          message.ljust(25) + url_info
+        end
+
         private
 
         def page_dir
@@ -44,9 +53,6 @@ module Octopress
           File.join Ink.site.source, Plugins.custom_dir, plugin.slug, base
         end
 
-        def page
-          @page ||= Page.new(Ink.site, source_dir, page_dir, file, plugin.config)
-        end
       end
     end
   end

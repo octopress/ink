@@ -68,6 +68,11 @@ module Octopress
     end
 
     def self.site=(site)
+      # Octopress historically used site.title
+      # This allows theme developers to expect site.name
+      # in consistancy with Jekyll's scaffold config 
+      site.config['name'] ||= site.config['title']
+
       @site = site
     end
 
@@ -79,6 +84,14 @@ module Octopress
       payload['octopress']['version'] = Octopress::Ink.version
       if Octopress::Ink.config['docs_mode']
         payload['doc_pages'] = Octopress::Ink::Plugins.doc_pages
+      end
+
+      payload['site']['linkposts'] = site.posts.collect do |p|
+        p.data['linkpost']
+      end
+
+      payload['site']['articles'] = site.posts.reject do |p|
+        p.data['linkpost']
       end
 
       payload
