@@ -50,6 +50,10 @@ module Jekyll
         config = Octopress::Ink.config['post']
       end
 
+      if extract_excerpt.to_s.strip != content.strip
+        excerpted = true
+      end
+
       if Octopress::Ink.config['titlecase']
         Octopress::Utils.titlecase!(data['title'])
       end
@@ -58,7 +62,8 @@ module Jekyll
         'title_text' => title_text(config, data['title']),
         'title_html' => title_html(config, data['title']),
         'title_url'  => linkpost || self.url,
-        'linkpost'   => !linkpost.nil?
+        'linkpost'   => !linkpost.nil?,
+        'excerpted'  => excerpted
       }
     end
 
