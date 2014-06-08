@@ -76,29 +76,6 @@ module Octopress
         end
       end
 
-      # Truncate a string at the <!--more--> marker
-      # input - The content of a post or page
-      #
-      # Returns only the content preceeding the marker
-      #
-      def excerpt(input)
-        if input.index(/<!--\s*more\s*-->/i)
-          input.split(/<!--\s*more\s*-->/i)[0]
-        else
-          input
-        end
-      end
-
-      # Checks for excerpt markers (helpful for template conditionals)
-      #
-      # input - The content of a page or post
-      #
-      # Returns true/false if the excerpt marker is found
-      #
-      def has_excerpt(input)
-        input =~ /<!--\s*more\s*-->/i ? true : false
-      end
-
       # Escapes HTML content for XML
       def cdata_escape(input)
         input.gsub(/<!\[CDATA\[/, '&lt;![CDATA[').gsub(/\]\]>/, ']]&gt;')
@@ -126,8 +103,8 @@ module Octopress
         compact_newlines(input).strip.gsub(/\s*\n\s*/, separator)
       end
 
-      module_function :root, :expand_url, :expand_urls, :full_url, :full_urls, :excerpt, :cdata_escape, :titlecase, :classify, :sluggify, :join_lines, :compact_newlines, :unorphan
-      public :expand_url, :expand_urls, :full_url, :full_urls, :excerpt, :cdata_escape, :titlecase, :classify, :sluggify, :join_lines, :compact_newlines, :unorphan
+      module_function :root, :expand_url, :expand_urls, :full_url, :full_urls, :cdata_escape, :titlecase, :classify, :sluggify, :join_lines, :compact_newlines, :unorphan
+      public :expand_url, :expand_urls, :full_url, :full_urls, :cdata_escape, :titlecase, :classify, :sluggify, :join_lines, :compact_newlines, :unorphan
     end
   end
 end

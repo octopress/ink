@@ -18,13 +18,17 @@ module Jekyll
         self.data.merge! add_post_vars(self.data)
       end
 
-      if self.data['date']
-        text      = format_date(self.data['date'])
-        xmlschema = datetime(self.data['date']).xmlschema
-        html      = date_html(text, xmlschema)
 
-        self.data['date_xml']  = xmlschema
-        self.data['date_html'] = html
+      if type == :page || type == :post
+        if self.data['date'] || self.respond_to?(:date)
+          the_date = self.data['date'] || self.date
+          text      = format_date(the_date)
+          xmlschema = datetime(the_date).xmlschema
+          html      = date_html(text, xmlschema)
+
+          self.data['date_xml']  = xmlschema
+          self.data['date_html'] = html
+        end
       end
 
       if self.data['updated']
@@ -76,7 +80,7 @@ module Jekyll
     def ordinalize(date)
       date = datetime(date)
       d = "<span class='date-month'>#{date.strftime('%b')}</span> "
-      d = "<span class='date-day'>#{date.strftime('%e')}</span> "
+      d += "<span class='date-day'>#{date.strftime('%-d')}</span>"
       d += "<span class='date-suffix'>#{ordinal_suffix(date)}</span>, "
       d += "<span class='date-year'>#{date.strftime('%Y')}</span>"
     end
@@ -120,10 +124,12 @@ module Jekyll
       position = config['marker_position']
 
       if config['marker_position'] == 'before'
-        "#{marker}&nbsp;#{title}"
+        title = "#{marker}&nbsp;#{title}"
       else
-        "#{title}&nbsp;#{marker}"
+        title = "#{title}&nbsp;#{marker}"
       end
+
+      title
     end
 
     def title_text(config, title)

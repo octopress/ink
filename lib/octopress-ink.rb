@@ -85,8 +85,10 @@ module Octopress
       if Octopress::Ink.config['docs_mode']
         payload['doc_pages'] = Octopress::Ink::Plugins.doc_pages
       end
+      
+      payload['site'] ||= {}
 
-      payload['site']['linkposts'] = site.posts.collect do |p|
+      payload['site']['linkposts'] = site.posts.select do |p|
         p.data['linkpost']
       end
 

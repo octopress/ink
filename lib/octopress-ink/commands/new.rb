@@ -112,9 +112,10 @@ module Octopress
         # e.g. "spec" as in spec.name = "gem name"
         #
         def self.dependencies
-          minor_version = VERSION.scan(/\d\.\d/)[0]
+          minor_version = VERSION.scan(/\d+\.\d/)[0]
+          current_patch_version = VERSION.sub(/\.(alpha|rc).*/i, '')
           d  = "#{@settings[:spec_var]}.add_development_dependency \"octopress\"\n\n"
-          d += "#{@settings[:spec_var]}.add_runtime_dependency \"octopress-ink\", \"~> #{minor_version}\", \">= #{VERSION}\"\n"
+          d += "#{@settings[:spec_var]}.add_runtime_dependency \"octopress-ink\", \"~> #{minor_version}\", \">= #{current_patch_version}\"\n"
         end
 
         # Add Octopress Ink plugin to core module file

@@ -1,0 +1,27 @@
+---
+layout: theme:test
+title: Your New Jekyll Site
+index: true
+---
+
+{% assign separator = ' <span class='separator'></b> ' %}
+{% capture foo | join_lines:separator %}
+one
+ two
+ three
+
+four five
+
+{% endcapture %}{{ foo }}
+
+{% for post in site.posts %}
+  {% include post_data.html %}
+{% endfor %}
+
+{% for post in site.articles %}
+  {% include post_data.html %}
+{% endfor %}
+
+{% for post in site.linkposts %}
+  {% include post_data.html %}
+{% endfor %}

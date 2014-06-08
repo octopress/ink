@@ -1,5 +1,11 @@
 # Changelog
 
+### 1.0.0 RC6 - 2014-06-07
+
+- Fixed: New gems gemspec scaffold does not include Ink's pre-release version numbers.
+- Fixed: Better formatting for ordinal dates.
+- Other minor bug fixes
+
 ## Current released version
 
 ### 1.0.0 RC5 - 2014-06-06
