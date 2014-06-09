@@ -2,11 +2,16 @@
 
 ## Current released version
 
+### 1.0.0 RC8 - 2014-06-09
+
+- Improved the way Ink manages the payload
+- Added `linkposts` and `articles` methods to Ink
+
+## Past versions
+
 ### 1.0.0 RC7 - 2014-06-08
 
 - New: Added `excerpted` post var, true if post.excerpt is shorted than post.content.
-
-## Past versions
 
 ### 1.0.0 RC6 - 2014-06-07
 

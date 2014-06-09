@@ -76,27 +76,42 @@ module Octopress
       @site = site
     end
 
-    def self.payload(payload={})
-      config = Octopress::Ink::Plugins.config
-      payload['plugins']   = config['plugins']
-      payload['theme']     = config['theme']
-      payload['octopress'] = {}
-      payload['octopress']['version'] = Octopress::Ink.version
-      if Octopress::Ink.config['docs_mode']
-        payload['doc_pages'] = Octopress::Ink::Plugins.doc_pages
-      end
-      
-      payload['site'] ||= {}
+    def self.payload(jekyll_payload={})
+      Jekyll::Utils.deep_merge_hashes(jekyll_payload, custom_payload)
+    end
 
-      payload['site']['linkposts'] = site.posts.select do |p|
-        p.data['linkpost']
+    def self.custom_payload
+      unless @custom_payload
+        config = Plugins.config
+
+        payload = {
+          'plugins'   => config['plugins'],
+          'theme'     => config['theme'],
+          'octopress' => {
+            'version' => Octopress::Ink.version
+          },
+          'site' => {
+            'linkposts' => self.linkposts,
+            'articles'  => self.articles,
+          }
+        }
+
+        if Octopress::Ink.config['docs_mode']
+          payload['doc_pages'] = Octopress::Ink::Plugins.doc_pages
+        end
+
+        @custom_payload = payload
       end
 
-      payload['site']['articles'] = site.posts.reject do |p|
-        p.data['linkpost']
-      end
+      @custom_payload
+    end
 
-      payload
+    def self.linkposts
+      @linkposts ||= site.posts.select {|p| p.data['linkpost']}
+    end
+
+    def self.articles
+      @articles ||= site.posts.reject {|p| p.data['linkpost']}
     end
 
     def self.init_site(options)
