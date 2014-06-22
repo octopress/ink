@@ -62,7 +62,7 @@ module Octopress
         end
         
         def parse_convertible(content, context)
-          page = Jekyll::ConvertiblePage.new(context.registers[:site], @path, content)
+          page = Jekyll::ConvertiblePartial.new(context.registers[:site], @path, content)
           page.render({})
           page.output.strip
         end

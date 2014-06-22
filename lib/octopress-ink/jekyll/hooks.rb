@@ -149,26 +149,6 @@ module Jekyll
     end
   end
 
-  # Create a new page class to allow partials to trigger Jekyll Page Hooks.
-  class ConvertiblePage
-    include Convertible
-    
-    attr_accessor :name, :content, :site, :ext, :output, :data
-    
-    def initialize(site, name, content)
-      @site     = site
-      @name     = name
-      @ext      = File.extname(name)
-      @content  = content
-      @data     = { layout: "no_layout" } # hack
-      
-    end
-    
-    def render(payload)
-      do_layout(payload, { no_layout: nil })
-    end
-  end
-
   class Site
     alias_method :write_orig, :write
     # Called after write

@@ -3,13 +3,13 @@ require 'sass'
 require 'uglifier'
 require 'autoprefixer-rails'
 require 'digest/md5'
+require 'jekyll-page-hooks'
 
 require 'octopress-ink/version'
 
 require 'octopress-ink/utils'
 require 'octopress-ink/generators/plugin_assets'
 require 'octopress-ink/jekyll/hooks'
-require 'octopress-ink/version'
 
 module Octopress
   module Ink
