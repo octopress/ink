@@ -2,12 +2,16 @@
 
 ## Current released version
 
+### 1.0.0 RC10 - 2014-06-26
+
+- Render tag does a better job of preserving {% raw %} escaped content.
+
+## Past versions
+
 ### 1.0.0 RC9 - 2014-06-21
 
 - Added jekyll-page-hooks as a dependency.
 - Now processing partials as ConvertiblePartials
-
-## Past versions
 
 ### 1.0.0 RC8 - 2014-06-09
 
