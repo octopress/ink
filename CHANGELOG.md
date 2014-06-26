@@ -2,11 +2,15 @@
 
 ## Current released version
 
+### 1.0.0 RC11 - 2014-06-27
+
+- Fixed: Render tag properly processes local variables.
+
+## Past versions
+
 ### 1.0.0 RC10 - 2014-06-26
 
 - Render tag does a better job of preserving {% raw %} escaped content.
-
-## Past versions
 
 ### 1.0.0 RC9 - 2014-06-21
 

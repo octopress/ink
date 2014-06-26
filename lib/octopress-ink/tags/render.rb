@@ -24,20 +24,18 @@ module Octopress
 
           content = read(markup, context)
 
+          if content =~ /\A-{3}(.+[^\A])-{3}\n(.+)/m
+            local_vars = SafeYAML.load($1.strip)
+            content = $2.strip
+          end
+
           raw_content = {}
 
           content = content.gsub /{%\s*raw\s*%}(.+?){% endraw %}/m do
             data = $1
             key = Digest::MD5.hexdigest(data)
-            raw_content[key] = data
+            raw_content[key] = "{% raw %}#{data}{% endraw %}"
             key
-          end
-
-          content = parse_convertible(content, context).strip
-
-          if content =~ /\A-{3}(.+[^\A])-{3}\n(.+)/m
-            local_vars = SafeYAML.load($1.strip)
-            content = $2.strip
           end
 
           return content if @raw
@@ -54,6 +52,8 @@ module Octopress
           }.strip
 
           raw_content.each { |k, v| content.sub!(k, v) }
+
+          content = parse_convertible(content, context).strip
 
           unless content.nil? || filters.nil?
             content = Helpers::Var.render_filters(content, filters, context)
