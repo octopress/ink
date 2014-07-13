@@ -1,7 +1,8 @@
-name: Your New Jekyll Site
-markdown: redcarpet
-highlighter: pygments
-source: source
-destination: site
 include_test: foo.html
+exclude:
+  - Gemfile*
+
+url: http://octopress.org
 timezone: America/Chicago
+markdown: redcarpet
+name: Your New Jekyll Site

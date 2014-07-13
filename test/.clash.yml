@@ -1,33 +1,34 @@
 -
-  name: Basic build, testing tags, themes, etc.
+  name: Simple build
   build: true
-  compare: expected site
+-
+  compare: _expected/site _site
 -
   name: Should build with separate javascript and stylesheet files
   build: true
   config:
     octopress: _combine_false.yml
   compare:
-    - combine_css_false/stylesheets site/stylesheets
-    - combine_js_false/javascripts site/javascripts
+    - _expected/combine_css_false _site/stylesheets
+    - _expected/combine_js_false _site/javascripts
 -
   name: Should compress stylesheets and javascripts
   build: true
   config:
     octopress: _compress_false.yml
   compare:
-    - compress_false/stylesheets site/stylesheets
-    - compress_false/javascripts site/javascripts
+    - _expected/compress_false/stylesheets _site/stylesheets
+    - _expected/compress_false/javascripts _site/javascripts
 -
   name: Should copy all theme assets
   before: octopress ink copy theme --path _copy --force
-  compare: copy_test/_copy source/_copy
-  after: rm -rf source/_copy
+  compare: _expected/copy_test _copy
+  after: rm -rf _copy
 -
   name: Should copy only pages and layouts
   before: octopress ink copy theme --layouts --pages --path _copy --force
-  compare: copy_layouts_pages/_copy source/_copy
-  after: rm -rf source/_copy
+  compare: _expected/copy_layouts_pages _copy
+  after: rm -rf _copy
 -
   name: Should create a plugins scaffold
   before: 
@@ -37,7 +38,7 @@
     - 'git config user.email ""'
     - 'octopress ink new test-theme --theme'
     - 'rm -rf test-theme/.git'
-  compare: test-theme-expected test-theme
+  compare: _expected/test-theme-expected test-theme
   after:
     - 'cat .git-config-user-name | tr -d "\n" | xargs -0 git config user.name'
     - 'cat .git-config-user-email | tr -d "\n" | xargs -0 git config user.email'
