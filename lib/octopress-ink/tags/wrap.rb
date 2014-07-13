@@ -12,9 +12,9 @@ module Octopress
         end
 
         def render(context)
-          return unless markup = Helpers::Conditional.parse(@markup, context)
+          return unless markup = TagHelpers::Conditional.parse(@markup, context)
 
-          if markup =~ Helpers::Var::HAS_FILTERS
+          if markup =~ TagHelpers::Var::HAS_FILTERS
             markup = $1
             filters = $2
           end
@@ -37,7 +37,7 @@ module Octopress
             content = Tags::YieldTag.new('yield', markup, []).render(context)
           when 'render'
             begin
-              content = Tags::RenderTag.new('render', markup, []).render(context)
+              content = Octopress::Tags::RenderTag::Tag.new('render', markup, []).render(context)
             rescue => error
               error_msg error
             end
@@ -57,7 +57,7 @@ module Octopress
           context.scopes.first['yield'] = old_yield
 
           unless content.nil? || filters.nil?
-            content = Helpers::Var.render_filters(content, filters, context)
+            content = TagHelpers::Var.render_filters(content, filters, context)
           end
 
           content
@@ -71,8 +71,8 @@ module Octopress
         end
 
         def content_for(markup, context)
-          @block_name = Helpers::ContentFor.get_block_name(@tag_name, markup)
-          Helpers::ContentFor.render(context, @block_name).strip
+          @block_name = TagHelpers::ContentFor.get_block_name(@tag_name, markup)
+          TagHelpers::ContentFor.render(context, @block_name).strip
         end
       end
     end

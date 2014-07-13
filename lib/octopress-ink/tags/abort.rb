@@ -8,10 +8,15 @@ module Octopress
         end
 
         def render(context)
-          if Helpers::Conditional.parse(@markup, context)
+          if TagHelpers::Conditional.parse(@markup, context)
+            site = context.environments.first['site']
+            dest = site['destination']
             env = context.environments.first
-            dest = File.join(Helpers::Path.site_dir, env['page']['url'])
-            context.environments.first['site']['pages'] = Helpers::Path.remove_page(dest)
+            page_dest = File.join(dest, env['page']['url'])
+
+            context.environments.first['site']['pages'].reject! do |p|
+              p.destination(dest) == page_dest
+            end
           end
           ''
         end

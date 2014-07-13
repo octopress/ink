@@ -4,6 +4,8 @@ require 'uglifier'
 require 'autoprefixer-rails'
 require 'digest/md5'
 require 'jekyll-page-hooks'
+require 'octopress-tag-helpers'
+require 'octopress-render-tag'
 
 require 'octopress-ink/version'
 
@@ -15,7 +17,6 @@ module Octopress
   module Ink
 
     autoload :Configuration,        'octopress-ink/configuration'
-    autoload :Helpers,              'octopress-ink/helpers'
     autoload :Filters,              'octopress-ink/filters'
     autoload :Assets,               'octopress-ink/assets'
     autoload :Page,                 'octopress-ink/jekyll/page'
@@ -257,7 +258,6 @@ Liquid::Template.register_tag('assign', Octopress::Ink::Tags::AssignTag)
 Liquid::Template.register_tag('capture', Octopress::Ink::Tags::CaptureTag)
 Liquid::Template.register_tag('return', Octopress::Ink::Tags::ReturnTag)
 Liquid::Template.register_tag('filter', Octopress::Ink::Tags::FilterTag)
-Liquid::Template.register_tag('render', Octopress::Ink::Tags::RenderTag)
 Liquid::Template.register_tag('css_asset_tag', Octopress::Ink::Tags::JavascriptTag)
 Liquid::Template.register_tag('js_asset_tag', Octopress::Ink::Tags::StylesheetTag)
 Liquid::Template.register_tag('content_for', Octopress::Ink::Tags::ContentForTag)

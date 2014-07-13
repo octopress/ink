@@ -1,0 +1,44 @@
+-
+  name: Basic build, testing tags, themes, etc.
+  build: true
+  compare: expected site
+-
+  name: Should build with separate javascript and stylesheet files
+  build: true
+  config:
+    octopress: _combine_false.yml
+  compare:
+    - combine_css_false/stylesheets site/stylesheets
+    - combine_js_false/javascripts site/javascripts
+-
+  name: Should compress stylesheets and javascripts
+  build: true
+  config:
+    octopress: _compress_false.yml
+  compare:
+    - compress_false/stylesheets site/stylesheets
+    - compress_false/javascripts site/javascripts
+-
+  name: Should copy all theme assets
+  before: octopress ink copy theme --path _copy --force
+  compare: copy_test/_copy source/_copy
+  after: rm -rf source/_copy
+-
+  name: Should copy only pages and layouts
+  before: octopress ink copy theme --layouts --pages --path _copy --force
+  compare: copy_layouts_pages/_copy source/_copy
+  after: rm -rf source/_copy
+-
+  name: Should create a plugins scaffold
+  before: 
+    - 'git config user.name > .git-config-user-name'
+    - 'git config user.email > .git-config-user-email'
+    - 'git config user.name ""'
+    - 'git config user.email ""'
+    - 'octopress ink new test-theme --theme'
+    - 'rm -rf test-theme/.git'
+  compare: test-theme-expected test-theme
+  after:
+    - 'cat .git-config-user-name | tr -d "\n" | xargs -0 git config user.name'
+    - 'cat .git-config-user-email | tr -d "\n" | xargs -0 git config user.email'
+    - 'rm -rf test-theme .git-config-user-name .git-config-user-email'

@@ -22,8 +22,18 @@ module Octopress
         #
         def add
           if page.url && !Ink.config['docs_mode']
-            Ink.site.pages << page unless Helpers::Path.find_page(page)
+            Ink.site.pages << page unless find_page(page)
           end
+        end
+
+        def find_page(page)
+          site_dir = Ink.site.config['destination']
+          dest = page.destination(site_dir)
+
+          Ink.site.pages.clone.each do |p|
+            return p if p.destination(site_dir) == dest
+          end
+          return false
         end
 
         def page

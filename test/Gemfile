@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
 gem "octopress-ink", path: "../"
+gem "octopress-tag-helpers", path: "../../tag-helpers"
 gem "pry-debugger"
 gem "octopress", path: "../../cli"
+gem "clash", path: "../../clash"

@@ -10,8 +10,8 @@ module Octopress
         end
 
         def render(context)
-          return unless markup = Helpers::Conditional.parse(@markup, context)
-          if markup =~ Helpers::Var::HAS_FILTERS
+          return unless markup = TagHelpers::Conditional.parse(@markup, context)
+          if markup =~ TagHelpers::Var::HAS_FILTERS
             markup = $1
             filters = $2
           end
@@ -22,10 +22,10 @@ module Octopress
             value = super.lstrip
 
             unless value.nil? || filters.nil?
-              value = Helpers::Var.render_filters(value, filters, context)
+              value = TagHelpers::Var.render_filters(value, filters, context)
             end
 
-            context = Helpers::Var.set_var(var, operator, value, context)
+            context = TagHelpers::Var.set_var(var, operator, value, context)
           else
             raise SyntaxError.new("Syntax Error in 'capture' - Valid syntax: capture [var]")
           end

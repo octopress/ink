@@ -6,7 +6,6 @@ module Jekyll
     def do_layout(payload, layouts)
       # The contentblock tags needs access to the converter to process it while rendering.
       payload = Octopress::Ink.payload(payload)
-      payload['converter'] = self.converter
 
       do_layout_orig(payload, layouts)
     end

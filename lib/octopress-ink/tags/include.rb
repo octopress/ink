@@ -10,13 +10,13 @@ module Octopress
         end
 
         def render(context)
-          return unless markup = Helpers::Conditional.parse(@markup, context)
-          if markup =~ Helpers::Var::HAS_FILTERS
+          return unless markup = TagHelpers::Conditional.parse(@markup, context)
+          if markup =~ TagHelpers::Var::HAS_FILTERS
             markup = $1
             filters = $2
           end
-          markup = Helpers::Var.evaluate_ternary(markup, context)
-          markup = Helpers::Path.parse(markup, context)
+          markup = TagHelpers::Var.evaluate_ternary(markup, context)
+          markup = TagHelpers::Path.parse(markup, context)
 
           include_tag = Jekyll::Tags::IncludeTag.new('include', markup, [])
 
@@ -25,9 +25,15 @@ module Octopress
             plugin = $1
             path = $2
             begin
-              content = Plugins.include(plugin, path).read
+              content = Octopress::Ink::Plugins.include(plugin, path).read
             rescue => error
-              raise IOError.new "Include failed: {% #{@tag_name} #{@og_markup}%}. The plugin '#{plugin}' does not have an include named '#{path}'."
+              msg = "Include failed: {% #{@tag_name} #{@og_markup}%}.\n"
+              if !defined?(Octopress::Ink)
+                msg += "The plugin '#{plugin}' does not have an include named '#{path}'."
+              else
+                msg += "To include plugin partials, first install Octopress Ink."
+              end
+              raise IOError.new(msg)
             end
             partial = Liquid::Template.parse(content)
             content = context.stack {
@@ -41,7 +47,7 @@ module Octopress
           end
 
           unless content.nil? || filters.nil?
-            content = Helpers::Var.render_filters(content, filters, context)
+            content = TagHelpers::Var.render_filters(content, filters, context)
           end
 
           content

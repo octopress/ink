@@ -8,9 +8,9 @@ module Octopress
         end
 
         def render(context)
-          return unless markup = Helpers::Conditional.parse(@markup, context)
+          return unless markup = TagHelpers::Conditional.parse(@markup, context)
 
-          Helpers::Var.get_value(markup, context)
+          TagHelpers::Var.get_value(markup, context)
         end
       end
     end

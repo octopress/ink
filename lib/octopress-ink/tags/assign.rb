@@ -10,17 +10,17 @@ module Octopress
         end
 
         def render(context)
-          return unless markup = Helpers::Conditional.parse(@markup, context)
+          return unless markup = TagHelpers::Conditional.parse(@markup, context)
 
           if markup =~ SYNTAX
             var      = $1
             operator = $2
             value    = $3
 
-            value = Helpers::Var.get_value(value, context)
+            value = TagHelpers::Var.get_value(value, context)
             return if value.nil?
 
-            context = Helpers::Var.set_var(var, operator, value, context)
+            context = TagHelpers::Var.set_var(var, operator, value, context)
           else
             raise SyntaxError.new("Syntax Error in 'assign tag': #{@markup} - Valid syntax: assign [var] = [source] | filter")
           end

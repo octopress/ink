@@ -11,10 +11,10 @@ module Octopress
         end
 
         def render(context)
-          return unless markup = Helpers::Conditional.parse(@markup, context)
+          return unless markup = TagHelpers::Conditional.parse(@markup, context)
 
-          @block_name ||= Helpers::ContentFor.get_block_name(@tag_name, markup)
-          Helpers::ContentFor.append_to_block(context, @block_name, super)
+          @block_name ||= TagHelpers::ContentFor.get_block_name(@tag_name, markup)
+          TagHelpers::ContentFor.append_to_block(context, @block_name, super)
           ''
         end
       end
