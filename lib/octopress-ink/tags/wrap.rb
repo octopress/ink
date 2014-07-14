@@ -43,7 +43,7 @@ module Octopress
             end
           when 'include'
             begin
-              content = Tags::IncludeTag.new('include', markup, []).render(context)
+              content = Octopress::Tags::IncludeTag::Tag.new('include', markup, []).render(context)
             rescue => error
               error_msg error
             end

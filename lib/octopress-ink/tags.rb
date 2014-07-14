@@ -1,7 +1,6 @@
 module Octopress
   module Ink
     module Tags
-      autoload :IncludeTag,           'octopress-ink/tags/include'
       autoload :AssignTag,            'octopress-ink/tags/assign'
       autoload :ReturnTag,            'octopress-ink/tags/return'
       autoload :FilterTag,            'octopress-ink/tags/filter'

@@ -5,7 +5,6 @@ require 'autoprefixer-rails'
 require 'digest/md5'
 require 'jekyll-page-hooks'
 require 'octopress-tag-helpers'
-require 'octopress-render-tag'
 
 require 'octopress-ink/version'
 
@@ -252,7 +251,9 @@ end
 
 Liquid::Template.register_filter Octopress::Ink::Filters
 
-Liquid::Template.register_tag('include', Octopress::Ink::Tags::IncludeTag)
+require 'octopress-render-tag'
+require 'octopress-include-tag'
+
 Liquid::Template.register_tag('assign', Octopress::Ink::Tags::AssignTag)
 Liquid::Template.register_tag('capture', Octopress::Ink::Tags::CaptureTag)
 Liquid::Template.register_tag('return', Octopress::Ink::Tags::ReturnTag)
