@@ -251,19 +251,12 @@ end
 
 Liquid::Template.register_filter Octopress::Ink::Filters
 
-require 'octopress-render-tag'
-require 'octopress-include-tag'
-
 Liquid::Template.register_tag('assign', Octopress::Ink::Tags::AssignTag)
 Liquid::Template.register_tag('capture', Octopress::Ink::Tags::CaptureTag)
 Liquid::Template.register_tag('return', Octopress::Ink::Tags::ReturnTag)
 Liquid::Template.register_tag('filter', Octopress::Ink::Tags::FilterTag)
 Liquid::Template.register_tag('css_asset_tag', Octopress::Ink::Tags::JavascriptTag)
 Liquid::Template.register_tag('js_asset_tag', Octopress::Ink::Tags::StylesheetTag)
-Liquid::Template.register_tag('content_for', Octopress::Ink::Tags::ContentForTag)
-Liquid::Template.register_tag('yield', Octopress::Ink::Tags::YieldTag)
-Liquid::Template.register_tag('wrap', Octopress::Ink::Tags::WrapTag)
-Liquid::Template.register_tag('abort', Octopress::Ink::Tags::AbortTag)
 Liquid::Template.register_tag('_', Octopress::Ink::Tags::LineCommentTag)
 Liquid::Template.register_tag('doc_url', Octopress::Ink::Tags::DocUrlTag)
 

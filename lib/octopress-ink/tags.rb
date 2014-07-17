@@ -7,10 +7,6 @@ module Octopress
       autoload :CaptureTag,           'octopress-ink/tags/capture'
       autoload :JavascriptTag,        'octopress-ink/tags/javascript'
       autoload :StylesheetTag,        'octopress-ink/tags/stylesheet'
-      autoload :ContentForTag,        'octopress-ink/tags/content_for'
-      autoload :YieldTag,             'octopress-ink/tags/yield'
-      autoload :WrapTag,              'octopress-ink/tags/wrap'
-      autoload :AbortTag,             'octopress-ink/tags/abort'
       autoload :LineCommentTag,       'octopress-ink/tags/line_comment'
       autoload :DocUrlTag,            'octopress-ink/tags/doc_url'
     end
