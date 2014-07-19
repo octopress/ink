@@ -1,5 +1,5 @@
 ---
-import: colors
+property: background
 ---
-@import '{{ page.import }}';
-body { background: $bg; }
+@import '{{ theme.sass.import }}';
+body { {{ page.property }}: $bg; }

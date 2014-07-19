@@ -110,7 +110,7 @@ module Octopress
           content = path.read
 
           if content =~ /\A(---\s*\n.*?\n?)^((---|\.\.\.)\s*$\n?)/m
-            payload = Ink.site.site_payload
+            payload = Ink.custom_payload
             content = $POSTMATCH
             payload['page'] = SafeYAML.load($1)
             render_liquid(content, payload)

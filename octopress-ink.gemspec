@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Octopress::Ink::VERSION
   spec.authors       = ["Brandon Mathis"]
   spec.email         = ["brandon@imathis.com"]
-  spec.description   = %q{A starting point for creating gem-based Jekyll themes and plugins}
-  spec.summary       = %q{A starting point for creating gem-based Jekyll themes and plugins}
+  spec.description   = %q{A framework creating Jekyll/Octopress themes and plugins}
+  spec.summary       = %q{A framework creating Jekyll/Octopress themes and plugins}
   spec.homepage      = "https://github.com/octopress/ink"
   spec.license       = "MIT"
 
@@ -19,11 +19,9 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency "jekyll", "~> 2.0"
-  spec.add_runtime_dependency "octopress-tag-helpers", "~> 1.0"
   spec.add_runtime_dependency "uglifier", "~> 2.5"
   spec.add_runtime_dependency "autoprefixer-rails", "~> 1.1", ">= 1.1.20140403"
   spec.add_runtime_dependency "jekyll-page-hooks", "~> 1.3"
-  spec.add_runtime_dependency "octopress-render-tag", "~> 1.0"
   spec.add_runtime_dependency "octopress-include-tag", "~> 1.0"
 
   spec.add_development_dependency "octopress"

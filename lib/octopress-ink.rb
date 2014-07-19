@@ -83,6 +83,9 @@ module Octopress
     def self.custom_payload
       unless @custom_payload
         config = Plugins.config
+        site_payload = Ink.site.site_payload
+        site_payload['linkposts'] = self.linkposts
+        site_payload['articles'] = self.articles
 
         payload = {
           'plugins'   => config['plugins'],
@@ -90,10 +93,7 @@ module Octopress
           'octopress' => {
             'version' => Octopress::Ink.version
           },
-          'site' => {
-            'linkposts' => self.linkposts,
-            'articles'  => self.articles,
-          }
+          'site' => site_payload
         }
 
         if Octopress::Ink.config['docs_mode']
