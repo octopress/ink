@@ -4,11 +4,10 @@ require 'uglifier'
 require 'autoprefixer-rails'
 require 'digest/md5'
 require 'jekyll-page-hooks'
-require 'octopress-tag-helpers'
+require 'octopress-filters'
 
 require 'octopress-ink/version'
 
-require 'octopress-ink/utils'
 require 'octopress-ink/generators/plugin_assets'
 require 'octopress-ink/jekyll/hooks'
 
@@ -16,7 +15,6 @@ module Octopress
   module Ink
 
     autoload :Configuration,        'octopress-ink/configuration'
-    autoload :Filters,              'octopress-ink/filters'
     autoload :Assets,               'octopress-ink/assets'
     autoload :Page,                 'octopress-ink/jekyll/page'
     autoload :StaticFile,           'octopress-ink/jekyll/static_file'
@@ -60,11 +58,7 @@ module Octopress
     end
 
     def self.site(options={})
-      unless @site
-        @site ||= init_site(options)
-      end
-
-      @site
+      @site ||= init_site(options)
     end
 
     def self.site=(site)
@@ -248,8 +242,6 @@ module Octopress
     end
   end
 end
-
-Liquid::Template.register_filter Octopress::Ink::Filters
 
 Liquid::Template.register_tag('css_asset_tag', Octopress::Ink::Tags::JavascriptTag)
 Liquid::Template.register_tag('js_asset_tag', Octopress::Ink::Tags::StylesheetTag)

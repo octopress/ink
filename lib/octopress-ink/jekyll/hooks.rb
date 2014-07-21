@@ -54,7 +54,7 @@ module Jekyll
       end
 
       if Octopress::Ink.config['titlecase']
-        Octopress::Utils.titlecase!(data['title'])
+        Octopress::Filters.titlecase(data['title'])
       end
 
       {
@@ -120,7 +120,7 @@ module Jekyll
     
 
     def title_html(config, title)
-      title = Octopress::Ink::Filters.unorphan(title)
+      title = Octopress::Filters.unorphan(title)
 
       return title if !config['marker']
 
