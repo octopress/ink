@@ -3,5 +3,4 @@ source 'https://rubygems.org'
 gem "octopress-ink", path: "../"
 gem "clash"
 gem "pry-debugger"
-gem "octopress-filters", path: "../../filters"
 gem "octopress", path: "../../cli"

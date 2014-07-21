@@ -23,6 +23,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "autoprefixer-rails", "~> 1.1", ">= 1.1.20140403"
   spec.add_runtime_dependency "jekyll-page-hooks", "~> 1.3"
   spec.add_runtime_dependency "octopress-include-tag", "~> 1.0"
+  spec.add_runtime_dependency "octopress-filters", "~> 1.1"
 
   spec.add_development_dependency "octopress"
   spec.add_development_dependency "bundler", "~> 1.3"
