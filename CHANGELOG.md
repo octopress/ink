@@ -2,11 +2,19 @@
 
 ## Current released version
 
+### 1.0.0 RC12 - 2014-07-27
+
+- Extracted all tags to separate projects under [github.com/octopress](https://github.com/octopress).
+- Now the only tag provided by default is [include-tag](https://github.com/octopress/include-tag).
+- Switched from jekyll-page-hooks to octopress-hooks.
+- Extracted link post feature as a separate plugin [octopress-linkblog](https://github.com/octopress/linkblog)
+- Extracted page date feature as a separate plugin [octopress-linkblog](https://github.com/octopress/linkblog)
+
+## Past versions
+
 ### 1.0.0 RC11 - 2014-06-27
 
 - Fixed: Render tag properly processes local variables.
-
-## Past versions
 
 ### 1.0.0 RC10 - 2014-06-26
 

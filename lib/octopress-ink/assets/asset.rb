@@ -83,9 +83,9 @@ module Octopress
         # compiled site directory. 
         #
         def remove_jekyll_asset
-          Ink.site.static_files.clone.each do |sf|
+          Octopress.site.static_files.clone.each do |sf|
             if sf.kind_of?(Jekyll::StaticFile) && sf.path == path.to_s
-              Ink.site.static_files.delete(sf)
+              Octopress.site.static_files.delete(sf)
             end
           end
         end
@@ -110,17 +110,13 @@ module Octopress
           content = path.read
 
           if content =~ /\A(---\s*\n.*?\n?)^((---|\.\.\.)\s*$\n?)/m
-            payload = Ink.custom_payload
+            payload = Octopress.site.site_payload
             content = $POSTMATCH
             payload['page'] = SafeYAML.load($1)
-            render_liquid(content, payload)
+            Liquid::Template.parse(content).render!(payload)
           else
             content
           end
-        end
-
-        def render_liquid(content, payload={})
-          Liquid::Template.parse(content).render!(Ink.payload(payload), {})
         end
 
         def plugin_dir
@@ -132,11 +128,11 @@ module Octopress
         end
 
         def user_dir
-          File.join Ink.site.source, Plugins.custom_dir, dir
+          File.join Octopress.site.source, Plugins.custom_dir, dir
         end
 
         def local_plugin_path
-          File.join Ink.site.source, dir, file
+          File.join Octopress.site.source, dir, file
         end
 
         def user_override_path

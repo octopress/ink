@@ -2,6 +2,16 @@
 require 'yaml'
 
 module Octopress
+  # Override Octopress configuration to Merge with Ink's defaults
+  #
+  class << self
+    alias_method :orig_config, :config
+
+    def config(options={})
+      Jekyll::Utils.deep_merge_hashes(Ink::Configuration::DEFAULTS, orig_config(options))
+    end
+  end
+
   module Ink
     module Configuration
       DEFAULTS = {
@@ -13,34 +23,7 @@ module Octopress
         'uglifier' => {},
         'disable' => [],
         'date_format' => 'ordinal',
-
-        'linkpost' => {
-          'marker' => "→",
-          'marker_position' => 'after'
-        },
-
-        'post' => {
-          'marker' => false,
-          'marker_position' => 'before'
-        }
       }
-
-      def self.config
-        @config ||= Jekyll::Utils.deep_merge_hashes(DEFAULTS, octopress_config)
-      end
-
-      def self.octopress_config
-        if defined? Octopress.config
-          Octopress.config
-        else
-          file = '_octopress.yml'
-          if File.exist?(file)
-            SafeYAML.load_file(file) || {}
-          else
-            {}
-          end
-        end
-      end
     end
   end
 end

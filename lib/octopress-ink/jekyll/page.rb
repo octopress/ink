@@ -1,6 +1,7 @@
 module Octopress
   module Ink
     class Page < Jekyll::Page
+      include Jekyll::Convertible
 
       # Purpose: Configs can override a page's permalink
       #
@@ -12,6 +13,11 @@ module Octopress
       def initialize(site, base, dir, name, config={})
         @config = config
         super(site, base, dir, name)
+        post_init if respond_to?(:post_init)
+      end
+
+      def hooks
+        self.site.page_hooks
       end
 
       def destination(dest)

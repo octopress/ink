@@ -51,7 +51,7 @@ module Octopress
         end
 
         def user_load_path
-          File.join(Ink.site.source, Plugins.custom_dir, dir, File.dirname(file)).sub /\/\.$/, ''
+          File.join(Octopress.site.source, Plugins.custom_dir, dir, File.dirname(file)).sub /\/\.$/, ''
         end
 
         def theme_load_path

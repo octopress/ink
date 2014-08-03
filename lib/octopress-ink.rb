@@ -3,18 +3,41 @@ require 'sass'
 require 'uglifier'
 require 'autoprefixer-rails'
 require 'digest/md5'
-require 'jekyll-page-hooks'
+require 'octopress-hooks'
 require 'octopress-filters'
+require 'octopress-linkblog'
+require 'octopress-date-format'
 
 require 'octopress-ink/version'
 
-require 'octopress-ink/generators/plugin_assets'
+require 'octopress'
+require 'octopress-ink/configuration'
 require 'octopress-ink/jekyll/hooks'
 
 module Octopress
+  def self.site(options={})
+    @site ||= init_site(options)
+  end
+
+  def self.site=(site)
+    # Octopress historically used site.title
+    # This allows theme developers to expect site.name
+    # in consistancy with Jekyll's scaffold config 
+    
+    site.config['name'] ||= site.config['title']
+
+    @site = site
+  end
+
+  def self.init_site(options)
+    Jekyll.logger.log_level = :error
+    site = Jekyll::Site.new(Jekyll.configuration(options))
+    Jekyll.logger.log_level = :info
+    site
+  end
+
   module Ink
 
-    autoload :Configuration,        'octopress-ink/configuration'
     autoload :Assets,               'octopress-ink/assets'
     autoload :Page,                 'octopress-ink/jekyll/page'
     autoload :StaticFile,           'octopress-ink/jekyll/static_file'
@@ -57,64 +80,6 @@ module Octopress
       @config ||= Configuration.config
     end
 
-    def self.site(options={})
-      @site ||= init_site(options)
-    end
-
-    def self.site=(site)
-      # Octopress historically used site.title
-      # This allows theme developers to expect site.name
-      # in consistancy with Jekyll's scaffold config 
-      site.config['name'] ||= site.config['title']
-
-      @site = site
-    end
-
-    def self.payload(jekyll_payload={})
-      Jekyll::Utils.deep_merge_hashes(jekyll_payload, custom_payload)
-    end
-
-    def self.custom_payload
-      unless @custom_payload
-        config = Plugins.config
-        site_payload = Ink.site.site_payload
-        site_payload['linkposts'] = self.linkposts
-        site_payload['articles'] = self.articles
-
-        payload = {
-          'plugins'   => config['plugins'],
-          'theme'     => config['theme'],
-          'octopress' => {
-            'version' => Octopress::Ink.version
-          },
-          'site' => site_payload
-        }
-
-        if Octopress::Ink.config['docs_mode']
-          payload['doc_pages'] = Octopress::Ink::Plugins.doc_pages
-        end
-
-        @custom_payload = payload
-      end
-
-      @custom_payload
-    end
-
-    def self.linkposts
-      @linkposts ||= site.posts.select {|p| p.data['linkpost']}
-    end
-
-    def self.articles
-      @articles ||= site.posts.reject {|p| p.data['linkpost']}
-    end
-
-    def self.init_site(options)
-      Jekyll.logger.log_level = :error
-      site = Jekyll::Site.new(Jekyll.configuration(options))
-      Jekyll.logger.log_level = :info
-      site
-    end
-
     def self.plugins
       Plugins.plugins
     end
@@ -137,7 +102,7 @@ module Octopress
     #
     #
     def self.list(options={})
-      site(options)
+      Octopress.site(options)
       Plugins.register
       options = {'minimal'=>true} if options.empty?
       message = "Octopress Ink - v#{VERSION}\n"
@@ -153,7 +118,7 @@ module Octopress
     end
 
     def self.plugin_list(name, options)
-      site(options)
+      Octopress.site(options)
       Plugins.register
       options.delete('config')
       if p = plugin(name)
@@ -164,7 +129,7 @@ module Octopress
     end
 
     def self.copy_plugin_assets(name, options)
-      site(options)
+      Octopress.site(options)
       Plugins.register
       path = copy_path(name, options)
 
@@ -183,19 +148,19 @@ module Octopress
 
     def self.copy_path(name, options)
       if path = options.delete('path')
-        full_path = File.join(Ink.site.source, path)
+        full_path = File.join(Octopress.site.source, path)
         if !Dir["#{full_path}/*"].empty? && options['force'].nil?
           abort "Error: directory #{path} is not empty. Use --force to overwrite files."
         end
       else
-        full_path = File.join(Ink.site.source, Plugins.custom_dir, name)
+        full_path = File.join(Octopress.site.source, Plugins.custom_dir, name)
       end
 
       full_path
     end
 
     def self.list_plugins(options={})
-      site(options)
+      Octopress.site(options)
       Plugins.register
       puts "\nCurrently installed plugins:"
       if plugins.size > 0

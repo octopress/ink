@@ -21,23 +21,23 @@ module Octopress
         # Add page to Jekyll pages if no other page has a conflicting destination
         #
         def add
-          if page.url && !Ink.config['docs_mode']
-            Ink.site.pages << page unless find_page(page)
+          if page.url && !Octopress.config['docs_mode']
+            Octopress.site.pages << page unless find_page(page)
           end
         end
 
         def find_page(page)
-          site_dir = Ink.site.config['destination']
+          site_dir = Octopress.site.config['destination']
           dest = page.destination(site_dir)
 
-          Ink.site.pages.clone.each do |p|
+          Octopress.site.pages.clone.each do |p|
             return p if p.destination(site_dir) == dest
           end
           return false
         end
 
         def page
-          @page ||= Page.new(Ink.site, source_dir, page_dir, file, plugin.config)
+          @page ||= Page.new(Octopress.site, source_dir, page_dir, file, plugin.config)
         end
 
         def info
@@ -60,7 +60,7 @@ module Octopress
         end
 
         def user_dir
-          File.join Ink.site.source, Plugins.custom_dir, plugin.slug, base
+          File.join Octopress.site.source, Plugins.custom_dir, plugin.slug, base
         end
 
       end

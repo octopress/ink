@@ -2,6 +2,7 @@
   name: Simple build
   build: true
 -
+  name: Compare build
   compare: _expected/site _site
 -
   name: Should build with separate javascript and stylesheet files

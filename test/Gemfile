@@ -1,6 +1,4 @@
 source 'https://rubygems.org'
 
-gem "octopress-ink", path: "../"
-gem "clash"
-gem "pry-debugger"
-gem "octopress", path: "../../cli"
+gemspec path: "../"
+#gem "octopress", path: "../../cli"

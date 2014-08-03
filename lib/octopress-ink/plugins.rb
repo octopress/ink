@@ -128,13 +128,13 @@ module Octopress
       # Read plugin dir from site configs
       #
       def self.custom_dir
-        Ink.site.config['plugins']
+        Octopress.site.config['plugins']
       end
 
       # Copy/Generate Stylesheets
       #
       def self.add_stylesheets
-        if Ink.config['combine_css']
+        if Octopress.config['combine_css']
           PluginAssetPipeline.write_combined_stylesheet
         else
           add_assets(%w{css sass})
@@ -144,7 +144,7 @@ module Octopress
       # Copy/Generate Javascripts
       #
       def self.add_javascripts
-        if Ink.config['combine_js']
+        if Octopress.config['combine_js']
           PluginAssetPipeline.write_combined_javascript
         else
           add_assets(%w{js coffee})
@@ -152,7 +152,7 @@ module Octopress
       end
 
       def self.css_tags
-        if Ink.config['combine_css']
+        if Octopress.config['combine_css']
           PluginAssetPipeline.combined_stylesheet_tag
         else
           @css_tags.join('')
@@ -160,7 +160,7 @@ module Octopress
       end
 
       def self.js_tags
-        if Ink.config['combine_js']
+        if Octopress.config['combine_js']
           PluginAssetPipeline.combined_javascript_tag
         else
           @js_tags.join('')
