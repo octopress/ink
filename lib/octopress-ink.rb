@@ -1,16 +1,13 @@
 require 'jekyll'
 require 'sass'
 require 'uglifier'
-require 'octopress-autoprefixer'
 require 'digest/md5'
+require 'octopress'
 require 'octopress-hooks'
 require 'octopress-filters'
-require 'octopress-linkblog'
-require 'octopress-date-format'
 
 require 'octopress-ink/version'
 
-require 'octopress'
 require 'octopress-ink/configuration'
 require 'octopress-ink/jekyll/hooks'
 

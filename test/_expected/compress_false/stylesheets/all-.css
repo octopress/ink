@@ -1,9 +1,7 @@
 /* Theme: Classic Theme */
 body {
   margin: 2px;
-  padding: 2px;
-  -webkit-box-shadow: #bcbcbc 1px 1px inset;
-          box-shadow: #bcbcbc 1px 1px inset; }
+  padding: 2px; }
 
 .main {
   color: #444; }
