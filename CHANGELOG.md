@@ -2,13 +2,14 @@
 
 ## Current released version
 
-### 1.0.0 RC12 - 2014-07-27
+### 1.0.0 RC12 - 2014-08-03
 
 - Extracted all tags to separate projects under [github.com/octopress](https://github.com/octopress).
 - Now the only tag provided by default is [include-tag](https://github.com/octopress/include-tag).
 - Switched from jekyll-page-hooks to octopress-hooks.
 - Extracted link post feature as a separate plugin [octopress-linkblog](https://github.com/octopress/linkblog)
-- Extracted page date feature as a separate plugin [octopress-linkblog](https://github.com/octopress/linkblog)
+- Extracted page date feature as a separate plugin [octopress-date-format](https://github.com/octopress/date-format)
+- Extracted Autoprefixer a separate plugin [octopress-autoprefixer](https://github.com/octopress/autoprefixer)
 
 ## Past versions
 

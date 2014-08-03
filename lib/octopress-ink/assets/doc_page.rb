@@ -1,6 +1,3 @@
-# These are files which need to be in added to the root of the site directory
-# Use root assets for files like robots.text or favicon.ico
-
 module Octopress
   module Ink
     module Assets
