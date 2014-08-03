@@ -89,7 +89,6 @@ module Octopress
         css = combine_stylesheets
         css.keys.each do |media|
           contents = compile_css(css[media])
-          contents = AutoprefixerRails.process(contents)
           write_files(contents, combined_stylesheet_path(media)) 
         end
       end

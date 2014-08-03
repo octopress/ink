@@ -1,13 +1,15 @@
 /* Theme: Classic Theme */
 body {
   margin: 2px;
-  padding: 2px; }
+  padding: 2px;
+  -webkit-box-shadow: #bcbcbc 1px 1px inset;
+          box-shadow: #bcbcbc 1px 1px inset; }
 
 .main {
   color: #444; }
 
 body {
-  background: black; }
+  background: #bcbcbc; }
 
 /* Plugin: Awesome Sauce */
 .plugin-widget {

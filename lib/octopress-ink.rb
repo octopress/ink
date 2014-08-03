@@ -1,7 +1,7 @@
 require 'jekyll'
 require 'sass'
 require 'uglifier'
-require 'autoprefixer-rails'
+require 'octopress-autoprefixer'
 require 'digest/md5'
 require 'octopress-hooks'
 require 'octopress-filters'
