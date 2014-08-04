@@ -115,9 +115,11 @@ module Octopress
     end
 
     def self.plugin_list(name, options)
+      config = options.delete('config') # Jekyll conflicts with this option
       Octopress.site(options)
       Plugins.register
-      options.delete('config')
+      options['config'] = config if config
+
       if p = plugin(name)
         puts p.list(options)
       else
@@ -126,8 +128,11 @@ module Octopress
     end
 
     def self.copy_plugin_assets(name, options)
+      config = options.delete('config') # Jekyll conflicts with this option
       Octopress.site(options)
       Plugins.register
+      options['config'] = config if config
+
       path = copy_path(name, options)
 
 
@@ -161,7 +166,7 @@ module Octopress
       Plugins.register
       puts "\nCurrently installed plugins:"
       if plugins.size > 0
-        plugins.each { |plugin| puts plugin.name }
+        plugins.each { |plugin| puts plugin.name + " (#{plugin.slug})" }
       else
         puts "You have no plugins installed."
       end

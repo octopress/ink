@@ -131,7 +131,7 @@ module Octopress
           assets.each { |a| copied << a.copy(path) }
         end
 
-        copied
+        copied.compact
       end
 
       # stylesheets should include Sass and CSS

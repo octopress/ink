@@ -10,6 +10,7 @@ module Octopress
             c.option "force", "--force", "Overwrite files."
             c.option "path", "--path PATH", "Copy plugin assets to an alternate path."
             CommandHelpers.add_asset_options(c, 'Copy')
+            c.option "config", "--config", "Copy plugin configuration file."
 
             c.action do |args, options|
               if args.empty?

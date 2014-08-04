@@ -68,6 +68,8 @@ module Octopress
         # Copy asset to user override directory
         #
         def copy(target_dir)
+          return unless exists? plugin_path
+
           if target_dir
             target_dir = File.join(target_dir, base)
           else
