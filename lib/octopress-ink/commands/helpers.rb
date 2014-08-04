@@ -16,9 +16,7 @@ module Octopress
           c.option "images", "--images", "#{action} only images"
           c.option "fonts", "--fonts", "#{action} only fonts"
           c.option "files", "--files", "#{action} only files"
-          unless action.downcase == 'copy'
-            c.option "config", "--config <CONFIG_FILE>[,CONFIG_FILE2,...]", Array, "Custom Jekyll configuration file"
-          end
+          c.option "config", "--config", "#{action} only configuration file."
         end
       end
     end

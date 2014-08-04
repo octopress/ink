@@ -190,10 +190,7 @@ website:       ""
           gemfile_content = <<-HERE
 source 'https://rubygems.org'
 
-group :octopress do
-  gem 'octopress'
-  gem '#{@settings[:name]}', path: '../'
-end
+gemspec path: '../'
           HERE
 
           write(gemfile_path, gemfile_content)
