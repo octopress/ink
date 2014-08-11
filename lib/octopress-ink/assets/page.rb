@@ -37,7 +37,11 @@ module Octopress
         end
 
         def page
-          @page ||= Page.new(Octopress.site, source_dir, page_dir, file, plugin.config)
+          unless @page 
+            @page = Page.new(Octopress.site, source_dir, page_dir, file, plugin.config)
+            @page.data['permalink'] ||= page_dir
+          end
+          @page
         end
 
         def info

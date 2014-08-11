@@ -2,7 +2,7 @@ module Octopress
   module Ink
     class SiteHook < Hooks::Site
 
-      def pre_render(site)
+      def post_read(site)
         Octopress.site = site
         Ink::Plugins.register
         Ink::Plugins.add_files

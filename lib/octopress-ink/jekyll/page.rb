@@ -30,6 +30,12 @@ module Octopress
         @dest
       end
 
+      def relative_asset_path
+        site_source = Pathname.new Octopress.site.source
+        page_source = Pathname.new @base
+        page_source.relative_path_from(site_source).to_s
+      end
+
       # Allow pages to read url from plugin configuration
       #
       def url
