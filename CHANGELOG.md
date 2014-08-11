@@ -1,6 +1,8 @@
 # Changelog
 
-## Current released version
+### 1.0.0 RC13 - 2014-08-11
+
+- Fixed an issue with asset tags
 
 ### 1.0.0 RC12 - 2014-08-03
 
@@ -10,8 +12,6 @@
 - Extracted link post feature as a separate plugin [octopress-linkblog](https://github.com/octopress/linkblog)
 - Extracted page date feature as a separate plugin [octopress-date-format](https://github.com/octopress/date-format)
 - Extracted Autoprefixer a separate plugin [octopress-autoprefixer](https://github.com/octopress/autoprefixer)
-
-## Past versions
 
 ### 1.0.0 RC11 - 2014-06-27
 
