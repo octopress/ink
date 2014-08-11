@@ -1,0 +1,14 @@
+---
+---
+<div class="posts-index">
+  {% if site.paginate %}
+    {% for post in paginator.posts %}
+      {{ post.content }}
+    {% endfor %}
+  {% else %}
+    {% for post in site.posts limit: 10 %}
+      {{ post.content }}
+    {% endfor %}
+  {% endif %}
+</div>
+

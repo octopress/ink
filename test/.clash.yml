@@ -44,3 +44,9 @@
     - 'cat .git-config-user-name | tr -d "\n" | xargs -0 git config user.name'
     - 'cat .git-config-user-email | tr -d "\n" | xargs -0 git config user.email'
     - 'rm -rf test-theme .git-config-user-name .git-config-user-email'
+-
+  name: Test plugin pagination
+  build: true
+  config:
+    jekyll: _config_pagination.yml
+  compare: _expected/site_paginate _site
