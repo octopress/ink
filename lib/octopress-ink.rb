@@ -150,12 +150,12 @@ module Octopress
 
     def self.copy_path(name, options)
       if path = options.delete('path')
-        full_path = File.join(Octopress.site.source, path)
+        full_path = File.join(Dir.pwd, path)
         if !Dir["#{full_path}/*"].empty? && options['force'].nil?
           abort "Error: directory #{path} is not empty. Use --force to overwrite files."
         end
       else
-        full_path = File.join(Octopress.site.source, Plugins.custom_dir, name)
+        full_path = File.join(Dir.pwd, Plugins.custom_dir, name)
       end
 
       full_path
