@@ -2,19 +2,13 @@ module Octopress
   module Ink
     module Assets
       class Coffeescript < Javascript
-        def read
-          @compiled ||= compile
-        end
-
         def add
           Plugins.add_js_tag tag
-          Plugins.static_files << StaticFileContent.new(read, destination)
+          Plugins.static_files << StaticFileContent.new(compile, destination)
         end
 
-        private
-
         def compile
-          ::CoffeeScript.compile(render)
+          ::CoffeeScript.compile(content)
         end
 
         def destination

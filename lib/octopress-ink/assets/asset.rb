@@ -5,6 +5,8 @@ module Octopress
         attr_reader :plugin, :dir, :base, :root, :file
         attr_accessor :exists
 
+        FRONT_MATTER = /\A(---\s*\n.*?\n?)^((---|\.\.\.)\s*$\n?)/m
+
         def initialize(plugin, base, file)
           @file = file
           @base = base
@@ -57,6 +59,10 @@ module Octopress
           end
         end
 
+        def ext
+          File.extname(filename)
+        end
+
         def read
           path.read
         end
@@ -96,6 +102,48 @@ module Octopress
           File.join(dir, file)
         end
 
+        def content
+          unless @content
+            if read =~ FRONT_MATTER
+              @content = $POSTMATCH
+            else
+              @content = read
+            end
+          end
+          @content
+        end
+
+        # Render file through Liquid if it contains YAML front-matter
+        #
+        def render
+          unless @rendered_content
+            if asset_payload = payload
+              @rendered_content = Liquid::Template.parse(content).render!(payload)
+            else
+              @rendered_content = content
+            end
+          end
+
+          @rendered_content
+        end
+
+        def payload
+          unless @payload
+            @payload = Octopress.site.site_payload
+            @payload['page'] = data
+          end
+
+          @payload
+        end
+
+        def data
+          if read =~ FRONT_MATTER
+            SafeYAML.load($1)
+          else
+            {}
+          end
+        end
+
         private
 
         def source_dir
@@ -103,21 +151,6 @@ module Octopress
             user_dir
           else
             plugin_dir
-          end
-        end
-
-        # Render file through Liquid if it contains YAML front-matter
-        #
-        def render
-          content = path.read
-
-          if content =~ /\A(---\s*\n.*?\n?)^((---|\.\.\.)\s*$\n?)/m
-            payload = Octopress.site.site_payload
-            content = $POSTMATCH
-            payload['page'] = SafeYAML.load($1)
-            Liquid::Template.parse(content).render!(payload)
-          else
-            content
           end
         end
 

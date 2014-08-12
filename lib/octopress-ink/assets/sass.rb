@@ -17,19 +17,11 @@ module Octopress
           "<link href='#{Filters.expand_url(File.join(dir, file))}' media='#{@media}' rel='stylesheet' type='text/css'>"
         end
 
-        def read
-          @compiled ||= compile
-        end
-
         def add
           unless file =~ /^_/
             Plugins.add_css_tag tag
-            Plugins.static_files << StaticFileContent.new(read, destination)
+            Plugins.static_files << StaticFileContent.new(compile, destination)
           end
-        end
-
-        def content
-          render
         end
 
         def ext
@@ -44,11 +36,15 @@ module Octopress
           is_disabled('sass', filename) || is_disabled('stylesheets', filename)
         end
 
-        private
-
         def compile
           PluginAssetPipeline.compile_sass(self)
         end
+
+        def destination
+          File.join(base, plugin.slug, file.sub(/@(.+?)\./,'.').sub(/s.ss/, 'css'))
+        end
+
+        private
 
         def user_load_path
           File.join(Octopress.site.source, Plugins.custom_dir, dir, File.dirname(file)).sub /\/\.$/, ''
@@ -73,9 +69,6 @@ module Octopress
           file.sub(ext, alt_ext)
         end
 
-        def destination
-          File.join(base, plugin.slug, file.sub(/@(.+?)\./,'.').sub(/s.ss/, 'css'))
-        end
       end
     end
   end

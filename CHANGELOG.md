@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.0 RC14 - 2014-08-11
+
+- Reworked asset methods
+
 ### 1.0.0 RC13 - 2014-08-11
 
 - Fixed an issue with asset tags

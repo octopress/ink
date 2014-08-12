@@ -13,7 +13,7 @@ module Octopress
       end
 
       def self.compile_sass(sass)
-        Sass.compile(sass.content, sass_configs(sass))
+        Sass.compile(sass.render, sass_configs(sass))
       end
 
       # Gets default Sass configuration hash from Jekyll
@@ -77,7 +77,7 @@ module Octopress
               header = "/* #{file.plugin.type.capitalize}: #{file.plugin.name} */"
               combined[media] ||= ''
               combined[media] << "#{header}\n" unless combined[media] =~ /#{file.plugin.name}/
-              combined[media] << file.read
+              combined[media] << (file.ext.match(/\.s[ca]ss/) ? file.compile : file.content)
             end
           end
 
@@ -139,11 +139,11 @@ module Octopress
           @combined_javascript
         else
           js = ""
-          javascripts.clone.each do |f| 
-            unless js =~ /#{f.plugin.name}/
-              js += "/* #{f.plugin.type.capitalize}: #{f.plugin.name} */\n" 
+          javascripts.clone.each do |file| 
+            unless js =~ /#{file.plugin.name}/
+              js += "/* #{file.plugin.type.capitalize}: #{file.plugin.name} */\n" 
             end
-            js += f.read
+            js += (file.ext.match(/.coffee/) ? file.compile : file.content)
           end
           @combined_javascript = js
         end

@@ -11,8 +11,6 @@ module Octopress
           super
         end
 
-        private
-
         def destination
           File.join(base, plugin.slug, file)
         end
