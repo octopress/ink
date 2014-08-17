@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.0 RC15 - 2014-08-17
+
+- Fixed an issue where Octopress would trigger site_payload too early. 
+
 ### 1.0.0 RC14 - 2014-08-11
 
 - Reworked asset methods
