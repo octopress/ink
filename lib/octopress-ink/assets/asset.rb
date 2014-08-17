@@ -129,7 +129,13 @@ module Octopress
 
         def payload
           unless @payload
-            @payload = Octopress.site.site_payload
+            @payload = Ink.payload
+            @payload['jekyll'] = {
+              'version' => Jekyll::VERSION,
+              'environment' => Jekyll.env
+            }
+            @payload['site'] = Octopress.site.config
+            @payload['site']['data'] = Octopress.site.site_data
             @payload['page'] = data
           end
 

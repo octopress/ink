@@ -57,6 +57,23 @@ module Octopress
       version << "Octopress Ink v#{Octopress::Ink::VERSION}"
     end
 
+    def self.payload
+      config = Plugins.config
+      ink_payload = {
+        'plugins'   => config['plugins'],
+        'theme'     => config['theme'],
+        'octopress' => {
+          'version' => version
+        }
+      }
+
+      if Octopress.config['docs_mode']
+        ink_payload['doc_pages'] = Ink::Plugins.doc_pages
+      end
+
+      ink_payload
+    end
+
     # Register a new plugin
     # 
     # plugin - A subclass of Plugin
