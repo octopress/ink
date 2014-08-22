@@ -86,6 +86,7 @@ module Octopress
       end
 
       def self.write_combined_stylesheet
+        @combined_stylesheets = nil
         css = combine_stylesheets
         css.keys.each do |media|
           contents = compile_css(css[media])
@@ -135,8 +136,8 @@ module Octopress
       end
 
       def self.combine_javascripts
-        if @combined_javascript
-          @combined_javascript
+        if @combined_javascripts
+          @combined_javascripts
         else
           js = ""
           javascripts.clone.each do |file| 
@@ -145,7 +146,7 @@ module Octopress
             end
             js += (file.ext.match(/.coffee/) ? file.compile : file.content)
           end
-          @combined_javascript = js
+          @combined_javascripts = js
         end
       end
 
@@ -154,6 +155,7 @@ module Octopress
       end
 
       def self.write_combined_javascript
+        @combined_javascripts = nil
         js = combine_javascripts
         unless js == ''
           if Octopress.config['compress_js']

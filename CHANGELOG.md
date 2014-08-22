@@ -1,8 +1,9 @@
 # Changelog
 
-### 1.0.0 RC16 - 2014-08-19
+### 1.0.0 RC16 - 2014-08-21
 
 - New: Access the url for a plugin's page from anywhere with `{{ theme.permalinks.page_name }}` or `{{ plugins.pugin-name.permalinks.page_name }}`.
+- Fix: Properly invalidate caches for `jekyll build --watch` support.
 
 ### 1.0.0 RC15 - 2014-08-17
 
