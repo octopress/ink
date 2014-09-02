@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.0 RC17 - 2014-09-01
+
+- Fixed issue where Sass required a `_plugins/[plugin]/stylesheets` directory.
+
 ### 1.0.0 RC16 - 2014-08-21
 
 - New: Access the url for a plugin's page from anywhere with `{{ theme.permalinks.page_name }}` or `{{ plugins.pugin-name.permalinks.page_name }}`.

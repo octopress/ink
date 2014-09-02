@@ -1,11 +1,11 @@
 -
-  name: Simple build
+  title: Simple build
   build: true
 -
-  name: Compare build
+  title: Compare build
   compare: _expected/site _site
 -
-  name: Should build with separate javascript and stylesheet files
+  title: Should build with separate javascript and stylesheet files
   build: true
   config:
     octopress: _combine_false.yml
@@ -13,7 +13,7 @@
     - _expected/combine_css_false _site/stylesheets
     - _expected/combine_js_false _site/javascripts
 -
-  name: Should compress stylesheets and javascripts
+  title: Should compress stylesheets and javascripts
   build: true
   config:
     octopress: _compress_false.yml
@@ -21,17 +21,17 @@
     - _expected/compress_false/stylesheets _site/stylesheets
     - _expected/compress_false/javascripts _site/javascripts
 -
-  name: Should copy all theme assets
+  title: Should copy all theme assets
   before: octopress ink copy theme --path _copy --force
   compare: _expected/copy_test _copy
   after: rm -rf _copy
 -
-  name: Should copy only pages and layouts
+  title: Should copy only pages and layouts
   before: octopress ink copy theme --layouts --pages --path _copy --force
   compare: _expected/copy_layouts_pages _copy
   after: rm -rf _copy
 -
-  name: Should create a plugins scaffold
+  title: Should create a plugins scaffold
   before: 
     - 'git config user.name > .git-config-user-name'
     - 'git config user.email > .git-config-user-email'

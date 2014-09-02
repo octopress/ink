@@ -29,7 +29,9 @@ module Octopress
         end
 
         def load_paths
-          [user_load_path, theme_load_path]
+          lp = [theme_load_path]
+          lp.unshift user_load_path if Dir.exists? user_load_path
+          lp
         end
 
         def disabled?

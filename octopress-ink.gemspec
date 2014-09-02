@@ -13,10 +13,10 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://github.com/octopress/ink"
   spec.license       = "MIT"
 
-  spec.files         = `git ls-files`.split($/)
+  spec.files         = `git ls-files -z`.split("\x0").grep(%r{(lib|assets)/})
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
-  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
+  
 
   spec.add_runtime_dependency "jekyll", "~> 2.0"
   spec.add_runtime_dependency "uglifier", "~> 2.5"
@@ -27,6 +27,8 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "rake"
   spec.add_development_dependency "bundler", "~> 1.6", "<= 1.6.2"
-  spec.add_development_dependency "pry-byebug"
   spec.add_development_dependency "clash"
+  if RUBY_VERSION >= "2"
+    spec.add_development_dependency "pry-byebug"
+  end
 end
