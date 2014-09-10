@@ -161,7 +161,7 @@ module Octopress
           config = <<-HERE
 name:          "#{@settings[:module_name]}",
 slug:          "#{@settings[:type] == 'theme' ? 'theme' : @settings[:name]}",
-assets_path:   File.expand_path(File.join(File.dirname(__FILE__), "#{assets_path}")),
+path:          File.expand_path(File.join(File.dirname(__FILE__), "../")),
 type:          "#{@settings[:type]}",
 version:       #{@settings[:version]},
 description:   "",

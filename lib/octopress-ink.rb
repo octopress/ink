@@ -33,6 +33,8 @@ module Octopress
     site
   end
 
+  autoload :Docs,                 'octopress-ink/docs/docs'
+
   module Ink
 
     autoload :Assets,               'octopress-ink/assets'
@@ -88,6 +90,10 @@ module Octopress
     #
     def self.add_plugin(options={})
       Plugins.register_plugin Plugin, options
+    end
+
+    def self.add_docs(options={})
+      Docs.register_docs options
     end
 
     def self.config

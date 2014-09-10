@@ -8,7 +8,7 @@ module Octopress
         type: 'plugin'
       }
 
-      attr_reader   :name, :type, :assets_path, :local, :website, :description, :version,
+      attr_reader   :name, :type, :path, :assets_path, :local, :website, :description, :version,
                     :layouts_dir, :stylesheets_dir, :javascripts_dir, :files_dir, :includes_dir, :images_dir,
                     :layouts, :includes, :images, :fonts, :files, :pages, :docs
 
@@ -39,6 +39,7 @@ module Octopress
         @files             = []
         @pages             = []
         @slug            ||= @name
+        @assets_path     ||= File.join(@path, 'assets')
       end
 
       def register
@@ -373,10 +374,18 @@ module Octopress
       end
 
       def add_docs
-        find_assets(@docs_dir).each do |asset|
-          unless asset =~ /^_/
-            @docs << Assets::DocPageAsset.new(self, @docs_dir, asset)
+        docs = find_assets(@docs_dir)
+        if docs
+          docs.each do |asset|
+            unless asset =~ /^_/
+              @docs << Octopress::Docs.add_plugin_doc(self, @docs_dir, asset)
+            end
           end
+        else
+          options = Octopress::Docs.plugin_options(self).merge({
+            base_dir: @path
+          })
+          @docs.concat Octopress::Docs.add_simple_docs(options)
         end
       end
 

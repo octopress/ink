@@ -5,7 +5,7 @@ module Octopress
         {
           name:        "Octopress Ink",
           slug:        "ink",
-          assets_path: Octopress::Ink.gem_dir('assets'),
+          path:        Octopress::Ink.gem_dir,
           version:     Octopress::Ink::VERSION,
           description: "Octopress Ink is a plugin framework for Jekyll",
           website:     "http://octopress.org/docs/ink"
