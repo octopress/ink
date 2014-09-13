@@ -9,13 +9,33 @@ Octopress Ink plugins should be distributed as Ruby gems. If you don't know how 
 
 This is the basic template for creating an Octopress Ink plugin.
 
-{% render ./_plugin-template.markdown %}
+```ruby
+require "octopress-ink"
+
+Octopress::Ink.add_plugin({
+  name:          "My Plugin",
+  slug:          "my-plugin",
+  assets_path:   File.expand_path(File.join(File.dirname(__FILE__), '../assets')),
+  type:          "plugin",
+  version:       MyPlugin::VERSION,
+  description:   "",
+  website:       ""
+})
+```
 
 ### Configuration Reference
 
 The configuration options are as follows:
 
-{% render ./_configuration.markdown %}
+| Configuration | Description |
+|:--------------|:------------|
+| name          | The display name for your plugin, e.g. "My Plugin" |
+| path          | Path to your plugin's root directory | 
+| slug          | Optional: The slug is how users will reference your plugin, (Default: sluggified name) |
+| type          | Optional: "plugin" or "theme" (Default: "plugin") |
+| version       | Optional: Version will be displayed with plugin info |
+| description   | Optional: Description will be displayed with plugin info |
+| website       | Optional: Website will be displayed with plugin info |
 
 ### Plugin Assets
 

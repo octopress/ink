@@ -11,11 +11,31 @@ Octopress Ink plugins are distributed as ruby gems so you'll need to create an a
 
 Creating an Octopress Ink plugin is very simple. Here's the standard template.
 
-{% render ./_plugin-template.markdown %}
+```ruby
+require "octopress-ink"
+
+Octopress::Ink.add_plugin({
+  name:          "My Plugin",
+  slug:          "my-plugin",
+  assets_path:   File.expand_path(File.join(File.dirname(__FILE__), '../assets')),
+  type:          "plugin",
+  version:       MyPlugin::VERSION,
+  description:   "",
+  website:       ""
+})
+```
 
 The configuration options are as follows.
 
-{% render ./_configuration.markdown %}
+| Configuration | Description |
+|:--------------|:------------|
+| name          | The display name for your plugin, e.g. "My Plugin" |
+| path          | Path to your plugin's root directory | 
+| slug          | Optional: The slug is how users will reference your plugin, (Default: sluggified name) |
+| type          | Optional: "plugin" or "theme" (Default: "plugin") |
+| version       | Optional: Version will be displayed with plugin info |
+| description   | Optional: Description will be displayed with plugin info |
+| website       | Optional: Website will be displayed with plugin info |
 
 Note: For themes, the slug will be set to `theme`. This makes it easy for users to work with any theme with a consistent slug name.
 
@@ -114,7 +134,7 @@ Note: Assets are copied at build time and assets will not overwrite an existing 
 | Asset directory |  Description                                    |
 |:----------------|:------------------------------------------------|
 | layouts         | Users can add layouts by setting `layout: plugin_slug:some_layout` in a page's YAML front-matter.     |
-| includes        | Includes are available to users by `{% raw %}{% include plugin_slug:some_file.html %}{% endraw %}`.   |
+| includes        | Includes are available to users by `{% include plugin_slug:some_file.html %}`.   |
 | pages           | `pages/feed.xml` is processed and copied to `_site/feed.xml` at build time. Setting `permalink: feed/` renders to `_site/feed/index.xml`. |
 | files           | `files/favicon.ico` is copied to `_site/favicon.ico`.                                                   |
 | fonts           | `wingdings.ttf` is copied to `_site/fonts/plugin_slug/wingdings.ttf`.                                 |

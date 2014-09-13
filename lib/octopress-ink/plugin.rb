@@ -234,9 +234,6 @@ module Octopress
           when 'pages'
             header = "pages:".ljust(36) + "urls"
             message += asset_list(assets, header)
-          when 'docs'
-            header = "documentation: /#{docs_base_path}/"
-            message += asset_list(assets, header)
           when 'config-file'
             message += asset_list(assets, 'default configuration')
           else
@@ -375,18 +372,21 @@ module Octopress
 
       def add_docs
         docs = find_assets(@docs_dir)
+        doc_options = Octopress::Docs.plugin_options(self).merge({
+          base_dir: @path
+        })
         if docs
           docs.each do |asset|
             unless asset =~ /^_/
               @docs << Octopress::Docs.add_plugin_doc(self, @docs_dir, asset)
             end
           end
+          @docs << Octopress::Docs.add_simple_doc('changelog', doc_options)
         else
-          options = Octopress::Docs.plugin_options(self).merge({
-            base_dir: @path
-          })
-          @docs.concat Octopress::Docs.add_simple_docs(options)
+          @docs << Octopress::Docs.add_simple_doc('readme', doc_options.merge({index: true}))
         end
+
+        @docs.compact!
       end
 
       def add_files

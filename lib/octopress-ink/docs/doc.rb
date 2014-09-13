@@ -33,11 +33,9 @@ module Octopress
         "  - #{permalink.ljust(35)}"
       end
 
-      private
-
       def page
         return @page if @page
-        @page = Page.new(Octopress.site, @base_dir, page_dir, file, {'path'=>base_path})
+        @page = Octopress::Ink::Page.new(Octopress.site, @base_dir, page_dir, file, {'path'=>base_path})
         @page.data['layout'] = 'docs'
         @page.data['plugin'] = { 
           'name' => @plugin_name, 
@@ -48,16 +46,18 @@ module Octopress
         @page
       end
 
+      private
+
       def permalink
         File.basename(file, ".*")
       end
 
       def read
-        #File.open(File.join(@base_dir, @file)).read
+        File.open(File.join(@base_dir, @file)).read
       end
 
       def plugin_slug
-        Filters.sluggify @plugin_type == 'theme' ? 'theme' : @slug
+        Filters.sluggify @plugin_type == 'theme' ? 'theme' : @plugin_slug
       end
 
       def base_path

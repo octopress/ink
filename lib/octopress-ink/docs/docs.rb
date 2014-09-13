@@ -31,6 +31,12 @@ module Octopress
       simple_pages
     end
 
+    def self.add_simple_doc(filename, options)
+      if file = select_first(options[:base_dir], filename)
+        add_doc_page(options.merge({file: file}))
+      end
+    end
+
     def self.add_doc_page(options)
       page = Docs::Doc.new(options)
       @pages << page
