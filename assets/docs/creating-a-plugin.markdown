@@ -164,11 +164,11 @@ Here's a example of a simple `default.html` layout.
 <html>
   <head>
     <title>{{ page.title }} - {{ site.title }}</title>
-    {% octopress_css %}
+    {% css_asset_tag %}
   </head>
   <body>
     {{ content }}
-    {% octopress_js %}
+    {% js_asset_tag %}
   </body>
 </html>
 ```

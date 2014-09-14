@@ -7,7 +7,7 @@ module Octopress
       def self.compile_css(content)
         configs = sass_converter.sass_configs
         configs[:syntax] = :scss
-        configs[:style] = :compressed if Octopress.config['compress_css']
+        configs[:style] ||= :compressed if Octopress.config['compress_css']
 
         Sass.compile(content, configs)
       end

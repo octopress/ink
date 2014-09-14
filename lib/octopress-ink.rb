@@ -33,8 +33,6 @@ module Octopress
     site
   end
 
-  autoload :Docs,                 'octopress-ink/docs/docs'
-
   module Ink
 
     autoload :Assets,               'octopress-ink/assets'
@@ -235,7 +233,6 @@ end
 
 Liquid::Template.register_tag('css_asset_tag', Octopress::Ink::Tags::StylesheetTag)
 Liquid::Template.register_tag('js_asset_tag', Octopress::Ink::Tags::JavascriptTag)
-Liquid::Template.register_tag('doc_url', Octopress::Ink::Tags::DocUrlTag)
 
 require 'octopress-ink/plugins/ink'
 

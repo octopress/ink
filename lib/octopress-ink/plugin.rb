@@ -68,7 +68,7 @@ module Octopress
       #
       # - returns: String, eg: docs/plugins/plugin-slug
       #
-      def docs_base_path
+      def docs_base_url
 
         if @type == 'theme'
           base = 'theme'
@@ -88,7 +88,7 @@ module Octopress
           @doc_pages ||= @docs.clone.map { |d|
             page = d.page
             title   = page.data['link_title'] || page.data['title'] || page.basename
-            url = File.join('/', docs_base_path, page.url.sub('index.html', ''))
+            url = File.join('/', docs_base_url, page.url.sub('index.html', ''))
 
             {
               'title' => title,
@@ -371,22 +371,18 @@ module Octopress
       end
 
       def add_docs
-        docs = find_assets(@docs_dir)
-        doc_options = Octopress::Docs.plugin_options(self).merge({
-          base_dir: @path
-        })
-        if docs
-          docs.each do |asset|
-            unless asset =~ /^_/
-              @docs << Octopress::Docs.add_plugin_doc(self, @docs_dir, asset)
-            end
+        if defined? Octopress::Docs
+          docs = find_assets(@docs_dir)
+          if docs
+            @docs.concat Octopress::Docs.add_plugin_docs(self, @docs_dir, docs)
+          else
+            @docs << Octopress::Docs.add_root_plugin_doc(self, 'readme', index: true)
           end
-          @docs << Octopress::Docs.add_simple_doc('changelog', doc_options)
-        else
-          @docs << Octopress::Docs.add_simple_doc('readme', doc_options.merge({index: true}))
-        end
 
-        @docs.compact!
+          @docs << Octopress::Docs.add_root_plugin_doc(self, 'changelog')
+
+          @docs.compact!
+        end
       end
 
       def add_files

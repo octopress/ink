@@ -12,7 +12,7 @@ module Octopress
         }
       end
 
-      def docs_base_path
+      def docs_base_url
         'docs/ink'
       end
 
