@@ -79,28 +79,6 @@ module Octopress
         File.join('docs', base)
       end
 
-      # Docs pages for easy listing in an index
-      #
-      # returns: Array of hashes including doc page title and url
-      #
-      def doc_pages
-        if !@docs.empty?
-          @doc_pages ||= @docs.clone.map { |d|
-            page = d.page
-            title   = page.data['link_title'] || page.data['title'] || page.basename
-            url = File.join('/', docs_base_url, page.url.sub('index.html', ''))
-
-            {
-              'title' => title,
-              'url' => url
-            }
-          }.sort_by { |i| 
-            # Sort by depth of url
-            i['url'].split('/').size
-          }
-        end
-      end
-
       # List info about plugin's assets
       #
       # returs: String filled with asset info
@@ -207,7 +185,6 @@ module Octopress
 
       def assets
         {
-          'docs'        => @docs,
           'layouts'     => @layouts,
           'includes'    => @includes,
           'pages'       => @pages, 
@@ -262,6 +239,7 @@ module Octopress
         if @description && !@description.empty?
           message = "#{message.ljust(30)} - #{@description}"
         end
+        message += "Documentation: /#{docs_base_url}"
         message += "\n"
       end
 
@@ -375,10 +353,11 @@ module Octopress
           docs = find_assets(@docs_dir)
           if docs
             @docs.concat Octopress::Docs.add_plugin_docs(self, @docs_dir, docs)
-          else
-            @docs << Octopress::Docs.add_root_plugin_doc(self, 'readme', index: true)
           end
 
+          has_index = !@docs.select {|d| d.file =~ /^index/ }.empty?
+
+          @docs << Octopress::Docs.add_root_plugin_doc(self, 'readme', index: !has_index)
           @docs << Octopress::Docs.add_root_plugin_doc(self, 'changelog')
 
           @docs.compact!

@@ -101,23 +101,6 @@ module Octopress
         end
       end
 
-      # Docs pages for each plugin
-      #
-      # returns: Array of plugin doc pages
-      #
-      def self.doc_pages
-        plugin_docs = {}
-        plugins.clone.map do |p|
-          if pages = p.doc_pages
-            plugin_docs[p.slug] = {
-              "name" => p.name,
-              "pages" => pages
-            }
-          end
-        end
-        plugin_docs
-      end
-
       # Inclue partials from plugins
       #
       def self.include(name, file)

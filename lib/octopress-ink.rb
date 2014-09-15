@@ -67,10 +67,6 @@ module Octopress
         }
       }
 
-      if Octopress.config['docs_mode']
-        ink_payload['doc_pages'] = Ink::Plugins.doc_pages
-      end
-
       ink_payload
     end
 
@@ -236,4 +232,4 @@ Liquid::Template.register_tag('js_asset_tag', Octopress::Ink::Tags::JavascriptTa
 
 require 'octopress-ink/plugins/ink'
 
-Octopress::Ink.register_plugin(Octopress::Ink::InkPlugin)
+#Octopress::Ink.register_plugin(Octopress::Ink::InkPlugin)
