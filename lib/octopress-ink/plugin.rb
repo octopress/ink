@@ -10,7 +10,7 @@ module Octopress
 
       attr_reader   :name, :type, :path, :assets_path, :local, :website, :description, :version,
                     :layouts_dir, :stylesheets_dir, :javascripts_dir, :files_dir, :includes_dir, :images_dir,
-                    :layouts, :includes, :images, :fonts, :files, :pages, :docs
+                    :layouts, :includes, :images, :fonts, :files, :pages, :docs, :docs_url
 
       def initialize(options)
         options = Jekyll::Utils.symbolize_hash_keys(options || configuration)
@@ -40,9 +40,11 @@ module Octopress
         @pages             = []
         @slug            ||= @name
         @assets_path     ||= File.join(@path, 'assets')
+        @docs_url        ||= docs_url
       end
 
       def register
+
         unless @assets_path.nil?
           disable_assets
           add_assets
@@ -68,15 +70,12 @@ module Octopress
       #
       # - returns: String, eg: docs/plugins/plugin-slug
       #
-      def docs_base_url
-
+      def docs_url
         if @type == 'theme'
-          base = 'theme'
+          File.join('docs', 'theme')
         else
-          base = File.join('plugins', slug)
+          File.join('docs', 'plugins', slug)
         end
-
-        File.join('docs', base)
       end
 
       # List info about plugin's assets
@@ -239,7 +238,6 @@ module Octopress
         if @description && !@description.empty?
           message = "#{message.ljust(30)} - #{@description}"
         end
-        message += "Documentation: /#{docs_base_url}"
         message += "\n"
       end
 
@@ -253,6 +251,7 @@ module Octopress
         name  = name
         message = name
         message += "\nSlug: #{slug}"
+        message += "\nDocumentation: /#{@docs_url}"
 
         if @description && !@description.empty?
           message += "\n#{@description}"
@@ -349,19 +348,7 @@ module Octopress
       end
 
       def add_docs
-        if defined? Octopress::Docs
-          docs = find_assets(@docs_dir)
-          if docs
-            @docs.concat Octopress::Docs.add_plugin_docs(self, @docs_dir, docs)
-          end
-
-          has_index = !@docs.select {|d| d.file =~ /^index/ }.empty?
-
-          @docs << Octopress::Docs.add_root_plugin_doc(self, 'readme', index: !has_index)
-          @docs << Octopress::Docs.add_root_plugin_doc(self, 'changelog')
-
-          @docs.compact!
-        end
+        @docs.concat(Octopress::Docs.add_plugin_docs(self)).compact!
       end
 
       def add_files

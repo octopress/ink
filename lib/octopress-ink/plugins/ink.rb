@@ -8,20 +8,9 @@ module Octopress
           path:        Octopress::Ink.gem_dir,
           version:     Octopress::Ink::VERSION,
           description: "Octopress Ink is a plugin framework for Jekyll",
-          website:     "http://octopress.org/docs/ink"
+          website:     "http://octopress.org/docs/ink",
+          docs_url:    "docs/ink"
         }
-      end
-
-      def docs_base_url
-        'docs/ink'
-      end
-
-      def info(options)
-        if options['docs']
-          super
-        else
-          ''
-        end
       end
     end
   end

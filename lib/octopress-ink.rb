@@ -232,4 +232,4 @@ Liquid::Template.register_tag('js_asset_tag', Octopress::Ink::Tags::JavascriptTa
 
 require 'octopress-ink/plugins/ink'
 
-#Octopress::Ink.register_plugin(Octopress::Ink::InkPlugin)
+Octopress::Ink.register_plugin(Octopress::Ink::InkPlugin)

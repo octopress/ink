@@ -7,3 +7,5 @@ timezone: America/Chicago
 markdown: redcarpet
 name: Your New Jekyll Site
 source: source
+gems:
+  - octopress-ink
