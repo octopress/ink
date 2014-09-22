@@ -6,7 +6,9 @@ TODO: Write a gem description
 
 Add this line to your application's Gemfile:
 
-    gem 'test-theme'
+```ruby
+gem 'test-theme'
+```
 
 And then execute:
 
