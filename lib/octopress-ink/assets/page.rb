@@ -21,7 +21,7 @@ module Octopress
         # Add page to Jekyll pages if no other page has a conflicting destination
         #
         def add
-          if page.url && !Octopress.config['docs_mode'] && !find_page(page)
+          if page.url && !find_page(page)
             Octopress.site.pages << page
             plugin.config['permalinks'] ||= {}
             plugin.config['permalinks'][File.basename(filename, '.*')] ||= page.url

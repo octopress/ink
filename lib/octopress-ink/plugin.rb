@@ -48,15 +48,19 @@ module Octopress
         unless @assets_path.nil?
           disable_assets
           add_assets
-          add_layouts
-          add_includes
-          add_javascripts
-          add_fonts
           add_images
-          add_docs
-          add_files
-          add_pages
-          add_stylesheets
+
+          if Octopress.config['docs_mode'] 
+            add_docs
+          elsif !Octopress.config['docs_site']
+            add_includes
+            add_layouts
+            add_javascripts
+            add_fonts
+            add_files
+            add_pages
+            add_stylesheets
+          end
         end
       end
 
