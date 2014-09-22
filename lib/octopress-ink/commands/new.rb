@@ -43,6 +43,8 @@ module Octopress
             @settings = gem_settings(path_to_gem)
             @settings[:type] = @options['theme'] ? 'theme' : 'plugin'
 
+            fix_spec_files
+            add_to_gitignore
             add_dependency
             add_plugin
             add_assets
@@ -84,6 +86,24 @@ module Octopress
           new
         end
 
+        def self.fix_spec_files
+          @settings[:gemspec].sub! /(#{@settings[:spec_var]}\.files\s+=\s+)(.+)$/ do
+            $1+"`git ls-files -z`.split(\"\\x0\").grep(/^(bin\/|lib\/|assets\/|demo\/|changelog|readme|license)/i)"
+          end.sub!(/\s*#{@settings[:spec_var]}\.test_files.+$/, '') 
+        end
+
+        def self.add_to_gitignore
+          path = File.join @settings[:path], '.gitignore'
+          content = File.open(path).read << <<-HERE
+.*-cache
+_site
+          HERE
+
+          File.open(path, 'w+') do |f|
+            f.write(content)
+          end
+        end
+
         # Create a new gem with Bundle's gem command
         #
         def self.create_gem(name)
@@ -115,7 +135,7 @@ module Octopress
           minor_version = VERSION.scan(/\d+\.\d/)[0]
           current_patch_version = VERSION.sub(/\.(alpha|rc).*/i, '')
           d  = "#{@settings[:spec_var]}.add_development_dependency \"octopress\"\n\n"
-          d += "#{@settings[:spec_var]}.add_runtime_dependency \"octopress-ink\", \"~> #{minor_version}\", \">= #{current_patch_version}\"\n"
+          d += "#{@settings[:spec_var]}.add_runtime_dependency \"octopress-ink\", \"~> #{minor_version}\"\n"
         end
 
         # Add Octopress Ink plugin to core module file
