@@ -28,9 +28,12 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "rake"
   # FIX TESTS FOR THIS VERSION
-  spec.add_development_dependency "bundler", "~> 1.7"
   spec.add_development_dependency "clash"
+
   if RUBY_VERSION >= "2"
+    spec.add_development_dependency "bundler", "~> 1.7"
     spec.add_development_dependency "pry-byebug"
+  else
+    spec.add_development_dependency "bundler", "~> 1.6"
   end
 end
