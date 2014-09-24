@@ -34,7 +34,6 @@ module Octopress
         @coffee            = []
         @images            = []
         @sass              = []
-        @docs              = []
         @fonts             = []
         @files             = []
         @pages             = []
@@ -109,7 +108,6 @@ module Octopress
         copied = []
 
         select_assets(options).each do |name, assets|
-          next if name == 'docs'
           assets.each { |a| copied << a.copy(path) }
         end
 
@@ -255,7 +253,6 @@ module Octopress
         name  = name
         message = name
         message += "\nSlug: #{slug}"
-        message += "\nDocumentation: /#{@docs_url}"
 
         if @description && !@description.empty?
           message += "\n#{@description}"
@@ -352,7 +349,7 @@ module Octopress
       end
 
       def add_docs
-        @docs.concat(Octopress::Docs.add_plugin_docs(self)).compact!
+        Octopress::Docs.add_plugin_docs(self)
       end
 
       def add_files
