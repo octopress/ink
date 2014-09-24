@@ -5,9 +5,9 @@ require 'digest/md5'
 require 'octopress'
 require 'octopress-hooks'
 require 'octopress-filters'
+require 'octopress-docs'
 
 require 'octopress-ink/version'
-
 require 'octopress-ink/configuration'
 require 'octopress-ink/jekyll/hooks'
 
@@ -230,6 +230,9 @@ end
 Liquid::Template.register_tag('css_asset_tag', Octopress::Ink::Tags::StylesheetTag)
 Liquid::Template.register_tag('js_asset_tag', Octopress::Ink::Tags::JavascriptTag)
 
-require 'octopress-ink/plugins/ink'
-
-Octopress::Ink.register_plugin(Octopress::Ink::InkPlugin)
+Octopress::Docs.add({
+  name:        "Octopress Ink",
+  slug:        "ink",
+  dir:         File.expand_path(File.join(File.dirname(__FILE__), "../../../")),
+  base_url:    "docs/ink"
+})
