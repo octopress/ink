@@ -233,6 +233,6 @@ Liquid::Template.register_tag('js_asset_tag', Octopress::Ink::Tags::JavascriptTa
 Octopress::Docs.add({
   name:        "Octopress Ink",
   slug:        "ink",
-  dir:         File.expand_path(File.join(File.dirname(__FILE__), "../../../")),
+  dir:         File.expand_path(File.join(File.dirname(__FILE__), "../")),
   base_url:    "docs/ink"
 })
