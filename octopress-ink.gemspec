@@ -27,7 +27,6 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "octopress-docs"
 
   spec.add_development_dependency "rake"
-  # FIX TESTS FOR THIS VERSION
   spec.add_development_dependency "clash"
 
   if RUBY_VERSION >= "2"
