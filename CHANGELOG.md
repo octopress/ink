@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.0 RC18 - 2014-10-07
+
+- Improved integration with octopress-docs for displaying plugin documentation.
+
 ### 1.0.0 RC17 - 2014-09-01
 
 - Fixed issue where Sass required a `_plugins/[plugin]/stylesheets` directory.
