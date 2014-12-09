@@ -8,7 +8,7 @@ module Octopress
         type: 'plugin'
       }
 
-      attr_reader   :name, :type, :path, :assets_path, :local, :website, :description, :version,
+      attr_reader   :name, :type, :path, :assets_path, :local, :website, :description, :version, :source_url, :website,
                     :layouts_dir, :stylesheets_dir, :javascripts_dir, :files_dir, :includes_dir, :images_dir,
                     :layouts, :includes, :images, :fonts, :files, :pages, :docs, :docs_url
 
