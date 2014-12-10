@@ -49,9 +49,9 @@ module Octopress
           add_assets
           add_images
 
-          if Octopress.config['docs_mode'] 
+          if ENV['OCTOPRESS_DOCS']
             add_docs
-          elsif !Octopress.config['docs_site']
+          else
             add_includes
             add_layouts
             add_javascripts

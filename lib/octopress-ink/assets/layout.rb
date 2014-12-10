@@ -16,7 +16,7 @@ module Octopress
             dir = plugin_dir
           end
 
-          Octopress.site.layouts[name] = Jekyll::Layout.new(Octopress.site, dir, file)
+          Octopress.site.layouts[name] = Ink::Layout.new(Octopress.site, dir, file)
         end
 
         def name

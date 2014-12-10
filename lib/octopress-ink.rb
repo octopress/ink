@@ -12,10 +12,6 @@ require 'octopress-ink/configuration'
 require 'octopress-ink/jekyll/hooks'
 
 module Octopress
-  def self.site(options={})
-    @site ||= init_site(options)
-  end
-
   def self.site=(site)
     # Octopress historically used site.title
     # This allows theme developers to expect site.name
@@ -26,17 +22,12 @@ module Octopress
     @site = site
   end
 
-  def self.init_site(options)
-    Jekyll.logger.log_level = :error
-    site = Jekyll::Site.new(Jekyll.configuration(options))
-    Jekyll.logger.log_level = :info
-    site
-  end
-
   module Ink
 
     autoload :Assets,               'octopress-ink/assets'
+    autoload :Convertible,          'octopress-ink/jekyll/convertible'
     autoload :Page,                 'octopress-ink/jekyll/page'
+    autoload :Layout,               'octopress-ink/jekyll/layout'
     autoload :StaticFile,           'octopress-ink/jekyll/static_file'
     autoload :StaticFileContent,    'octopress-ink/jekyll/static_file_content'
     autoload :Plugins,              'octopress-ink/plugins'

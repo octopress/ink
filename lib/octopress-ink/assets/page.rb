@@ -40,6 +40,7 @@ module Octopress
 
         def page
           unless @page 
+
             @page = Page.new(Octopress.site, source_dir, page_dir, file, plugin.config)
           end
           @page
