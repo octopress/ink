@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.0 RC19 - 2014-12-09
+
+- Fixes to be compatible with the latest versions of Octopress and Jekyll.
+
 ### 1.0.0 RC18 - 2014-10-07
 
 - Improved integration with octopress-docs for displaying plugin documentation.
