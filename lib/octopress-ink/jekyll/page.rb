@@ -1,7 +1,7 @@
 module Octopress
   module Ink
     class Page < Jekyll::Page
-      include Jekyll::Convertible
+      include Ink::Convertible
 
       # Purpose: Configs can override a page's permalink
       #

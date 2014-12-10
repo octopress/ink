@@ -8,7 +8,9 @@
   title: Should build with separate javascript and stylesheet files
   build: true
   config:
-    octopress: _combine_false.yml
+    jekyll: 
+      - _config.yml
+      - _combine_false.yml
   compare:
     - _expected/combine_css_false _site/stylesheets
     - _expected/combine_js_false _site/javascripts
@@ -16,7 +18,9 @@
   title: Should compress stylesheets and javascripts
   build: true
   config:
-    octopress: _compress_false.yml
+    jekyll: 
+      - _config.yml
+      - _compress_false.yml
   compare:
     - _expected/compress_false/stylesheets _site/stylesheets
     - _expected/compress_false/javascripts _site/javascripts
