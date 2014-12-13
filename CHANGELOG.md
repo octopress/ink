@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.0 RC20 - 2014-12-13
+
+- Improvements to scaffold and docs.
+
 ### 1.0.0 RC19 - 2014-12-09
 
 - Fixes to be compatible with the latest versions of Octopress and Jekyll.
