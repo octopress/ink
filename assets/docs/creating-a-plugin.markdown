@@ -17,11 +17,14 @@ require "octopress-ink"
 Octopress::Ink.add_plugin({
   name:          "My Plugin",
   slug:          "my-plugin",
-  assets_path:   File.expand_path(File.join(File.dirname(__FILE__), '../assets')),
+  path:          File.expand_path(File.join(File.dirname(__FILE__), "../")),
   type:          "plugin",
+
+  # Metadata which is displayed with plugin info
   version:       MyPlugin::VERSION,
-  description:   "",
-  website:       ""
+  description:   "My plugin does awesome stuff",
+  source_url:    "https://github.com/user/project",
+  website:       ""                                
 })
 ```
 
@@ -36,6 +39,7 @@ The configuration options are as follows.
 | version       | Optional: Version will be displayed with plugin info |
 | description   | Optional: Description will be displayed with plugin info |
 | website       | Optional: Website will be displayed with plugin info |
+| source_url    | Optional: Direct people to the GitHub project (or elsewhere) |
 
 Note: For themes, the slug will be set to `theme`. This makes it easy for users to work with any theme with a consistent slug name.
 
@@ -141,7 +145,7 @@ Note: Assets are copied at build time and assets will not overwrite an existing 
 | images          | `cat.gif` is copied to `_site/images/plugin_slug/cat.gif`.                                            |
 | javascripts     | `boom.js` is combined with all plugin javascripts into a single fingerprinted file.                     |
 | stylesheets     | `theme.scss` and `print.css` are combined with all plugin stylesheets into a single fingerprinted file. |
-| docs            | Add documentation files for your plugin here. Users will be able to read it by running `octopress docs`. [read more]({% doc_url plugin-documentation %}) |
+| docs            | Add documentation files for your plugin here. Users will be able to read it by running `octopress docs`. |
 
 
 ### Layouts

@@ -12,16 +12,6 @@ require 'octopress-ink/configuration'
 require 'octopress-ink/jekyll/hooks'
 
 module Octopress
-  def self.site=(site)
-    # Octopress historically used site.title
-    # This allows theme developers to expect site.name
-    # in consistancy with Jekyll's scaffold config 
-    
-    site.config['name'] ||= site.config['title']
-
-    @site = site
-  end
-
   module Ink
 
     autoload :Assets,               'octopress-ink/assets'
@@ -223,7 +213,9 @@ Liquid::Template.register_tag('js_asset_tag', Octopress::Ink::Tags::JavascriptTa
 
 Octopress::Docs.add({
   name:        "Octopress Ink",
+  description: "A framework for creating Jekyll quality themes and plugins",
   slug:        "ink",
-  dir:         File.expand_path(File.join(File.dirname(__FILE__), "../")),
+  path:        File.expand_path(File.join(File.dirname(__FILE__), "../")),
+  source_url:  "https://github.com/octopress/ink",
   base_url:    "docs/ink"
 })

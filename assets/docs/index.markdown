@@ -11,7 +11,7 @@ Octopress Ink helps developers create plugins and themes which integrate seamles
 - Customization is simple and consistent.
 - Easily view documentation for your unique setup, even offline.
 
-[Using Octopress Ink plugins &rarr;]({% doc_url for-users %})
+[Using Octopress Ink plugins &rarr;](#add-a-link)
 
 #### Benefits For Developers
 
@@ -19,7 +19,7 @@ Octopress Ink helps developers create plugins and themes which integrate seamles
 - Easily convert plugins you've already written.
 - Plugins automatically integrate with the Octopress CLI.
 
-[Developing with Octopress Ink &rarr;]({% doc_url for-developers %})
+[Developing with Octopress Ink &rarr;](#add-a-link)
 
 #### Shipping assets
 - Asset pipeline

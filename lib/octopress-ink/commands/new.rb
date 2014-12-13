@@ -168,7 +168,7 @@ _site
         def self.add_simple_plugin(mod)
           mod  = "#{@settings[:require_version]}\n"
           mod += "require 'octopress-ink'\n"
-          mod += "\nOctopress::Ink.add_plugin({\n#{indent(plugin_config)}\n})"
+          mod += "\nOctopress::Ink.add_plugin({\n#{indent(plugin_config)}\n})\n"
         end
 
 
@@ -184,8 +184,9 @@ slug:          "#{@settings[:type] == 'theme' ? 'theme' : @settings[:name]}",
 path:          File.expand_path(File.join(File.dirname(__FILE__), "../")),
 type:          "#{@settings[:type]}",
 version:       #{@settings[:version]},
-description:   "",
-website:       ""
+description:   "",                                # What does your theme/plugin do?
+source_url:    "https://github.com/user/project", # <- Update info
+website:       ""                                 # Optional project website
           HERE
           config.rstrip
         end

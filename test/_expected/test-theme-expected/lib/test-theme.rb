@@ -7,6 +7,7 @@ Octopress::Ink.add_plugin({
   path:          File.expand_path(File.join(File.dirname(__FILE__), "../")),
   type:          "theme",
   version:       TestTheme::VERSION,
-  description:   "",
-  website:       ""
+  description:   "",                                # What does your theme/plugin do?
+  source_url:    "https://github.com/user/project", # <- Update info
+  website:       ""                                 # Optional project website
 })
