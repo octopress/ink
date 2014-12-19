@@ -177,7 +177,7 @@ Here's a example of a simple `default.html` layout.
 </html>
 ```
 
-You'll notice the `{% octopress_css %}` and `{% octopress_js %}` tags. These are special tags that come with Octopress Ink and output the `<link>` and `<script>` tags from the Octopress Ink asset pipeline.
+You'll notice the `{% css_asset_tag %}` and `{% js_asset_tag %}` tags. These are special tags that come with Octopress Ink and output the `<link>` and `<script>` tags from the Octopress Ink asset pipeline.
 
 A `page.html` or `post.html` might look like this:
 
