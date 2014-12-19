@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.0 RC21 - 2014-12-13
+
+- Documentation fixes
+
 ### 1.0.0 RC20 - 2014-12-13
 
 - Improvements to scaffold and docs.
