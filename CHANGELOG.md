@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.0 RC22 - 2015-01-01
+
+- Moved Asset pipeline configuration under `asset_pipline` key in _config.yml 
+
 ### 1.0.0 RC21 - 2014-12-13
 
 - Documentation fixes

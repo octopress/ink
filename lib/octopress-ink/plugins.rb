@@ -117,7 +117,7 @@ module Octopress
       # Copy/Generate Stylesheets
       #
       def self.add_stylesheets
-        if Ink.configuration['combine_css']
+        if Ink.configuration['asset_pipeline']['combine_css']
           PluginAssetPipeline.write_combined_stylesheet
         else
           add_assets(%w{css sass})
@@ -127,7 +127,7 @@ module Octopress
       # Copy/Generate Javascripts
       #
       def self.add_javascripts
-        if Ink.configuration['combine_js']
+        if Ink.configuration['asset_pipeline']['combine_js']
           PluginAssetPipeline.write_combined_javascript
         else
           add_assets(%w{js coffee})
@@ -135,7 +135,7 @@ module Octopress
       end
 
       def self.css_tags
-        if Ink.configuration['combine_css']
+        if Ink.configuration['asset_pipeline']['combine_css']
           PluginAssetPipeline.combined_stylesheet_tag
         else
           @css_tags.join('')
@@ -143,7 +143,7 @@ module Octopress
       end
 
       def self.js_tags
-        if Ink.configuration['combine_js']
+        if Ink.configuration['asset_pipeline']['combine_js']
           PluginAssetPipeline.combined_javascript_tag
         else
           @js_tags.join('')

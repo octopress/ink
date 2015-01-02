@@ -1,2 +1,3 @@
-compress_css: false
-compress_js: false
+asset_pipeline:
+  compress_css: false
+  compress_js: false

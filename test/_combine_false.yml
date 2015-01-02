@@ -1,4 +1,5 @@
-combine_css: false
-combine_js: false
-compress_css: false
-uglify_js: false
+asset_pipeline:
+  combine_css: false
+  combine_js: false
+  compress_css: false
+  uglify_js: false
