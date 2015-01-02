@@ -5,7 +5,6 @@ require 'digest/md5'
 require 'octopress'
 require 'octopress-hooks'
 require 'octopress-filters'
-require 'octopress-docs'
 
 require 'octopress-ink/version'
 require 'octopress-ink/configuration'
@@ -30,6 +29,8 @@ module Octopress
       require 'octopress-ink/commands'
     end
 
+    @load_plugin_assets = true
+
     def self.version
       version = "Jekyll v#{Jekyll::VERSION}, "
       if defined? Octopress::VERSION
@@ -49,6 +50,14 @@ module Octopress
       }
 
       ink_payload
+    end
+
+    def self.enabled?
+      @load_plugin_assets
+    end
+
+    def self.load_plugin_assets=(setting)
+      @load_plguin_assets = setting
     end
 
     # Register a new plugin
@@ -217,5 +226,4 @@ Octopress::Docs.add({
   slug:        "ink",
   path:        File.expand_path(File.join(File.dirname(__FILE__), "../")),
   source_url:  "https://github.com/octopress/ink",
-  base_url:    "docs/ink"
 })

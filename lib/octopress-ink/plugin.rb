@@ -10,7 +10,7 @@ module Octopress
 
       attr_reader   :name, :type, :path, :assets_path, :local, :website, :description, :version, :source_url, :website,
                     :layouts_dir, :stylesheets_dir, :javascripts_dir, :files_dir, :includes_dir, :images_dir,
-                    :layouts, :includes, :images, :fonts, :files, :pages, :docs, :docs_url
+                    :layouts, :includes, :images, :fonts, :files, :pages, :docs
 
       def initialize(options)
         options = Jekyll::Utils.symbolize_hash_keys(options || configuration)
@@ -39,7 +39,6 @@ module Octopress
         @pages             = []
         @slug            ||= @name
         @assets_path     ||= File.join(@path, 'assets')
-        @docs_url        ||= docs_url
       end
 
       def register
@@ -49,9 +48,11 @@ module Octopress
           add_assets
           add_images
 
-          if ENV['OCTOPRESS_DOCS']
+          if Octopress::Docs.enabled?
             add_docs
-          else
+          end
+
+          if Octopress::Ink.enabled?
             add_includes
             add_layouts
             add_javascripts
@@ -67,18 +68,6 @@ module Octopress
       #
       def slug
         Filters.sluggify @type == 'theme' ? 'theme' : @slug
-      end
-
-      # Path where doc pages will be hosted
-      #
-      # - returns: String, eg: docs/plugins/plugin-slug
-      #
-      def docs_url
-        if @type == 'theme'
-          File.join('docs', 'theme')
-        else
-          File.join('docs', 'plugins', slug)
-        end
       end
 
       # List info about plugin's assets
