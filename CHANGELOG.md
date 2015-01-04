@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.0 RC24 - 2015-01-04
+
+- Added gem name metadata to plugin scaffold
+
 ### 1.0.0 RC23 - 2015-01-02
 
 - Reworked integration with Octopress Docs

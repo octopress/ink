@@ -181,6 +181,7 @@ _site
           config = <<-HERE
 name:          "#{@settings[:module_name]}",
 slug:          "#{@settings[:type] == 'theme' ? 'theme' : @settings[:name]}",
+gem:           "#{@settings[:name]}",
 path:          File.expand_path(File.join(File.dirname(__FILE__), "../")),
 type:          "#{@settings[:type]}",
 version:       #{@settings[:version]},

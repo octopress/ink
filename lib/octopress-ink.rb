@@ -222,6 +222,8 @@ Liquid::Template.register_tag('js_asset_tag', Octopress::Ink::Tags::JavascriptTa
 
 Octopress::Docs.add({
   name:        "Octopress Ink",
+  gem:         "octopress-ink",
+  version:     Octopress::Ink::VERSION,
   description: "A framework for creating Jekyll quality themes and plugins",
   slug:        "ink",
   path:        File.expand_path(File.join(File.dirname(__FILE__), "../")),
