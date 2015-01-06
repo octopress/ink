@@ -5,6 +5,7 @@ require 'digest/md5'
 require 'octopress'
 require 'octopress-hooks'
 require 'octopress-filters'
+require 'octopress-include-tag'
 
 require 'octopress-ink/version'
 require 'octopress-ink/configuration'
