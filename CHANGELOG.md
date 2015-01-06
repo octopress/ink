@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.0 RC25 - 2015-01-06
+
+- Now loading octopress-include-tag properly.
+
 ### 1.0.0 RC24 - 2015-01-04
 
 - Added gem name metadata to plugin scaffold
