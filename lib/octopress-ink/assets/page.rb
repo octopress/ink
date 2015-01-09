@@ -29,7 +29,7 @@ module Octopress
         end
 
         def find_page(page)
-          site_dir = Octopress.site.config['destination']
+          site_dir = Octopress.site.dest
           dest = page.destination(site_dir)
 
           Octopress.site.pages.clone.each do |p|

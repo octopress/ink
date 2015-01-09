@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.0 RC26 - 2015-01-09
+
+- Fixed: Issue where setting destination config would break Jekyll cleaner.
+
 ### 1.0.0 RC25 - 2015-01-06
 
 - Now loading octopress-include-tag properly.

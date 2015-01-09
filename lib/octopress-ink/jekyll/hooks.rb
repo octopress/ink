@@ -14,7 +14,7 @@ module Octopress
 
       def post_write(site)
         Octopress::Ink::Plugins.static_files.each do |f| 
-          f.write(site.config['destination'])
+          f.write(site.dest)
         end
       end
     end
