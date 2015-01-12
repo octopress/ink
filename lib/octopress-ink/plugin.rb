@@ -378,7 +378,9 @@ module Octopress
 
       def glob_assets(dir)
         return [] unless Dir.exist? dir
-        Find.find(dir).to_a.reject {|f| File.directory? f }
+        Find.find(dir).to_a.reject do |file| 
+          File.directory?(file) || File.basename(file) =~ /^\./
+        end
       end
 
       def css

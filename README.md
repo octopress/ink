@@ -25,11 +25,6 @@ Or install it yourself as:
 
     $ gem install octopress-ink
 
-## Usage
-
-This is still evolving quite a bit. If you want to use it, you
-should probably talk to me directly.
-
 ## Contributing
 
 For right now. Talk to me directly. I'd love help thinking

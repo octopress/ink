@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.0 RC26 - 2015-01-12
+
+- Fixed: Invisible "dot" files are now ignored as plugin assets. [#32](https://github.com/octopress/ink/issues/32)
+
 ### 1.0.0 RC26 - 2015-01-09
 
 - Fixed: Issue where setting destination config would break Jekyll cleaner.
