@@ -101,7 +101,7 @@ module Octopress
       def self.stylesheet_fingerprint(media)
         @stylesheet_fingerprint ||= {}
         @stylesheet_fingerprint[media] ||=
-          fingerprint(stylesheets[media].clone.map {|f| f.path })
+          fingerprint(stylesheets[media].clone.map(&:path))
       end
 
       # Get all plugins stylesheets
@@ -127,27 +127,35 @@ module Octopress
 
       def self.javascripts
         @javascripts ||=
-          Plugins.plugins.clone.map { |p| p.javascripts }.flatten
+          Plugins.plugins.clone.map(&:javascripts).flatten
+      end
+
+      def self.no_compress_js
+        @no_compress_js ||= Plugins.plugins.clone.map(&:no_compress_js).flatten
       end
 
       def self.javascript_fingerprint
         @javascript_fingerprint ||=
-          fingerprint(javascripts.clone.map {|f| f.path })
+          fingerprint(javascripts.clone.concat(no_compress_js).map(&:path))
       end
 
       def self.combine_javascripts
-        if @combined_javascripts
-          @combined_javascripts
-        else
-          js = ""
-          javascripts.clone.each do |file| 
-            unless js =~ /#{file.plugin.name}/
-              js += "/* #{file.plugin.type.capitalize}: #{file.plugin.name} */\n" 
-            end
-            js += (file.ext.match(/.coffee/) ? file.compile : file.content)
+        @combined_javascripts ||= combine_js(javascripts)
+      end
+
+      def self.combine_no_compress_javascripts
+        @combined_no_compress_javascripts ||= combine_js(no_compress_js)
+      end
+
+      def self.combine_js(files)
+        js = ''
+        files.each do |file|
+          unless js =~ /#{file.plugin.name}/
+            js << "/* #{file.plugin.type.capitalize}: #{file.plugin.name} */\n" 
           end
-          @combined_javascripts = js
+          js << (file.ext.match(/.coffee/) ? file.compile : file.content)
         end
+        (js == '' ? false : js)
       end
 
       def self.combined_javascript_path
@@ -156,12 +164,12 @@ module Octopress
 
       def self.write_combined_javascript
         @combined_javascripts = nil
-        js = combine_javascripts
-        unless js == ''
+        if js = combine_javascripts
           if Ink.configuration['asset_pipeline']['compress_js']
             settings = Jekyll::Utils.symbolize_hash_keys(Ink.configuration['asset_pipeline']['uglifier'])
             js = Uglifier.new(settings).compile(js)
           end
+          js = combine_no_compress_javascripts << js
           write_files(js, combined_javascript_path)
         end
       end

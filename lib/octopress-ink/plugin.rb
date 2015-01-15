@@ -31,6 +31,7 @@ module Octopress
         @includes          = []
         @css               = []
         @js                = []
+        @no_compress_js    = []
         @coffee            = []
         @images            = []
         @sass              = []
@@ -111,6 +112,10 @@ module Octopress
 
       def javascripts
         js.clone.concat coffee
+      end
+
+      def no_compress_js
+        @no_compress_js.reject(&:disabled?).compact
       end
 
       # Plugin configuration
@@ -347,7 +352,9 @@ module Octopress
 
       def add_javascripts
         find_assets(@javascripts_dir).each do |asset|
-          if File.extname(asset) =~ /\.js$/
+          if asset =~ /\.min\.js$/
+            @no_compress_js << Assets::Javascript.new(self, @javascripts_dir, asset)
+          elsif asset =~ /\.js$/
             @js << Assets::Javascript.new(self, @javascripts_dir, asset)
           elsif File.extname(asset) =~ /\.coffee$/
             @coffee << Assets::Coffeescript.new(self, @javascripts_dir, asset)
@@ -384,11 +391,11 @@ module Octopress
       end
 
       def css
-        @css.reject{|f| f.disabled? }.compact
+        @css.reject(&:disabled?).compact
       end
 
       def sass
-        @sass.reject{|f| f.disabled? }.compact
+        @sass.reject(&:disabled?).compact
       end
 
       def sass_without_partials
@@ -396,11 +403,11 @@ module Octopress
       end
 
       def js
-        @js.reject{|f| f.disabled? }.compact
+        @js.reject(&:disabled?).compact
       end
 
       def coffee
-        @coffee.reject{|f| f.disabled? }.compact
+        @coffee.reject(&:disabled?).compact
       end
 
       def configuration; {}; end
