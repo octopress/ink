@@ -186,6 +186,7 @@ module Octopress
           'sass'        => @sass, 
           'css'         => @css,
           'js'          => @js, 
+          'minjs'       => @no_compress_js, 
           'coffee'      => @coffee, 
           'images'      => @images, 
           'fonts'       => @fonts, 
@@ -291,6 +292,7 @@ module Octopress
 
           if asset_types['javascripts']
             asset_types['js'] = true
+            asset_types['minjs'] = true
             asset_types['coffee'] = true
             asset_types.delete('javascripts')
           end
