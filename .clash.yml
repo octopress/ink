@@ -3,7 +3,7 @@
   build: true
 -
   title: Compare build
-  compare: _expected/site _site
+  compare: _expected/standard _site
 -
   title: Should build with separate javascript and stylesheet files
   build: true
@@ -12,8 +12,9 @@
       - _config.yml
       - _combine_false.yml
   compare:
-    - _expected/combine_css_false _site/stylesheets
-    - _expected/combine_js_false _site/javascripts
+    - _expected/combine_false/stylesheets _site/stylesheets
+    - _expected/combine_false/javascripts _site/javascripts
+    - _expected/combine_false/asset_tag.html _site/asset_tag.html
 -
   title: Should compress stylesheets and javascripts
   build: true

@@ -381,7 +381,7 @@ module Octopress
       def find_assets(dir)
         full_dir = File.join(@assets_path, dir)
         glob_assets(full_dir).map do |file|
-          file.sub(full_dir+'/', '')
+          file.sub(File.join(full_dir, ''), '')
         end
       end
 

@@ -144,7 +144,7 @@ module Octopress
       end
 
       def self.combine_no_compress_javascripts
-        @combined_no_compress_javascripts ||= combine_js(no_compress_js)
+        @combined_no_compress_javascripts ||= combine_js(no_compress_js) || ''
       end
 
       def self.combine_js(files)

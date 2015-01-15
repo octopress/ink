@@ -27,7 +27,7 @@ module Octopress
         end
 
         def tag
-          "<link href='#{Filters.expand_url(File.join(dir, file))}' media='#{media}' rel='stylesheet' type='text/css'>"
+          "<link href='#{Filters.expand_url(File.join(dir, output_file_name))}' media='#{media}' rel='stylesheet' type='text/css'>"
         end
 
         def add
@@ -38,7 +38,11 @@ module Octopress
         private
 
         def destination
-          File.join(base, plugin.slug, file.sub(/@(.+?)\./,'.'))
+          File.join(base, plugin.slug, output_file_name)
+        end
+
+        def output_file_name
+          file.sub(/@/,'-')
         end
       end
     end

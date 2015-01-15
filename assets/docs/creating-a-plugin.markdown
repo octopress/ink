@@ -1,6 +1,6 @@
 ---
 title: "Create an Octopress Ink Plugin"
-permalink: /guides/creating-a-plugin/
+permalink: /ink/creating-a-plugin/
 ---
 
 *This guide assumes you have already installed Git, and have Ruby 1.9.3 or greater.*
@@ -17,6 +17,7 @@ require "octopress-ink"
 Octopress::Ink.add_plugin({
   name:          "My Plugin",
   slug:          "my-plugin",
+  gem:           "my-plugin",
   path:          File.expand_path(File.join(File.dirname(__FILE__), "../")),
   type:          "plugin",
 
@@ -35,6 +36,7 @@ The configuration options are as follows.
 | name          | The display name for your plugin, e.g. "My Plugin" |
 | path          | Path to your plugin's root directory | 
 | slug          | Optional: The slug is how users will reference your plugin, (Default: sluggified name) |
+| gem           | Optional: This is displayed in plugin info and on the local docs site. |
 | type          | Optional: "plugin" or "theme" (Default: "plugin") |
 | version       | Optional: Version will be displayed with plugin info |
 | description   | Optional: Description will be displayed with plugin info |

@@ -1,6 +1,10 @@
 # Changelog
 
-### 1.0.0 RC27 - 2015-01-14
+### 1.0.0 RC29 - 2015-01-14
+
+- Fixed path issues when writing stylesheet tags.
+
+### 1.0.0 RC28 - 2015-01-14
 
 - Minified javascripts (whatever.min.js) are not re-compressed and are added first in the builds
 
