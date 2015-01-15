@@ -5,12 +5,6 @@ Use Ink to help you build themes and plugins for Jekyll.
 [![Gem Version](https://badge.fury.io/rb/octopress-ink.png)](http://badge.fury.io/rb/octopress-ink)
 [![Build Status](https://travis-ci.org/octopress/ink.png?branch=master)](https://travis-ci.org/octopress/ink)
 
-### Features
-- Installing Ink plugins is easy.
-- Users won't need to install or manage plugin assets.
-- Jekyll will read your plugin's layouts, javascripts, stylesheets and more directly from your gem.
-- Ink allows users to modify a theme or plugin by adding a modified version to source/_custom directory.
-
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -25,7 +19,14 @@ Or install it yourself as:
 
     $ gem install octopress-ink
 
+## Usage
+
+Usage is different for users and developers and useful documentation requires more than a giant README. Docs will be posted with the launch of the new Octopress 3.0 site. In the mean time, you can browse the `assets/docs/` directory for a look at the documentation that's coming.
+
 ## Contributing
 
-For right now. Talk to me directly. I'd love help thinking
-through some of this stuff. Pretty soon, build a theme or a plugin and tell me what's broken.
+1. Fork it ( https://github.com/octopress/ink/fork )
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request
