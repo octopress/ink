@@ -261,7 +261,6 @@ gemspec path: '../'
             gemspec: gemspec,
             gemspec_path: gemspec_path,
             spec_var: gemspec.scan(/(\w+)\.name/).flatten[0],
-            version: gemspec.scan(/version.+=\s+(.+)$/).flatten[0],
             name: gemspec.scan(/name.+['"](.+)['"]/).flatten[0],
             version: version,
             require_version: require_version,
