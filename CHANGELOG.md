@@ -1,6 +1,10 @@
 # Changelog
 
-### 1.0.0 RC26 - 2015-01-12
+### 1.0.0 RC27 - 2015-01-14
+
+- Minified javascripts (whatever.min.js) are not re-compressed and are added first in the builds
+
+### 1.0.0 RC27 - 2015-01-12
 
 - Fixed: Invisible "dot" files are now ignored as plugin assets. [#32](https://github.com/octopress/ink/issues/32)
 

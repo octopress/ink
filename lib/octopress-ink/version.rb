@@ -1,5 +1,5 @@
 module Octopress
   module Ink
-    VERSION = "1.0.0.rc.27"
+    VERSION = "1.0.0.rc.28"
   end
 end
