@@ -107,13 +107,15 @@ require 'lib/version'
 require 'octopress-ink'
 
 Octopress::Ink.add_plugin({
-  name:          "Some Plugin"
-  slug:          "some_plugin",
-  assets_path:   File.expand_path(File.join(File.dirname(__FILE__), "../assets")),
+  name:          "Some Plugin",
+  slug:          "some-plugin",
+  gem:           "some-plugin",
+  path:          File.expand_path(File.join(File.dirname(__FILE__), "..")),
   type:          "some_plugin",
   version:       SomePlugin::Version,
   description:   "",
-  website:       ""
+  website:       "",
+  source_url:    ""
 })
 ```
 

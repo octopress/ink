@@ -48,7 +48,7 @@ module Octopress
             add_dependency
             add_plugin
             add_assets
-            add_demo_files
+            add_test_files
           end
         end
 
@@ -88,7 +88,7 @@ module Octopress
 
         def self.fix_spec_files
           @settings[:gemspec].sub! /(#{@settings[:spec_var]}\.files\s+=\s+)(.+)$/ do
-            $1+"`git ls-files -z`.split(\"\\x0\").grep(/^(bin\/|lib\/|assets\/|demo\/|changelog|readme|license)/i)"
+            $1+"`git ls-files -z`.split(\"\\x0\").grep(/^(bin\/|lib\/|assets\/|changelog|readme|license)/i)"
           end.sub!(/\s*#{@settings[:spec_var]}\.test_files.+$/, '') 
         end
 
@@ -135,6 +135,7 @@ _site
           minor_version = VERSION.scan(/\d+\.\d/)[0]
           current_patch_version = VERSION.sub(/\.(alpha|rc).*/i, '')
           d  = "#{@settings[:spec_var]}.add_development_dependency \"octopress\"\n\n"
+          d  = "#{@settings[:spec_var]}.add_development_dependency \"clash\"\n\n"
           d += "#{@settings[:spec_var]}.add_runtime_dependency \"octopress-ink\", \"~> #{minor_version}\"\n"
         end
 
@@ -158,9 +159,7 @@ _site
 
           # Add Jekyll configuration file
           #
-          config = "exclude:\n  - Gemfile*\ngems:\n  - #{@settings[:name]}"
-          path = File.join(@settings[:path], 'assets', 'config.yml')
-          write(path, config)
+          FileUtils.touch File.join(@settings[:path], 'assets', 'config.yml')
         end
 
         # New plugin uses a simple configuration hash
@@ -182,7 +181,7 @@ _site
 name:          "#{@settings[:module_name]}",
 slug:          "#{@settings[:type] == 'theme' ? 'theme' : @settings[:name]}",
 gem:           "#{@settings[:name]}",
-path:          File.expand_path(File.join(File.dirname(__FILE__), "../")),
+path:          File.expand_path(File.join(File.dirname(__FILE__), "..")),
 type:          "#{@settings[:type]}",
 version:       #{@settings[:version]},
 description:   "",                                # What does your theme/plugin do?
@@ -194,33 +193,30 @@ website:       ""                                 # Optional project website
 
         # Creates a blank Jekyll site for testing out a new plugin
         #
-        def self.add_demo_files
-          demo_dir = File.join(@settings[:path], 'demo')
+        def self.add_test_files
+          test_dir = File.join(@settings[:path], 'test')
 
-          dirs = %w{_layouts _posts}.map! do |d|
-            File.join(demo_dir, d)
+          dirs = %w{_layouts _posts _expected}.map do |d|
+            File.join(test_dir, d)
           end
 
           create_empty_dirs dirs
 
-          index = File.join(demo_dir, 'index.html')
+          index = File.join(test_dir, 'index.html')
           action = File.exist?(index) ? "exists".rjust(12).blue.bold : "create".rjust(12).green.bold
-          FileUtils.touch index
-          puts "#{action}  #{index.sub("#{Dir.pwd}/", '')}"
 
-          gemfile_path = File.join(demo_dir, 'Gemfile')
-          gemfile_content = <<-HERE
-source 'https://rubygems.org'
+          FileUtils.touch File.join(test_dir, '_expected', 'index.html')
+          FileUtils.touch File.join(test_dir, 'index.html')
 
-gemspec path: '../'
-          HERE
-
-          write(gemfile_path, gemfile_content)
-
-          config_path = File.join(demo_dir, '_config.yml')
-          config_content = "exclude:\n  - Gemfile*"
-
+          config_path = File.join(test_dir, '_config.yml')
+          config_content = "gems:\n  - #{@settings[:name]}"
           write(config_path, config_content)
+
+          clash_path = File.join(test_dir, '.clash.yml')
+          clash_content = "title: Standard build\nbuild: true\ncompare: _expected _site"
+          write(clash_path, clash_content)
+
+          puts "#{action}  #{index.sub("#{Dir.pwd}/", '')}"
         end
 
         def self.write(path, contents)
