@@ -400,8 +400,21 @@ module Octopress
         @sass.reject(&:disabled?).compact
       end
 
+      # Internal: Remove Sass partials from Sass assets.
+      # Partials can be in "stylesheets" or its sub-directories.
+      #
+      # Examples
+      #
+      #   _partial.scss is rejected
+      #   dir/_partial.scss is rejected
+      #   dir/dir/_partial.scss is rejected
+      #   snake_case.scss is not rejected
+      #   dir/snake_case.scss is not rejected
+      #   dir/dir/snake_case.scss is not rejected
+      #
+      # Returns Sass assets not including partials.
       def sass_without_partials
-        sass.reject{|f| f.file =~ /^_/ }
+        sass.reject { |f| f.file =~ /^((\w*\/)*_)/ }
       end
 
       def js
