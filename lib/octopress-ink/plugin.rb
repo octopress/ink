@@ -145,7 +145,7 @@ module Octopress
       def disable_assets
         disabled = []
         config['disable'] ||= {}
-        config['disable'].each do |key,val| 
+        config['disable'].each do |key,val|
           next unless can_disable.include? key
           if !!val == val
             disabled << key if val
@@ -164,7 +164,7 @@ module Octopress
 
 
       def can_disable
-        [ 
+        [
           'pages',
           'sass',
           'css',
@@ -182,20 +182,20 @@ module Octopress
         {
           'layouts'     => @layouts,
           'includes'    => @includes,
-          'pages'       => @pages, 
-          'sass'        => @sass, 
+          'pages'       => @pages,
+          'sass'        => @sass,
           'css'         => @css,
-          'js'          => @js, 
-          'minjs'       => @no_compress_js, 
-          'coffee'      => @coffee, 
-          'images'      => @images, 
-          'fonts'       => @fonts, 
+          'js'          => @js,
+          'minjs'       => @no_compress_js,
+          'coffee'      => @coffee,
+          'images'      => @images,
+          'fonts'       => @fonts,
           'files'       => @files,
           'config-file' => [@config]
         }
       end
-      
-      # Return information about each asset 
+
+      # Return information about each asset
       def assets_list(options)
         message = ''
         no_assets = []
@@ -273,7 +273,7 @@ module Octopress
       #
       # input: options (an array ['type',...], hash {'type'=>true}
       # or string of asset types)
-      # 
+      #
       # Output a hash of assets instances {'files' => @files }
       #
       def select_assets(asset_types)
@@ -282,7 +282,7 @@ module Octopress
         # Or from Ink modules as an array of asset names
         #
         if asset_types.is_a? Hash
-           
+
           # Show Sass and CSS when 'stylesheets' is chosen
           if asset_types['stylesheets']
             asset_types['css'] = true
@@ -303,9 +303,9 @@ module Octopress
         # Args should allow a single asset as a string too
         #
         if asset_types.is_a? String
-          asset_types = [asset_types] 
+          asset_types = [asset_types]
         end
-        
+
         # Match asset_types against list of assets and
         # remove asset_types which don't belong
         #
@@ -387,7 +387,7 @@ module Octopress
 
       def glob_assets(dir)
         return [] unless Dir.exist? dir
-        Find.find(dir).to_a.reject do |file| 
+        Find.find(dir).to_a.reject do |file|
           File.directory?(file) || File.basename(file) =~ /^\./
         end
       end
@@ -414,7 +414,7 @@ module Octopress
       #
       # Returns Sass assets not including partials.
       def sass_without_partials
-        sass.reject { |f| f.file =~ /^((\w*\/)*_)/ }
+        sass.reject { |f| File.basename(f.file).start_with?('_') }
       end
 
       def js
