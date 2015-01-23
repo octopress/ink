@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.0 RC30 - 2015-01-22
+
+- Added `set_lang` placeholder so plugins can easily integrate with [octopress-multilingual](https://github.com/octopress/multilingual).
+
 ### 1.0.0 RC29 - 2015-01-14
 
 - Fixed path issues when writing stylesheet tags.

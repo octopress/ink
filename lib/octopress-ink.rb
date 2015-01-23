@@ -10,6 +10,7 @@ require 'octopress-include-tag'
 require 'octopress-ink/version'
 require 'octopress-ink/configuration'
 require 'octopress-ink/jekyll/hooks'
+require 'octopress-ink/tags/set_lang'
 
 module Octopress
   module Ink
