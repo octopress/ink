@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.0.0 RC32 - 2015-01-26
+- Minor change: Moved plugin requiring out to Octopress gem.
+
 ### 1.0.0 RC31 - 2015-01-26
 
 - Fix: Sass partials in subdirectories aren't added to asset pipeline.

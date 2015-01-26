@@ -43,7 +43,6 @@ module Octopress
       end
 
       def self.register
-        Octopress.site.plugin_manager.conscientious_require
         plugins.each do |p| 
           p.register
         end
