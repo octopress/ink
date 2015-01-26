@@ -2,4 +2,4 @@ test: config from theme
 test_override: also config from theme
 
 sass:
-  import: colors
+  import: partials/colors

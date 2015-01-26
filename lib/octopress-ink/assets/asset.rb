@@ -81,8 +81,8 @@ module Octopress
           else
             target_dir = user_dir
           end
-          FileUtils.mkdir_p target_dir
-          FileUtils.cp plugin_path, target_dir
+          FileUtils.mkdir_p File.join(target_dir, File.dirname(file))
+          FileUtils.cp plugin_path, File.join(target_dir, file)
           target_dir.sub!(Dir.pwd+'/', '')
           "+ ".green + "#{File.join(target_dir, filename)}"
         end

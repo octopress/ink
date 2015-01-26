@@ -18,7 +18,7 @@ module Octopress
         end
 
         def add
-          unless file =~ /^_/
+          unless File.basename(file).start_with?('_')
             Plugins.add_css_tag tag
             Plugins.static_files << StaticFileContent.new(compile, destination)
           end
