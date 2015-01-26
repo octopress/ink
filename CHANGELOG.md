@@ -1,5 +1,11 @@
 # Changelog
 
+### 1.0.0 RC31 - 2015-01-26
+
+- Fix: Sass partials in subdirectories aren't added to asset pipeline.
+- Fix: Now copies assets in subdirectories into correct paths.
+- Fix: Plugins are now loaded via Jekyll's plugin manager
+
 ### 1.0.0 RC30 - 2015-01-22
 
 - Added `set_lang` placeholder so plugins can easily integrate with [octopress-multilingual](https://github.com/octopress/multilingual).
