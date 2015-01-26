@@ -109,7 +109,6 @@ module Octopress
     #
     def self.list(options={})
       site = Octopress.site(options)
-      site.plugin_manager.conscientious_require
       Plugins.register
       options = {'minimal'=>true} if options.empty?
       message = "Octopress Ink - v#{VERSION}\n"
