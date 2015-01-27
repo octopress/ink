@@ -15,14 +15,10 @@ module Octopress
           file_check
         end
 
-        def tag
-          "<link href='#{Filters.expand_url(File.join(dir, output_file_name))}' media='#{@media}' rel='stylesheet' type='text/css'>"
-        end
-
         def add
           unless File.basename(file).start_with?('_')
             Plugins.add_css_tag tag
-            Plugins.static_files << StaticFileContent.new(compile, destination)
+            Plugins.static_files << StaticFileContent.new(content, destination)
           end
         end
 

@@ -2,9 +2,13 @@ module Octopress
   module Ink
     module Assets
       class Coffeescript < Javascript
+        def tag
+          "<script src='#{Filters.expand_url(File.join(dir, file.sub(/\.coffee$/,'.js')))}'></script>"
+        end
+
         def add
           Plugins.add_js_tag tag
-          Plugins.static_files << StaticFileContent.new(compile, destination)
+          Plugins.static_files << StaticFileContent.new(content, destination)
         end
 
         def content
