@@ -54,7 +54,7 @@ module Octopress
       end
 
       def self.combined_javascript_tag
-        unless combine_javascripts == ''
+        unless @combined_js == ''
           "<script src='#{Filters.expand_url(combined_javascript_path)}'></script>"
         end
       end
@@ -77,7 +77,7 @@ module Octopress
               header = "/* #{file.plugin.type.capitalize}: #{file.plugin.name} */"
               combined[media] ||= ''
               combined[media] << "#{header}\n" unless combined[media] =~ /#{file.plugin.name}/
-              combined[media] << (file.ext.match(/\.s[ca]ss/) ? file.compile : file.content)
+              combined[media] << file.content
             end
           end
 
@@ -130,32 +130,9 @@ module Octopress
           Plugins.plugins.clone.map(&:javascripts).flatten
       end
 
-      def self.no_compress_js
-        @no_compress_js ||= Plugins.plugins.clone.map(&:no_compress_js).flatten
-      end
-
       def self.javascript_fingerprint
         @javascript_fingerprint ||=
-          fingerprint(javascripts.clone.concat(no_compress_js).map(&:path))
-      end
-
-      def self.combine_javascripts
-        @combined_javascripts ||= combine_js(javascripts)
-      end
-
-      def self.combine_no_compress_javascripts
-        @combined_no_compress_javascripts ||= combine_js(no_compress_js) || ''
-      end
-
-      def self.combine_js(files)
-        js = ''
-        files.each do |file|
-          unless js =~ /#{file.plugin.name}/
-            js << "/* #{file.plugin.type.capitalize}: #{file.plugin.name} */\n" 
-          end
-          js << (file.ext.match(/.coffee/) ? file.compile : file.content)
-        end
-        (js == '' ? false : js)
+          fingerprint(javascripts.clone.map(&:path))
       end
 
       def self.combined_javascript_path
@@ -163,15 +140,38 @@ module Octopress
       end
 
       def self.write_combined_javascript
-        @combined_javascripts = nil
-        if js = combine_javascripts
-          if Ink.configuration['asset_pipeline']['compress_js']
-            settings = Jekyll::Utils.symbolize_hash_keys(Ink.configuration['asset_pipeline']['uglifier'])
-            js = Uglifier.new(settings).compile(js)
+        @combined_js = ''
+
+        if Ink.configuration['asset_pipeline']['combine_js']
+          javascripts.each do |file|
+
+            js = if compress_js?(file)
+              @uglify_settings ||= Jekyll::Utils.symbolize_hash_keys(Ink.configuration['asset_pipeline']['uglifier'])
+
+              if cached = Cache.read_cache(file, @uglify_settings)
+                cached
+              else
+                js = Uglifier.new(@uglify_settings).compile(file.content)
+                Cache.write_to_cache(file, js, @uglify_settings)
+              end
+            else
+              file.content
+            end
+
+            unless @combined_js =~ /#{file.plugin.name}/
+              @combined_js << "/* #{file.plugin.type.capitalize}: #{file.plugin.name} */\n" 
+            end
+            @combined_js << js
           end
-          js = combine_no_compress_javascripts << js
-          write_files(js, combined_javascript_path)
+
+          unless @combined_js == ''
+            write_files(@combined_js, combined_javascript_path)
+          end
         end
+      end
+
+      def self.compress_js?(file)
+        Ink.configuration['asset_pipeline']['compress_js'] && !file.file.end_with?('.min.js')
       end
 
       def self.write_files(source, dest)

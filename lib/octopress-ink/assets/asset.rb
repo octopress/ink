@@ -103,43 +103,28 @@ module Octopress
         end
 
         def content
-          unless @content
+          @content ||= begin
             if read =~ FRONT_MATTER
-              @content = $POSTMATCH
+              $POSTMATCH
             else
-              @content = read
+              read
             end
           end
-          @content
-        end
-
-        # Render file through Liquid if it contains YAML front-matter
-        #
-        def render
-          unless @rendered_content
-            if asset_payload = payload
-              @rendered_content = Liquid::Template.parse(content).render!(payload)
-            else
-              @rendered_content = content
-            end
-          end
-
-          @rendered_content
         end
 
         def payload
-          unless @payload
-            @payload = Ink.payload
-            @payload['jekyll'] = {
+          @payload ||= begin
+            p = Ink.payload
+            p['jekyll'] = {
               'version' => Jekyll::VERSION,
               'environment' => Jekyll.env
             }
-            @payload['site'] = Octopress.site.config
-            @payload['site']['data'] = Octopress.site.site_data
-            @payload['page'] = data
-          end
+            p['site'] = Octopress.site.config
+            p['site']['data'] = Octopress.site.site_data
+            p['page'] = data
 
-          @payload
+            p
+          end
         end
 
         def data

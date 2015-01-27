@@ -20,3 +20,4 @@ tmp
 test/site
 .code-highlighter-cache
 _site
+.ink-cache

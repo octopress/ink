@@ -11,6 +11,7 @@ require 'octopress-ink/version'
 require 'octopress-ink/configuration'
 require 'octopress-ink/jekyll/hooks'
 require 'octopress-ink/tags/set_lang'
+require 'octopress-ink/cache'
 
 module Octopress
   module Ink

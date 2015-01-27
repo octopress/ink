@@ -2,6 +2,8 @@ module Octopress
   module Ink
     module Assets
       class Sass < Stylesheet
+        attr_accessor :exists, :render
+
         def initialize(plugin, base, file)
           @plugin = plugin
           @base = base
@@ -38,7 +40,16 @@ module Octopress
           is_disabled('sass', filename) || is_disabled('stylesheets', filename)
         end
 
-        def compile
+        def content
+          @render ||= begin
+            contents = super
+            if asset_payload = payload
+              Liquid::Template.parse(contents).render!(payload)
+            else
+              contents
+            end
+          end
+
           PluginAssetPipeline.compile_sass(self)
         end
 

@@ -7,8 +7,8 @@ module Octopress
           Plugins.static_files << StaticFileContent.new(compile, destination)
         end
 
-        def compile
-          ::CoffeeScript.compile(content)
+        def content
+          ::CoffeeScript.compile(super)
         end
 
         def destination

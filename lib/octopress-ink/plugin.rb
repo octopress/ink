@@ -354,11 +354,9 @@ module Octopress
 
       def add_javascripts
         find_assets(@javascripts_dir).each do |asset|
-          if asset =~ /\.min\.js$/
-            @no_compress_js << Assets::Javascript.new(self, @javascripts_dir, asset)
-          elsif asset =~ /\.js$/
+          if asset.end_with?('js')
             @js << Assets::Javascript.new(self, @javascripts_dir, asset)
-          elsif File.extname(asset) =~ /\.coffee$/
+          elsif asset.end_with?('coffee')
             @coffee << Assets::Coffeescript.new(self, @javascripts_dir, asset)
           end
         end

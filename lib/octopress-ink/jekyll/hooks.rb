@@ -16,6 +16,8 @@ module Octopress
         Octopress::Ink::Plugins.static_files.each do |f| 
           f.write(site.dest)
         end
+
+        Octopress::Ink::Cache.clean
       end
     end
   end
