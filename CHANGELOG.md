@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.0 RC35 - 2015-01-28
+
+- Fix: Includes nested in sub directories work again. [#40](https://github.com/octopress/ink/issues/40)
+
 ### 1.0.0 RC34 - 2015-01-28
 
 - Fix: Don't attempt to remove cached assets if they don't exist.

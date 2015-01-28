@@ -133,7 +133,7 @@ module Octopress
       end
 
       def include(file)
-        @includes.find{|i| i.filename == file }.path
+        Pathname.new(@includes.find{|i| i.filename == file }.path)
       end
 
       private
@@ -386,7 +386,7 @@ module Octopress
       def glob_assets(dir)
         return [] unless Dir.exist? dir
         Find.find(dir).to_a.reject do |file|
-          File.directory?(file) || File.basename(file) =~ /^\./
+          File.directory?(file) || File.basename(file).start_with?('.')
         end
       end
 
