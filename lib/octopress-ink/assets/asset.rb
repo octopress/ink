@@ -138,7 +138,7 @@ module Octopress
         private
 
         def source_dir
-          if exists? user_override_path
+          if exists? user_path
             user_dir
           else
             plugin_dir
@@ -154,19 +154,15 @@ module Octopress
         end
 
         def user_dir
-          File.join Octopress.site.source, Plugins.custom_dir, dir
+          File.join Plugins.custom_dir, dir
         end
 
         def local_plugin_path
           File.join Octopress.site.source, dir, file
         end
 
-        def user_override_path
-          File.join user_dir, filename
-        end
-
         def user_path
-          user_override_path
+          File.join user_dir, filename
         end
 
         def file_check

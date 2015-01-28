@@ -111,7 +111,7 @@ module Octopress
       # Read plugin dir from site configs
       #
       def self.custom_dir
-        Octopress.site.config['plugins']
+        Octopress.site.plugin_manager.plugins_path.first
       end
 
       # Copy/Generate Stylesheets

@@ -56,14 +56,14 @@ module Octopress
         private
 
         def user_load_path
-          File.join(Octopress.site.source, Plugins.custom_dir, dir, File.dirname(file)).sub /\/\.$/, ''
+          File.join(Plugins.custom_dir, dir, File.dirname(file)).sub /\/\.$/, ''
         end
 
         def theme_load_path
           File.expand_path(File.join(root, base))
         end
 
-        def user_override_path
+        def user_path
           # Allow Sass overrides to use either syntax
           if file =~ /s[ac]ss$/
             [File.join(user_dir, file), File.join(user_dir, alt_syntax_file)]

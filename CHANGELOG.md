@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.0 RC33 - 2015-01-28
+
+- Fix: Doesn't assume site plugin path is in site source directory. Thanks [@drallgood](https://github.com/octopress/feeds/issues/10)!
+
 ### 1.0.0 RC32 - 2015-01-26
 
 - Minor change: Moved plugin requiring out to Octopress gem.
