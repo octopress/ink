@@ -55,7 +55,7 @@ module Octopress
             if files.empty?
               raise IOError.new "Could not find #{File.basename(file)} at #{file}"
             end
-            @found_file = Pathname.new files[0]
+            @found_file = files[0]
           end
         end
 
@@ -64,7 +64,7 @@ module Octopress
         end
 
         def read
-          path.read
+          File.read(path)
         end
 
         def add

@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.0 RC34 - 2015-01-28
+
+- Fix: Don't attempt to remove cached assets if they don't exist.
+
 ### 1.0.0 RC33 - 2015-01-28
 
 - Fix: Doesn't assume site plugin path is in site source directory. Thanks [@drallgood](https://github.com/octopress/feeds/issues/10)!

@@ -30,11 +30,13 @@ module Octopress
       end
 
       def clean
-        remove = Find.find(INK_CACHE_DIR).to_a.reject do |file|
-          @cache_files.include?(file) || File.directory?(file)
-        end
+        if File.directory?(INK_CACHE_DIR)
+          remove = Find.find(INK_CACHE_DIR).to_a.reject do |file|
+            @cache_files.include?(file) || File.directory?(file)
+          end
 
-        FileUtils.rm remove
+          FileUtils.rm(remove)
+        end
       end
     end
   end

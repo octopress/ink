@@ -23,7 +23,7 @@ module Octopress
         end
 
         def ext
-          path.extname
+          File.extname(path)
         end
 
         def load_paths

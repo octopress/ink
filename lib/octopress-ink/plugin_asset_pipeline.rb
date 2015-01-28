@@ -171,7 +171,7 @@ module Octopress
       end
 
       def self.compress_js?(file)
-        Ink.configuration['asset_pipeline']['compress_js'] && !file.file.end_with?('.min.js')
+        Ink.configuration['asset_pipeline']['compress_js'] && !file.path.end_with?('.min.js')
       end
 
       def self.write_files(source, dest)
