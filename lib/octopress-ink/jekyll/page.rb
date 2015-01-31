@@ -16,10 +16,6 @@ module Octopress
         post_init if respond_to?(:post_init)
       end
 
-      def hooks
-        self.site.page_hooks
-      end
-
       def destination(dest)
         unless @dest
           if @config['path']

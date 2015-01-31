@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.0 RC36 - 2015-01-31
+
+- Fix: Octopress Hooks now fire properly on page assets.
+
 ### 1.0.0 RC35 - 2015-01-28
 
 - Fix: Includes nested in sub directories work again. [#40](https://github.com/octopress/ink/issues/40)
