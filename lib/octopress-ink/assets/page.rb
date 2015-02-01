@@ -59,7 +59,8 @@ module Octopress
 
         def info
           message = super
-          message.ljust(25) + url_info
+          message.sub!(/#{filename}/, permalink_name.ljust(filename.size))
+          message.ljust(25) + page.permalink
         end
 
         def permalink
@@ -78,10 +79,6 @@ module Octopress
 
         def plugin_path
           File.join(plugin_dir, dir, file)
-        end
-
-        def url_info
-          "/#{page.url.sub(/^\//,'')}"
         end
 
         def user_dir
