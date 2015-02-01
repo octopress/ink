@@ -6,6 +6,7 @@ module Octopress
     module Assets
       class PageAsset < Asset
         attr_reader :filename
+        attr_accessor :data, :permalink_name
 
         def initialize(plugin, base, file)
           @root = plugin.assets_path
@@ -15,6 +16,8 @@ module Octopress
           @dir  = File.dirname(file)
           @file = File.basename(file)
           @exists = {}
+          @permalink_name = File.basename(file, '.*')
+          @data = {}
           file_check
         end
 
@@ -28,6 +31,14 @@ module Octopress
           end
         end
 
+        def clone(permalink_name, permalink, data={})
+          p = PageAsset.new(plugin, base, file)
+          p.permalink_name = permalink_name
+          p.permalink ||= permalink
+          p.data.merge!(data)
+          p
+        end
+
         def find_page(page)
           site_dir = Octopress.site.dest
           dest = page.destination(site_dir)
@@ -39,12 +50,24 @@ module Octopress
         end
 
         def page
-          @page ||= Page.new(Octopress.site, source_dir, page_dir, file, plugin.config)
+          @page ||= begin 
+            page = Page.new(Octopress.site, source_dir, page_dir, file, self)
+            page.data.merge!(@data)
+            page
+          end
         end
 
         def info
           message = super
           message.ljust(25) + url_info
+        end
+
+        def permalink
+          @permalink ||= plugin.config['permalinks'][permalink_name]
+        end
+
+        def permalink=(url)
+          @permalink = plugin.config['permalinks'][permalink_name] = url
         end
 
         private
@@ -69,4 +92,3 @@ module Octopress
     end
   end
 end
-

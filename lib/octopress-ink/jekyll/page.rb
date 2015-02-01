@@ -10,17 +10,13 @@ module Octopress
       #         - '/' for the _site/index.html page
       #         - '/archive/' for the _site/archive/index.html page
       #
-      def initialize(site, base, dir, name, config={})
-        @config = config
+      def initialize(site, base, dir, name, asset)
+        @asset = asset
         super(site, base, dir, name)
-        post_init if respond_to?(:post_init)
       end
 
       def destination(dest)
         unless @dest
-          if @config['path']
-            dest = File.join(dest, @config['path'])
-          end
           @dest = File.join(dest, self.url)
         end
         @dest
@@ -35,33 +31,21 @@ module Octopress
       # Allow pages to read url from plugin configuration
       #
       def url
-        if @url
-          @url
-        else
-          begin
-
-            page_name = File.basename(self.name, '.*')
-            config = @config['permalinks'][page_name]
-
-            if config.is_a? String
-              @url = config
-              self.data['permalink'] = nil
-            else
-              @config['permalinks'][File.basename(self.name, '.*')] = self.data['permalink']
-            end
-          rescue; end
+        @url ||= begin
+          @asset.permalink ||= self.data['permalink']
+          url = @asset.permalink
 
           super
 
-          if @url && @url =~ /\/$/
+          if url && url =~ /\/$/
             if self.ext == '.xml'
-              @url = File.join(@url, "index.xml")
+              url = File.join(url, "index.xml")
             else
-              @url = File.join(@url, "index.html")
+              url = File.join(url, "index.html")
             end
           end
 
-          @url
+          url
         end
       end
     end
