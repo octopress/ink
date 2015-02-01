@@ -1,5 +1,11 @@
 # Changelog
 
+### 1.0.0 RC37 - 2015-01-31
+
+- Added `clone` method to page assets.
+- Pages now list permalink settings in `ink list` view.
+- Refactored page permalink system.
+
 ### 1.0.0 RC36 - 2015-01-31
 
 - Fix: Octopress Hooks now fire properly on page assets.
