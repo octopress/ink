@@ -165,7 +165,7 @@ module Octopress
           abort "Error: directory #{path} is not empty. Use --force to overwrite files."
         end
       else
-        full_path = File.join(Dir.pwd, Plugins.custom_dir, name)
+        full_path = File.join(Plugins.custom_dir, name)
       end
 
       full_path
