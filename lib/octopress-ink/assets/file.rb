@@ -30,7 +30,7 @@ module Octopress
         end
 
         def user_dir
-          File.join Octopress.site.source, Plugins.custom_dir, plugin.slug, base
+          File.join Plugins.custom_dir, plugin.slug, base
         end
       end
     end
