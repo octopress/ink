@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.0.0 RC38 - 2015-02-05
+- Fix: Plugin asset paths were improperly generated.
+
 ### 1.0.0 RC37 - 2015-01-31
 
 - Added `clone` method to page assets.
