@@ -26,6 +26,7 @@ module Octopress
         @includes_dir      = 'includes'
         @javascripts_dir   = 'javascripts'
         @stylesheets_dir   = 'stylesheets'
+        @lang_configs      = []
         @layouts           = []
         @includes          = []
         @css               = []
@@ -126,31 +127,58 @@ module Octopress
       #
       def config(lang=nil)
         @config ||= configs.first.read
-        lang_config(lang) || @config
+        lang_config_hash[lang] || @config
       end
 
-      def lang_configs
-        @lang_configs ||= begin 
-          lang_configs = {}
+      # Language configurations
+      #
+      # returns: Hash of configs for files matching: conifg_[lang].yml
+      #
+      #   Example:
+      #   { 
+      #     'de' => { configs },
+      #     'fr' => { configs }
+      #   }
+      #
+      def lang_config_hash
+        @lang_config_hash ||= begin 
+          configs = {}
 
           if defined?(Octopress::Multilingual) && Octopress.site.config['lang']
-            [@assets_path, user_plugin_dir].each do |dir|
-              files = Dir["#{dir}/config_*.yml"]
-              files.each do |file|
-                lang = File.basename(file, '.*').split('_').last
+            user_lang_configs.each do |lang, file|
+              configs[lang] = SafeYAML.load_file(file)
+            end
 
-                lang_configs[lang] ||= {}
-                lang_configs[lang] = @config.merge \
-                  lang_configs[lang].merge(SafeYAML.load_file(file))
-              end
+            plugin_lang_configs.each do |lang, file|
+              # Add to lang
+              @lang_configs << Assets::LangConfig.new(self, File.basename(file), lang)
+              configs[lang] = @lang_configs.last.read
             end
           end
-          lang_configs
+
+          configs
         end
       end
 
-      def lang_config(lang=nil)
-        lang_configs[lang]
+      def plugin_lang_configs
+        lang_config_files(@assets_path)
+      end
+
+      def user_lang_configs
+        files = lang_config_files(user_plugin_dir)
+        plugin_lang_configs.keys.each {|k| files.delete(k)}
+        files
+      end
+
+      def lang_config_files(dir)
+        configs = {}
+        files = Dir[File.join(dir, 'config_*.yml')]
+        files.each do |file|
+          # Determine the language from the filename pattern: conifg_[lang].yml
+          lang = File.basename(file, '.*').split('_').last
+          configs[lang] = file
+        end
+        configs
       end
 
       # Remove files from Jekyll since they'll be proccessed by Ink instead
@@ -202,18 +230,19 @@ module Octopress
 
       def assets
         {
-          'layouts'     => @layouts,
-          'includes'    => @includes,
-          'pages'       => @pages,
-          'sass'        => @sass,
-          'css'         => @css,
-          'js'          => @js,
-          'minjs'       => @no_compress_js,
-          'coffee'      => @coffee,
-          'images'      => @images,
-          'fonts'       => @fonts,
-          'files'       => @files,
-          'config-file' => @configs
+          'layouts'      => @layouts,
+          'includes'     => @includes,
+          'pages'        => @pages,
+          'sass'         => @sass,
+          'css'          => @css,
+          'js'           => @js,
+          'minjs'        => @no_compress_js,
+          'coffee'       => @coffee,
+          'images'       => @images,
+          'fonts'        => @fonts,
+          'files'        => @files,
+          'config-file'  => @configs,
+          'lang-configs' => @lang_configs
         }
       end
 
@@ -230,7 +259,11 @@ module Octopress
             header = "pages:".ljust(36) + "urls"
             message += asset_list(assets, header)
           when 'config-file'
-            message += asset_list(assets, 'default configuration')
+            message += asset_list(assets, 'config')
+          when 'lang-configs'
+            assets.each do |config|
+              message += asset_list([config], "config_#{config.lang}")
+            end
           else
             message += asset_list(assets, name)
           end
@@ -244,7 +277,7 @@ module Octopress
       def asset_list(assets, heading)
         list = " #{heading}:\n"
         assets.each do |asset|
-          list += "#{asset.info}\n"
+          list += "#{asset.info.rstrip}\n"
         end
 
         list

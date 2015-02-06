@@ -16,6 +16,7 @@ require 'octopress-ink/cache'
 module Octopress
   module Ink
 
+    autoload :Utils,                'octopress-ink/utils'
     autoload :Assets,               'octopress-ink/assets'
     autoload :Convertible,          'octopress-ink/jekyll/convertible'
     autoload :Page,                 'octopress-ink/jekyll/page'
@@ -144,7 +145,6 @@ module Octopress
       options['config'] = config if config
 
       path = copy_path(name, options)
-
 
       if p = plugin(name)
         copied = p.copy_asset_files(path, options)

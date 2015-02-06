@@ -3,6 +3,7 @@ module Octopress
     module Assets
       autoload :Asset,                'octopress-ink/assets/asset'
       autoload :Config,               'octopress-ink/assets/config'
+      autoload :LangConfig,           'octopress-ink/assets/lang_config'
       autoload :FileAsset,            'octopress-ink/assets/file'
       autoload :PageAsset,            'octopress-ink/assets/page'
       autoload :Javascript,           'octopress-ink/assets/javascript'

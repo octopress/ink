@@ -15,9 +15,9 @@ module Octopress
         # If config plugin config file exists, return contents for list command
         def info
           if exists?(config = plugin_path)
-            config.gsub(/^/,'    ')
+            Ink::Utils.yaml_pretty_print(read)
           else
-            "  none"
+            "   none"
           end
         end
 
