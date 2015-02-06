@@ -26,7 +26,6 @@ module Octopress
         @includes_dir      = 'includes'
         @javascripts_dir   = 'javascripts'
         @stylesheets_dir   = 'stylesheets'
-        @config_file       = 'config.yml'
         @layouts           = []
         @includes          = []
         @css               = []
@@ -43,7 +42,6 @@ module Octopress
       end
 
       def register
-
         unless @assets_path.nil?
           disable_assets
           add_assets
@@ -118,12 +116,41 @@ module Octopress
         @no_compress_js.reject(&:disabled?).compact
       end
 
+      def user_plugin_dir
+        File.join(Plugins.custom_dir, slug)
+      end
+
       # Plugin configuration
       #
       # returns: Hash of merged user and default config.yml files
       #
-      def config
-        @read_config ||= config_defaults.read
+      def config(lang=nil)
+        @config ||= configs.first.read
+        lang_config(lang) || @config
+      end
+
+      def lang_configs
+        @lang_configs ||= begin 
+          lang_configs = {}
+
+          if defined?(Octopress::Multilingual) && Octopress.site.config['lang']
+            [@assets_path, user_plugin_dir].each do |dir|
+              files = Dir["#{dir}/config_*.yml"]
+              files.each do |file|
+                lang = File.basename(file, '.*').split('_').last
+
+                lang_configs[lang] ||= {}
+                lang_configs[lang] = @config.merge \
+                  lang_configs[lang].merge(SafeYAML.load_file(file))
+              end
+            end
+          end
+          lang_configs
+        end
+      end
+
+      def lang_config(lang=nil)
+        lang_configs[lang]
       end
 
       # Remove files from Jekyll since they'll be proccessed by Ink instead
@@ -158,11 +185,6 @@ module Octopress
         config['disable'] = disabled
       end
 
-      def config_defaults
-        @config ||= Assets::Config.new(self, @config_file)
-      end
-
-
       def can_disable
         [
           'pages',
@@ -191,7 +213,7 @@ module Octopress
           'images'      => @images,
           'fonts'       => @fonts,
           'files'       => @files,
-          'config-file' => [@config]
+          'config-file' => @configs
         }
       end
 
@@ -320,6 +342,10 @@ module Octopress
         else
           assets.select{|k,v| asset_types.include?(k)}
         end
+      end
+
+      def configs
+        @configs ||= [Assets::Config.new(self, 'config.yml')]
       end
 
       def add_stylesheets

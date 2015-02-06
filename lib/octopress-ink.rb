@@ -42,8 +42,8 @@ module Octopress
       version << "Octopress Ink v#{Octopress::Ink::VERSION}"
     end
 
-    def self.payload
-      config = Plugins.config
+    def self.payload(lang=nil)
+      config = Plugins.config(lang)
       ink_payload = {
         'plugins'   => config['plugins'],
         'theme'     => config['theme'],

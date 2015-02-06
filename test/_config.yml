@@ -1,3 +1,4 @@
+lang: en
 include_test: foo.html
 exclude:
   - Gemfile*

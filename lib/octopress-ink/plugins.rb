@@ -83,22 +83,24 @@ module Octopress
         end
       end
 
-      def self.config
-        if @config
-          @config
-        else
-          @config            = {}
-          @config['plugins'] = {}
-          @config['theme']   = @theme.nil? ? {} : @theme.config
+      def self.config(lang=nil)
+        @configs ||= {}
+        @configs[lang || 'default'] ||= get_config(lang)
+      end
 
-          plugins.each do |p| 
-            unless p == @theme
-              @config['plugins'][p.slug] = p.config
-            end
+      def self.get_config(lang=nil)
+        config            = {}
+        config['plugins'] = {}
+
+        plugins.each do |p|
+          if p == theme
+            config['theme'] = p.config(lang)
+          else
+            config['plugins'][p.slug] = p.config(lang)
           end
-
-          @config
         end
+
+        config
       end
 
       # Inclue partials from plugins
