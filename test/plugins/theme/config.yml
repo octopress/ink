@@ -1,7 +1,7 @@
 test_override: config from theme override
 permalinks:
-  two: test_pages/theme_page.html
-  feed: test_pages/feed/
+  two: /test_pages/theme_page.html
+  feed: /test_pages/feed/
 
 disable:
   fonts: true

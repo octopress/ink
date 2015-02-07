@@ -261,19 +261,16 @@ module Octopress
           when 'config-file'
             message << asset_list(assets, 'config')
           when 'lang-configs'
-            assets.each do |config|
-              message << asset_list([config], "config_#{config.lang}")
+            lang_config_hash.keys.each do |lang|
+              message << " config_#{lang}:\n"
+              message << Ink::Utils.pretty_print_yaml(config(lang))
+              message << "\n"
             end
           else
             message << asset_list(assets, name)
           end
 
           message << "\n"
-        end
-
-        user_lang_configs.keys.each do |lang|
-          message << " config_#{lang}:\n"
-          message << Ink::Utils.pretty_print_yaml(config(lang))
         end
 
         message
@@ -293,7 +290,7 @@ module Octopress
         message += " (#{slug})"
         message += " - v#{@version}" if @version
         if @description && !@description.empty?
-          message = "#{message.ljust(30)} - #{@description}"
+          message = "#{message.ljust(30)}\n#{@description}"
         end
         message += "\n"
       end
