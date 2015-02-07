@@ -2,6 +2,7 @@ module Octopress
   module Ink
     class Page < Jekyll::Page
       include Ink::Convertible
+      attr_reader :asset, :plugin
 
       # Purpose: Configs can override a page's permalink
       #
@@ -12,6 +13,7 @@ module Octopress
       #
       def initialize(site, base, dir, name, asset)
         @asset = asset
+        @plugin = asset.plugin
         super(site, base, dir, name)
       end
 
