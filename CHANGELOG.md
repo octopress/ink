@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.0.0 RC39 - 2015-02-07
+- New: Octopress Page assets have methods for accessing the plugin and asset that generated them.
+
 ### 1.0.0 RC38 - 2015-02-05
 - Fix: Plugin asset paths were improperly generated.
 
