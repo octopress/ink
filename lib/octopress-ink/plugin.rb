@@ -144,16 +144,14 @@ module Octopress
         @lang_config_hash ||= begin 
           configs = {}
 
-          if defined?(Octopress::Multilingual) && Octopress.site.config['lang']
-            user_lang_configs.each do |lang, file|
-              configs[lang] = SafeYAML.load_file(file)
-            end
+          user_lang_configs.each do |lang, file|
+            configs[lang] = SafeYAML.load_file(file)
+          end
 
-            plugin_lang_configs.each do |lang, file|
-              # Add to lang
-              @lang_configs << Assets::LangConfig.new(self, File.basename(file), lang)
-              configs[lang] = @lang_configs.last.read
-            end
+          plugin_lang_configs.each do |lang, file|
+            # Add to lang
+            @lang_configs << Assets::LangConfig.new(self, File.basename(file), lang)
+            configs[lang] = @lang_configs.last.read
           end
 
           configs
@@ -172,11 +170,13 @@ module Octopress
 
       def lang_config_files(dir)
         configs = {}
-        files = Dir[File.join(dir, 'config_*.yml')]
-        files.each do |file|
-          # Determine the language from the filename pattern: conifg_[lang].yml
-          lang = File.basename(file, '.*').split('_').last
-          configs[lang] = file
+        if defined?(Octopress::Multilingual) && Octopress.site.config['lang']
+          files = Dir[File.join(dir, 'config_*.yml')]
+          files.each do |file|
+            # Determine the language from the filename pattern: conifg_[lang].yml
+            lang = File.basename(file, '.*').split('_').last
+            configs[lang] = file
+          end
         end
         configs
       end
@@ -257,18 +257,23 @@ module Octopress
           case name
           when 'pages'
             header = "pages:".ljust(36) + "urls"
-            message += asset_list(assets, header)
+            message << asset_list(assets, header)
           when 'config-file'
-            message += asset_list(assets, 'config')
+            message << asset_list(assets, 'config')
           when 'lang-configs'
             assets.each do |config|
-              message += asset_list([config], "config_#{config.lang}")
+              message << asset_list([config], "config_#{config.lang}")
             end
           else
-            message += asset_list(assets, name)
+            message << asset_list(assets, name)
           end
 
-          message += "\n"
+          message << "\n"
+        end
+
+        user_lang_configs.keys.each do |lang|
+          message << " config_#{lang}:\n"
+          message << Ink::Utils.pretty_print_yaml(config(lang))
         end
 
         message
@@ -277,7 +282,7 @@ module Octopress
       def asset_list(assets, heading)
         list = " #{heading}:\n"
         assets.each do |asset|
-          list += "#{asset.info.rstrip}\n"
+          list << "#{asset.info.rstrip}\n"
         end
 
         list

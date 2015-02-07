@@ -5,7 +5,7 @@ module Octopress
     module Utils
       extend self
 
-      def yaml_pretty_print(yaml)
+      def pretty_print_yaml(yaml)
         # Use json pretty_print, but make it look like yaml
         #
         JSON.pretty_generate(yaml)
