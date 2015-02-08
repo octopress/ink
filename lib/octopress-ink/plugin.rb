@@ -97,6 +97,7 @@ module Octopress
         copied = []
 
         select_assets(options).each do |name, assets|
+          next if name == 'user-lang-configs'
           assets.each { |a| copied << a.copy(path) }
         end
 
@@ -260,12 +261,18 @@ module Octopress
             message << asset_list(assets, header)
           when 'config-file'
             message << asset_list(assets, 'config')
-          when 'lang-configs'
+
             lang_config_hash.keys.each do |lang|
+              message << "\n"
               message << " config_#{lang}:\n"
               message << Ink::Utils.pretty_print_yaml(config(lang))
-              message << "\n"
             end
+
+          # Lang configs are listed above with the config hash, ensuring
+          # that user configured files can be listed even if the plugin 
+          # does not ship with alternate language config files
+          #
+          when 'lang-configs'; next
           else
             message << asset_list(assets, name)
           end

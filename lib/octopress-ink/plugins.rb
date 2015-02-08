@@ -1,32 +1,34 @@
 module Octopress
   module Ink
     module Plugins
+      extend self
 
       @static_files = []
       @plugins = []
       @user_plugins = []
       @css_tags = []
       @js_tags = []
+      @registered = false
 
-      def self.theme
+      def theme
         @theme
       end
 
-      def self.each(&block)
+      def each(&block)
         plugins.each(&block)
       end
 
       # Store static files to be written
       #
-      def self.static_files
+      def static_files
         @static_files
       end
 
-      def self.size
+      def size
         plugins.size
       end
 
-      def self.plugin(slug)
+      def plugin(slug)
         if slug == 'theme'
           @theme
         else
@@ -38,37 +40,38 @@ module Octopress
         end
       end
 
-      def self.plugins
+      def plugins
         [@theme].concat(@plugins).concat(@user_plugins).compact
       end
 
-      def self.register
-        plugins.each do |p| 
-          p.register
+      def register
+        unless @registered
+          @registered = true
+          plugins.each(&:register) 
         end
       end
 
-      def self.add_files
+      def add_files
         add_assets(%w{images pages files fonts docs})
         add_stylesheets
         add_javascripts
       end
 
-      def self.add_assets(assets)
+      def add_assets(assets)
         plugins.each do |p| 
           p.add_asset_files(assets)
         end
       end
 
-      def self.add_css_tag(tag)
+      def add_css_tag(tag)
         @css_tags << tag
       end
 
-      def self.add_js_tag(tag)
+      def add_js_tag(tag)
         @js_tags << tag
       end
 
-      def self.register_plugin(plugin, options=nil)
+      def register_plugin(plugin, options=nil)
         new_plugin = plugin.new(options)
 
         case new_plugin.type
@@ -83,12 +86,12 @@ module Octopress
         end
       end
 
-      def self.config(lang=nil)
+      def config(lang=nil)
         @configs ||= {}
         @configs[lang || 'default'] ||= get_config(lang)
       end
 
-      def self.get_config(lang=nil)
+      def get_config(lang=nil)
         config            = {}
         config['plugins'] = {}
 
@@ -105,20 +108,20 @@ module Octopress
 
       # Inclue partials from plugins
       #
-      def self.include(name, file)
+      def include(name, file)
         p = plugin(name)
         p.include(file)
       end
 
       # Read plugin dir from site configs
       #
-      def self.custom_dir
+      def custom_dir
         Octopress.site.plugin_manager.plugins_path.first
       end
 
       # Copy/Generate Stylesheets
       #
-      def self.add_stylesheets
+      def add_stylesheets
         if Ink.configuration['asset_pipeline']['combine_css']
           PluginAssetPipeline.write_combined_stylesheet
         else
@@ -128,7 +131,7 @@ module Octopress
       
       # Copy/Generate Javascripts
       #
-      def self.add_javascripts
+      def add_javascripts
         if Ink.configuration['asset_pipeline']['combine_js']
           PluginAssetPipeline.write_combined_javascript
         else
@@ -136,7 +139,7 @@ module Octopress
         end
       end
 
-      def self.css_tags
+      def css_tags
         if Ink.configuration['asset_pipeline']['combine_css']
           PluginAssetPipeline.combined_stylesheet_tag
         else
@@ -144,7 +147,7 @@ module Octopress
         end
       end
 
-      def self.js_tags
+      def js_tags
         if Ink.configuration['asset_pipeline']['combine_js']
           PluginAssetPipeline.combined_javascript_tag
         else

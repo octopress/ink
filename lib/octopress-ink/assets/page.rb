@@ -60,7 +60,7 @@ module Octopress
         def info
           message = super
           name = permalink_name << page.ext
-          message.sub!(/#{filename}/, name.ljust(filename.size))
+          message.sub!(/#{filename}\s*/, name.ljust(35))
           message.ljust(25) << (permalink || page.permalink || '')
         end
 
