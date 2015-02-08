@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.0 RC40 - 2015-02-08
+- Improvements to ink list command output.
+- Ensures plugins cannot be registered multiple times.
+
 ### 1.0.0 RC39 - 2015-02-07
 - New: Octopress Page assets have methods for accessing the plugin and asset that generated them.
 
