@@ -42,7 +42,7 @@ module Octopress
         end
 
         def output_file_name
-          file.sub(/@/,'-')
+          file.sub('@','-')
         end
       end
     end

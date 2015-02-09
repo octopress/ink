@@ -100,7 +100,7 @@ module Octopress
         end
 
         def destination
-          File.join(dir, file)
+          File.join(base, plugin.slug, file)
         end
 
         def content

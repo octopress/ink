@@ -23,6 +23,10 @@ module Octopress
           end
         end
 
+        def destination
+          File.join(dir, file)
+        end
+
         private
 
         def filename

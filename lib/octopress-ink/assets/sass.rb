@@ -79,7 +79,7 @@ module Octopress
         end
 
         def output_file_name
-          file.sub(/@/,'-').sub(/s.ss/, 'css')
+          File.basename(file.sub('@','-'), '.*') << '.css'
         end
       end
     end
