@@ -16,7 +16,7 @@ module Octopress
           @dir  = File.dirname(file)
           @file = File.basename(file)
           @exists = {}
-          @permalink_name = File.basename(file, '.*')
+          @permalink_name = file.sub(File.extname(file), '')
           @data = {}
           file_check
         end
@@ -27,16 +27,20 @@ module Octopress
           if page.url && !find_page(page)
             Octopress.site.pages << page
             plugin.config['permalinks'] ||= {}
-            plugin.config['permalinks'][File.basename(filename, '.*')] ||= page.url
+            plugin.config['permalinks'][@permalink_name] ||= page.url
           end
         end
 
-        def clone(permalink_name, permalink, data={})
+        def clone(permalink, permalink_name=nil)
           p = PageAsset.new(plugin, base, file)
           p.permalink_name = permalink_name
           p.permalink ||= permalink
-          p.data.merge!(data)
           p
+        end
+
+        def merge_data(data={})
+          self.data.merge!(data)
+          self
         end
 
         def find_page(page)
@@ -50,7 +54,7 @@ module Octopress
         end
 
         def page
-          @page ||= begin 
+          @page ||= begin
             page = Page.new(Octopress.site, source_dir, page_dir, file, self)
             page.data.merge!(@data)
             page
@@ -69,7 +73,10 @@ module Octopress
         end
 
         def permalink=(url)
-          @permalink = plugin.config['permalinks'][permalink_name] = url
+          @permalink = url
+          if permalink_name
+            plugin.config['permalinks'][permalink_name] = url
+          end
         end
 
         private
