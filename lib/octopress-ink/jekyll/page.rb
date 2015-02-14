@@ -47,7 +47,7 @@ module Octopress
             end
           end
 
-          url
+          @url
         end
       end
     end
