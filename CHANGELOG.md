@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.0 RC41 - 2015-02-13
+- Fix: Properly copies pages without permalinks.
+- Permalink configurations now allow directories and file extensions in config keys.
+
 ### 1.0.0 RC40 - 2015-02-08
 - Improvements to ink list command output.
 - Ensures plugins cannot be registered multiple times.
