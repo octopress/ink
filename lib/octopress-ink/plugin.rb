@@ -192,6 +192,10 @@ module Octopress
         Pathname.new(@includes.find{|i| i.filename == file }.path)
       end
 
+      def find_page(path)
+        @pages.find {|page| page.filename == path }
+      end
+
       private
 
       def get_paths(files)
