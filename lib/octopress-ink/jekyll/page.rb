@@ -35,15 +35,15 @@ module Octopress
       def url
         @url ||= begin
           @asset.permalink ||= self.data['permalink']
-          url = @asset.permalink
+          @url = @asset.permalink
 
           super
 
-          if url && url =~ /\/$/
+          if @url && @url =~ /\/$/
             if self.ext == '.xml'
-              url = File.join(url, "index.xml")
+              @url = File.join(url, "index.xml")
             else
-              url = File.join(url, "index.html")
+              @url = File.join(url, "index.html")
             end
           end
 
