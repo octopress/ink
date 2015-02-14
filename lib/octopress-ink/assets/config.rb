@@ -33,8 +33,26 @@ module Octopress
             config = Jekyll::Utils.deep_merge_hashes(config, user_config)
           end
 
+          fix_permalinks(config)
+        end
+
+        # Permalinks should not contain file extensions
+        # This replaces file extensions in the keys so they
+        # still work
+        #
+        def fix_permalinks(config)
+          fixed_permalinks = {}
           config['permalinks'] ||= {}
 
+          config['permalinks'].each do |k,v|
+            if k.match('.')
+              key = k.sub(File.extname(k), '')
+              fixed_permalinks[key] = v
+              config['permalinks'].delete(k)
+            end
+          end
+
+          config['permalinks'] = fixed_permalinks
           config
         end
       end
