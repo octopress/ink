@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.0.0 RC42 - 2015-02-15
+- New: Plugins can define order for stylesheet and javascript assets.
+
 ### 1.0.0 RC41 - 2015-02-13
 - Fix: Properly copies pages without permalinks.
 - Permalink configurations now allow directories and file extensions in config keys.
