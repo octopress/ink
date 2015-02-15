@@ -151,6 +151,24 @@ Note: Assets are copied at build time and assets will not overwrite an existing 
 | stylesheets     | `theme.scss` and `print.css` are combined with all plugin stylesheets into a single fingerprinted file. |
 | docs            | Add documentation files for your plugin here. Users will be able to read it by running `octopress docs`. |
 
+### Ordering Javascript and Stylesheet assets
+
+By default when scripts and stylesheets are combined, they are added based on
+their order in the file system. You can manually specify order like this:
+
+```
+order_js:
+ - jquery.js
+ - kittens.coffee
+
+order_css:
+ - normalize.css
+ - site.sass
+```
+Assets will ordered as specified. Any additional assets will be appended based on their order in the file system.
+
+Note: It is not necessary to write full paths in these configurations. An asset at `javascripts/lib/jquery.js` will match `jquery.js` and be ordered accordingly.
+
 
 ### Layouts
 
