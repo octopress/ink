@@ -1,0 +1,13 @@
+order_js:
+  - foo.js
+  - jq.min.js
+  - blah.coffee
+
+order_css:
+  - theme-test.css
+  - main.scss
+
+disable:
+  stylesheets: disable-this.css
+  sass: disable.sass
+  javascripts: disable-this.js

@@ -26,6 +26,17 @@
     - _expected/compress_false/stylesheets _site/stylesheets
     - _expected/compress_false/javascripts _site/javascripts
 -
+  title: Should build with separate javascript and stylesheet files
+  build: true
+  config:
+    jekyll: 
+      - _config.yml
+    theme: _order_assets.yml
+  compare:
+    - _expected/order_assets/stylesheets _site/stylesheets
+    - _expected/order_assets/javascripts _site/javascripts
+    - _expected/order_assets/asset_tag.html _site/asset_tag.html
+-
   title: Should copy all theme assets
   before: octopress ink copy theme --path _copy --force
   compare: _expected/copy_test _copy
