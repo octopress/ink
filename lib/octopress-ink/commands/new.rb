@@ -48,7 +48,6 @@ module Octopress
             add_dependency
             add_plugin
             add_assets
-            add_test_files
           end
         end
 
@@ -189,34 +188,6 @@ source_url:    "https://github.com/user/project", # <- Update info
 website:       ""                                 # Optional project website
           HERE
           config.rstrip
-        end
-
-        # Creates a blank Jekyll site for testing out a new plugin
-        #
-        def self.add_test_files
-          test_dir = File.join(@settings[:path], 'test')
-
-          dirs = %w{_layouts _posts _expected}.map do |d|
-            File.join(test_dir, d)
-          end
-
-          create_empty_dirs dirs
-
-          index = File.join(test_dir, 'index.html')
-          action = File.exist?(index) ? "exists".rjust(12).blue.bold : "create".rjust(12).green.bold
-
-          FileUtils.touch File.join(test_dir, '_expected', 'index.html')
-          FileUtils.touch File.join(test_dir, 'index.html')
-
-          config_path = File.join(test_dir, '_config.yml')
-          config_content = "gems:\n  - #{@settings[:name]}"
-          write(config_path, config_content)
-
-          clash_path = File.join(test_dir, '.clash.yml')
-          clash_content = "title: Standard build\nbuild: true\ncompare: _expected _site"
-          write(clash_path, clash_content)
-
-          puts "#{action}  #{index.sub("#{Dir.pwd}/", '')}"
         end
 
         def self.write(path, contents)
