@@ -104,14 +104,25 @@ module Octopress
         copied.compact
       end
 
+      def sort(files, config)
+        sorted = []
+        config.each do |item|
+          files.each do |file|
+            sorted << files.delete(file) if file.path.to_s.include? item
+          end
+        end
+
+        sorted.concat files
+      end
+
       # stylesheets should include Sass and CSS
       #
       def stylesheets
-        css.clone.concat sass_without_partials
+        sort(css.clone.concat(sass_without_partials), config['order_css'] || [])
       end
 
       def javascripts
-        js.clone.concat coffee
+        sort(js.clone.concat(coffee), config['order_js'] || [])
       end
 
       def no_compress_js
