@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.0.0 RC43 - 2015-02-16
+- Fix: Multilingual configurations are deep merged with primary language config to allow for less unnecessary duplication.
+
 ### 1.0.0 RC42 - 2015-02-15
 - New: Plugins can define order for stylesheet and javascript assets.
 
