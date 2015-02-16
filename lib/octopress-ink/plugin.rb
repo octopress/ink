@@ -139,7 +139,12 @@ module Octopress
       #
       def config(lang=nil)
         @config ||= configs.first.read
-        lang_config_hash[lang] || @config
+
+        if lang
+          lang_config_hash[lang] || @config
+        else
+          @config
+        end
       end
 
       # Language configurations
@@ -157,13 +162,13 @@ module Octopress
           configs = {}
 
           user_lang_configs.each do |lang, file|
-            configs[lang] = SafeYAML.load_file(file)
+            configs[lang] = Jekyll::Utils.deep_merge_hashes(config, SafeYAML.load_file(file))
           end
 
           plugin_lang_configs.each do |lang, file|
             # Add to lang
             @lang_configs << Assets::LangConfig.new(self, File.basename(file), lang)
-            configs[lang] = @lang_configs.last.read
+            configs[lang] = Jekyll::Utils.deep_merge_hashes(config, @lang_configs.last.read)
           end
 
           configs
