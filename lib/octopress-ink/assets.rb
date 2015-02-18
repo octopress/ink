@@ -6,6 +6,7 @@ module Octopress
       autoload :LangConfig,           'octopress-ink/assets/lang_config'
       autoload :FileAsset,            'octopress-ink/assets/file'
       autoload :PageAsset,            'octopress-ink/assets/page'
+      autoload :Template,             'octopress-ink/assets/template'
       autoload :Javascript,           'octopress-ink/assets/javascript'
       autoload :Coffeescript,         'octopress-ink/assets/coffeescript'
       autoload :Stylesheet,           'octopress-ink/assets/stylesheet'

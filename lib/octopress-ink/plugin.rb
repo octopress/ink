@@ -9,8 +9,8 @@ module Octopress
       }
 
       attr_reader   :name, :type, :path, :assets_path, :local, :website, :description, :gem, :version, :source_url, :website,
-                    :layouts_dir, :stylesheets_dir, :javascripts_dir, :files_dir, :includes_dir, :images_dir,
-                    :layouts, :includes, :images, :fonts, :files, :pages, :docs
+                    :layouts_dir, :stylesheets_dir, :javascripts_dir, :files_dir, :includes_dir, :images_dir, :templates_dir,
+                    :layouts, :includes, :images, :fonts, :files, :pages, :templates, :docs
 
       def initialize(options)
         options = Jekyll::Utils.symbolize_hash_keys(options || configuration)
@@ -26,6 +26,7 @@ module Octopress
         @includes_dir      = 'includes'
         @javascripts_dir   = 'javascripts'
         @stylesheets_dir   = 'stylesheets'
+        @templates_dir     = 'templates'
         @lang_configs      = []
         @layouts           = []
         @includes          = []
@@ -38,6 +39,7 @@ module Octopress
         @fonts             = []
         @files             = []
         @pages             = []
+        @templates         = []
         @slug            ||= @name
         @assets_path     ||= File.join(@path, 'assets')
       end
@@ -59,6 +61,7 @@ module Octopress
             add_fonts
             add_files
             add_pages
+            add_templates
             add_stylesheets
           end
         end
@@ -89,7 +92,13 @@ module Octopress
           next if name == 'config-file'
           assets.each {|file| file.add unless file.disabled? }
         end
+
+        add_template_pages
       end
+
+      # Plugin authors override with template page adding
+      #
+      def add_template_pages; end
 
       # Copy asset files to plugin override path
       #
@@ -237,6 +246,7 @@ module Octopress
       def can_disable
         [
           'pages',
+          'templates',
           'sass',
           'css',
           'stylesheets',
@@ -253,6 +263,7 @@ module Octopress
         {
           'layouts'      => @layouts,
           'includes'     => @includes,
+          'templates'    => @templates,
           'pages'        => @pages,
           'sass'         => @sass,
           'css'          => @css,
@@ -430,6 +441,21 @@ module Octopress
 
       def add_pages
         @pages = add_new_assets(@pages_dir, Assets::PageAsset)
+      end
+
+      def add_templates
+        @templates = add_new_assets(@templates_dir, Assets::Template)
+      end
+
+      def add_template_page(template, permalink, data={})
+        template = @templates.find { |t| t.filename == template }
+
+        unless template.nil? || template.disabled?
+          page = template.new_page(permalink, data)
+          template.pages << page
+          Octopress.site.pages << page
+          page
+        end
       end
 
       def add_docs

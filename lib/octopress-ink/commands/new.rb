@@ -151,7 +151,7 @@ _site
         end
 
         def self.add_assets
-          dirs = %w{docs images fonts pages files layouts includes stylesheets javascripts}.map do |asset|
+          dirs = %w{docs images fonts pages templates files layouts includes stylesheets javascripts}.map do |asset|
             File.join(@settings[:path], 'assets', asset)
           end
           create_empty_dirs dirs
