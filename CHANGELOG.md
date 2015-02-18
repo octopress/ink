@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.0 RC44 - 2015-02-18
+- Fix: Plugins reset for each build, fixing builds with Jekyll's watch enabled.
+- New: Added plugin templates for dynamically generating pages.
+
 ### 1.0.0 RC43 - 2015-02-16
 - Fix: Multilingual configurations are deep merged with primary language config to allow for less unnecessary duplication.
 
