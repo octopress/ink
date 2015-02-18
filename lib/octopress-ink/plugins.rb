@@ -3,13 +3,6 @@ module Octopress
     module Plugins
       extend self
 
-      @static_files = []
-      @plugins = []
-      @user_plugins = []
-      @css_tags = []
-      @js_tags = []
-      @registered = false
-
       def theme
         @theme
       end
@@ -42,6 +35,15 @@ module Octopress
 
       def plugins
         [@theme].concat(@plugins).concat(@user_plugins).compact
+      end
+
+      def reset
+        @static_files = []
+        @plugins = []
+        @user_plugins = []
+        @css_tags = []
+        @js_tags = []
+        @registered = false
       end
 
       def register

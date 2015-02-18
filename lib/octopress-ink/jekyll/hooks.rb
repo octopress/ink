@@ -2,6 +2,10 @@ module Octopress
   module Ink
     class SiteHook < Hooks::Site
 
+      def reset(site)
+        Plugins.reset
+      end
+
       def post_read(site)
         Octopress.site = site
         Ink::Plugins.register
