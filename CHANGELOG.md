@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.0.0 RC45 - 2015-02-18
+- Fix: Plugins weren't being initialized properly due to a race condition
+
 ### 1.0.0 RC44 - 2015-02-18
 - Fix: Plugins reset for each build, fixing builds with Jekyll's watch enabled.
 - New: Added plugin templates for dynamically generating pages.

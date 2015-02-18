@@ -36,6 +36,8 @@ module Octopress
 
     @load_plugin_assets = true
 
+    Plugins.reset
+
     def self.version
       version = "Jekyll v#{Jekyll::VERSION}, "
       if defined? Octopress::VERSION
