@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.0.0 RC46 - 2015-02-18
+- Fix: Site reset triggers reset method on each plugin.
+
 ### 1.0.0 RC45 - 2015-02-18
 - Fix: Plugins weren't being initialized properly due to a race condition
 
