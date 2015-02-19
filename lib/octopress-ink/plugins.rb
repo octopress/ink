@@ -4,6 +4,10 @@ module Octopress
       extend self
       attr_reader :registered
 
+      @registered = false
+      @plugins = []
+      @user_plugins = []
+
       def theme
         @theme
       end
@@ -39,10 +43,8 @@ module Octopress
       end
 
       def reset
-        @registered = false
         @static_files = []
-        @plugins = []
-        @user_plugins = []
+        @registered = false
         @css_tags = []
         @js_tags = []
       end

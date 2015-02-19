@@ -71,8 +71,8 @@ module Octopress
     # 
     # plugin - A subclass of Plugin
     #
-    def self.register_plugin(plugin)
-      Plugins.register_plugin(plugin)
+    def self.register_plugin(plugin, options={})
+      Plugins.register_plugin(plugin, options)
     end
 
     # Create a new plugin from a configuration hash

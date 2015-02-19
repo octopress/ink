@@ -13,7 +13,7 @@ module Octopress
                     :layouts, :includes, :images, :fonts, :files, :pages, :templates, :docs
 
       def initialize(options)
-        options = Jekyll::Utils.symbolize_hash_keys(options || configuration)
+        @options = Jekyll::Utils.symbolize_hash_keys(options || configuration)
 
         DEFAULT_CONFIG.merge(options).each { |k,v| set_config(k,v) }
 
@@ -27,6 +27,11 @@ module Octopress
         @javascripts_dir   = 'javascripts'
         @stylesheets_dir   = 'stylesheets'
         @templates_dir     = 'templates'
+        @slug            ||= @name
+        @assets_path     ||= File.join(@path, 'assets')
+      end
+
+      def reset
         @lang_configs      = []
         @layouts           = []
         @includes          = []
@@ -40,11 +45,10 @@ module Octopress
         @files             = []
         @pages             = []
         @templates         = []
-        @slug            ||= @name
-        @assets_path     ||= File.join(@path, 'assets')
       end
 
       def register
+        reset
         unless @assets_path.nil?
           disable_assets
           add_assets
