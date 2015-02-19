@@ -2,6 +2,7 @@ module Octopress
   module Ink
     module Plugins
       extend self
+      attr_reader :registered
 
       def theme
         @theme
@@ -38,12 +39,12 @@ module Octopress
       end
 
       def reset
+        @registered = false
         @static_files = []
         @plugins = []
         @user_plugins = []
         @css_tags = []
         @js_tags = []
-        @registered = false
       end
 
       def register

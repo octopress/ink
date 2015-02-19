@@ -3,7 +3,9 @@ module Octopress
     class SiteHook < Hooks::Site
 
       def reset(site)
-        Plugins.reset
+        if Plugins.registered
+          Plugins.reset
+        end
       end
 
       def post_read(site)
