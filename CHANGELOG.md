@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.0 RC47 - 2015-02-18
+- Fix: `octopress ink list [plugin]` triggers site read to ensure all plugins are ready to present info.
+- Fix: Template page info improvements
+
 ### 1.0.0 RC46 - 2015-02-18
 - Fix: Site reset triggers reset method on each plugin.
 
