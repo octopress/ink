@@ -131,6 +131,7 @@ module Octopress
     def self.plugin_list(name, options)
       config = options.delete('config') # Jekyll conflicts with this option
       Octopress.site(options)
+      Octopress.site.read
       Plugins.register
       options['config'] = config if config
 

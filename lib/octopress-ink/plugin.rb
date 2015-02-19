@@ -96,8 +96,6 @@ module Octopress
           next if name == 'config-file'
           assets.each {|file| file.add unless file.disabled? }
         end
-
-        add_template_pages
       end
 
       # Plugin authors override with template page adding
@@ -449,6 +447,7 @@ module Octopress
 
       def add_templates
         @templates = add_new_assets(@templates_dir, Assets::Template)
+        add_template_pages
       end
 
       def add_template_page(template, permalink, data={})
@@ -456,7 +455,6 @@ module Octopress
 
         unless template.nil? || template.disabled?
           page = template.new_page(permalink, data)
-          template.pages << page
           Octopress.site.pages << page
           page
         end
