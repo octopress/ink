@@ -1,6 +1,9 @@
 # Changelog
 
 ### 1.0.0 RC47 - 2015-02-18
+- Minor: Improved template asset info when listed with `octopress ink list [plugin]` command.
+
+### 1.0.0 RC47 - 2015-02-18
 - Fix: `octopress ink list [plugin]` triggers site read to ensure all plugins are ready to present info.
 - Fix: Template page info improvements
 
