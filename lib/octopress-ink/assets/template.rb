@@ -21,10 +21,10 @@ module Octopress
             message += "from: #{shortpath}/#{filename}"
           end
 
-          message = "   #{message}\n"
+          message = "  - #{message}\n"
 
           self.pages.each do |page|
-            message << "    - /#{page.path.sub('index.html', '')}\n"
+            message << "     /#{page.path.sub('index.html', '')}\n"
           end
           message
         end
