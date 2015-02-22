@@ -2,7 +2,10 @@ require 'octopress-ink'
 
 class AwesomeSauce < Octopress::Ink::Plugin
   def add_template_pages
-    add_template_page('template-test.html', '/kittens/index.html', {'title'=>'Awesome!'})
+    add_template_page('template-test.html', {
+      'title'     => 'Awesome!',
+      'permalink' => '/kittens/index.html',
+    })
   end
 end
 

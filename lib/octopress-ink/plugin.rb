@@ -454,14 +454,17 @@ module Octopress
         add_template_pages
       end
 
-      def add_template_page(template, permalink, data={})
-        template = @templates.find { |t| t.filename == template }
-
+      def add_template_page(template, data={})
+        template = find_template(template) if template.is_a? String
         unless template.nil? || template.disabled?
-          page = template.new_page(permalink, data)
+          page = template.new_page(data)
           Octopress.site.pages << page
           page
         end
+      end
+
+      def find_template(file)
+        @templates.find { |t| t.filename == file }
       end
 
       def add_docs

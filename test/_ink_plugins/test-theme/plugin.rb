@@ -1,8 +1,14 @@
 require 'octopress-ink'
 class ThemePlugin < Octopress::Ink::Plugin
   def add_template_pages
-    add_template_page('template-test.html', '/template-test/index.html', {'title'=>'Awesome!'})
-    add_template_page('template-override-test.html', '/template-test/override.html', {'title'=>'Crash Override'})
+    add_template_page('template-test.html',  {
+      'title'     => 'Awesome!',
+      'permalink' => '/template-test/index.html'
+    })
+    add_template_page('template-override-test.html', {
+      'title'     => 'Crash Override',
+      'permalink' => '/template-test/override.html'
+    })
   end
 end
 

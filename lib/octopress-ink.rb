@@ -15,6 +15,7 @@ require 'octopress-ink/cache'
 
 module Octopress
   module Ink
+    extend self
 
     autoload :Utils,                'octopress-ink/utils'
     autoload :Assets,               'octopress-ink/assets'
@@ -37,7 +38,7 @@ module Octopress
 
     Plugins.reset
 
-    def self.version
+    def version
       version = "Jekyll v#{Jekyll::VERSION}, "
       if defined? Octopress::VERSION
         version << "Octopress v#{Octopress::VERSION} "
@@ -45,7 +46,7 @@ module Octopress
       version << "Octopress Ink v#{Octopress::Ink::VERSION}"
     end
 
-    def self.payload(lang=nil)
+    def payload(lang=nil)
       config = Plugins.config(lang)
       ink_payload = {
         'plugins'   => config['plugins'],
@@ -58,11 +59,11 @@ module Octopress
       ink_payload
     end
 
-    def self.enabled?
+    def enabled?
       @load_plugin_assets
     end
 
-    def self.load_plugin_assets=(setting)
+    def load_plugin_assets=(setting)
       @load_plguin_assets = setting
     end
 
@@ -70,7 +71,7 @@ module Octopress
     # 
     # plugin - A subclass of Plugin
     #
-    def self.register_plugin(plugin, options={})
+    def register_plugin(plugin, options={})
       Plugins.register_plugin(plugin, options)
     end
 
@@ -78,23 +79,23 @@ module Octopress
     # 
     # options - A hash of configuration options.
     #
-    def self.add_plugin(options={})
+    def add_plugin(options={})
       Plugins.register_plugin Plugin, options
     end
 
-    def self.add_docs(options={})
+    def add_docs(options={})
       Docs.register_docs options
     end
 
-    def self.config
+    def config
       @config ||= Configuration.config
     end
 
-    def self.plugins
+    def plugins
       Plugins.plugins
     end
 
-    def self.plugin(name)
+    def plugin(name)
       begin
         Plugins.plugin(name)
       rescue
@@ -111,7 +112,7 @@ module Octopress
     #   but no assets, i.e. 'minimal' info.
     #
     #
-    def self.list(options={})
+    def list(options={})
       site = Octopress.site(options)
       Plugins.register
       options = {'minimal'=>true} if options.empty?
@@ -127,7 +128,7 @@ module Octopress
       puts message
     end
 
-    def self.plugin_list(name, options)
+    def plugin_list(name, options)
       config = options.delete('config') # Jekyll conflicts with this option
       Octopress.site(options)
       Octopress.site.read
@@ -141,7 +142,7 @@ module Octopress
       end
     end
 
-    def self.copy_plugin_assets(name, options)
+    def copy_plugin_assets(name, options)
       config = options.delete('config') # Jekyll conflicts with this option
       Octopress.site(options)
       Plugins.register
@@ -161,7 +162,7 @@ module Octopress
       end
     end
 
-    def self.copy_path(name, options)
+    def copy_path(name, options)
       if path = options.delete('path')
         full_path = File.join(Dir.pwd, path)
         if !Dir["#{full_path}/*"].empty? && options['force'].nil?
@@ -174,7 +175,7 @@ module Octopress
       full_path
     end
 
-    def self.list_plugins(options={})
+    def list_plugins(options={})
       Octopress.site(options)
       Plugins.register
       puts "\nCurrently installed plugins:"
@@ -185,7 +186,7 @@ module Octopress
       end
     end
 
-    def self.gem_dir(*subdirs)
+    def gem_dir(*subdirs)
       File.expand_path(File.join(File.dirname(__FILE__), '../', *subdirs))
     end
 
@@ -195,7 +196,7 @@ module Octopress
     # Usage: In rakefile require 'octopress-ink'
     #        then add task calling Octopress::Ink.copy_doc for each file
     #
-    def self.copy_doc(source, dest, permalink=nil)
+    def copy_doc(source, dest, permalink=nil)
       contents = File.open(source).read
 
       # Convert H1 to title and add permalink in YAML front-matter
@@ -209,12 +210,12 @@ module Octopress
 
     private
 
-    def self.not_found(plugin)
+    def not_found(plugin)
       puts "Plugin '#{plugin}' not found."
       list_plugins
     end
 
-    def self.doc_yaml(title, permalink)
+    def doc_yaml(title, permalink)
       yaml  = "---\n"
       yaml += "title: \"#{title.strip}\"\n"
       yaml += "permalink: #{permalink.strip}\n" if permalink

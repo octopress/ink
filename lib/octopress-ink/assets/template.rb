@@ -29,25 +29,15 @@ module Octopress
           message
         end
 
-        def new_page(permalink, data={})
+        def new_page(data={})
           return if disabled?
-
-          dir = File.dirname(permalink)
-          name = File.basename(permalink)
-
           page = Ink::Page.new(Octopress.site, File.dirname(self.path), '.', File.basename(self.path))
-
           page.data.merge!(data)
-
-          page.dir = dir
-          page.name = name
-          page.process(name)
 
           self.pages << page
 
           page
         end
-
       end
     end
   end
