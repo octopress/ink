@@ -55,7 +55,14 @@ module Octopress
 
         def page
           @page ||= begin
-            page = Page.new(Octopress.site, source_dir, page_dir, file, self)
+            page = Page.new(Octopress.site, source_dir, page_dir, file)
+
+            if permalink
+              page.data['permalink'] = permalink
+            else
+              permalink = page.data['permalink']
+            end
+
             page.data.merge!(@data)
             page
           end

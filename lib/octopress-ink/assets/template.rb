@@ -35,7 +35,7 @@ module Octopress
           dir = File.dirname(permalink)
           name = File.basename(permalink)
 
-          page = Ink::TemplatePage.new(Octopress.site, File.dirname(self.path), '.', File.basename(self.path))
+          page = Ink::Page.new(Octopress.site, File.dirname(self.path), '.', File.basename(self.path))
 
           page.data.merge!(data)
 

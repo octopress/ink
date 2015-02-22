@@ -149,13 +149,17 @@ module Octopress
       # returns: Hash of merged user and default config.yml files
       #
       def config(lang=nil)
-        @config ||= configs.first.read
+        @config ||= read_config
 
         if lang
           lang_config_hash[lang] || @config
         else
           @config
         end
+      end
+
+      def read_config
+        configs.first.read
       end
 
       # Language configurations

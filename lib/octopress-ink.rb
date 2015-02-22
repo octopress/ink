@@ -20,7 +20,6 @@ module Octopress
     autoload :Assets,               'octopress-ink/assets'
     autoload :Convertible,          'octopress-ink/jekyll/convertible'
     autoload :Page,                 'octopress-ink/jekyll/page'
-    autoload :TemplatePage,         'octopress-ink/jekyll/template_page'
     autoload :Layout,               'octopress-ink/jekyll/layout'
     autoload :StaticFile,           'octopress-ink/jekyll/static_file'
     autoload :StaticFileContent,    'octopress-ink/jekyll/static_file_content'

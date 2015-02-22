@@ -2,27 +2,7 @@ module Octopress
   module Ink
     class Page < Jekyll::Page
       include Ink::Convertible
-      attr_reader :asset, :plugin
-
-      # Purpose: Configs can override a page's permalink
-      #
-      # url - Path relative to destination directory.
-      #       examples: 
-      #         - '/' for the _site/index.html page
-      #         - '/archive/' for the _site/archive/index.html page
-      #
-      def initialize(site, base, dir, name, asset)
-        @asset = asset
-        @plugin = asset.plugin
-        super(site, base, dir, name)
-      end
-
-      def destination(dest)
-        unless @dest
-          @dest = File.join(dest, self.url)
-        end
-        @dest
-      end
+      attr_accessor :dir, :name
 
       def relative_asset_path
         site_source = Pathname.new Octopress.site.source
@@ -34,9 +14,6 @@ module Octopress
       #
       def url
         @url ||= begin
-          @asset.permalink ||= self.data['permalink']
-          @url = @asset.permalink
-
           super
 
           if @url && @url =~ /\/$/
