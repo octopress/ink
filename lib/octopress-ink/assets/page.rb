@@ -31,10 +31,9 @@ module Octopress
           end
         end
 
-        def clone(permalink, permalink_name=nil)
+        def clone(data={})
           p = PageAsset.new(plugin, base, file)
-          p.permalink_name = permalink_name
-          p.permalink ||= permalink
+          p.data = data
           p
         end
 
