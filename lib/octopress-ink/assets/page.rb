@@ -27,7 +27,7 @@ module Octopress
           if page.url && !find_page(page)
             Octopress.site.pages << page
             plugin.config['permalinks'] ||= {}
-            plugin.config['permalinks'][@permalink_name] ||= page.url
+            permalink_config ||= page.url
           end
         end
 
@@ -39,8 +39,11 @@ module Octopress
         end
 
         def merge_data(data={})
-          self.data.merge!(data)
-          self
+          page.data.merge!(data)
+        end
+
+        def deep_merge(data={})
+          Jekyll::Utils.deep_merge_hashes(page.data, data)
         end
 
         def find_page(page)
@@ -57,8 +60,8 @@ module Octopress
           @page ||= begin
             page = Page.new(Octopress.site, source_dir, page_dir, file)
 
-            if permalink
-              page.data['permalink'] = permalink
+            if permalink_config
+              page.data['permalink'] = permalink_config
             else
               permalink = page.data['permalink']
             end
@@ -76,11 +79,19 @@ module Octopress
         end
 
         def permalink
-          @permalink ||= plugin.config['permalinks'][permalink_name]
+          page.url
         end
 
         def permalink=(url)
-          @permalink = url
+          page.data['permalink'] = url
+          permalink_config = url
+        end
+
+        def permalink_config
+          plugin.config['permalinks'][permalink_name]
+        end
+
+        def permalink_config=(url)
           if permalink_name
             plugin.config['permalinks'][permalink_name] = url
           end
