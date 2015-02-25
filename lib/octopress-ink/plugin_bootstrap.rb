@@ -2,9 +2,12 @@ module Octopress
   module Ink
     class Plugin
 
-      def add_template_pages
+      def add_templates
+        super
+        inject_configs
         if Octopress.multilingual?
           # Add pages for other languages
+
           Octopress::Multilingual.languages.each do |lang|
             inject_pages(lang)
           end
@@ -15,31 +18,91 @@ module Octopress
 
       def inject_pages(lang=nil)
         config = self.config(lang)
-        add_post_indexes(config, lang, 'index')
-        add_post_indexes(config, lang, 'archive')
-        add_meta_indexes(config, lang, 'category', 'categories')
-        add_meta_indexes(config, lang, 'tag', 'tags')
+        add_post_indexes(config, lang, post_index)
+        add_post_indexes(config, lang, post_archive)
+        add_post_feeds(config, lang, main_feed)
+        add_post_feeds(config, lang, links_feed)
+        add_post_feeds(config, lang, articles_feed)
+        #add_meta_indexes(config, lang, 'category', 'categories')
+        #add_meta_indexes(config, lang, 'tag', 'tags')
       end
 
-      def add_post_indexes(config, lang, type)
-        if template = self.send(":post_#{type}")
-          permalink = File.join(lang || '', config['permalinks']["post-#{type}"])
-
-          add_template_page(template, {
-            'lang' => lang,
-            'permalink' => permalink
-          })
+      def add_post_indexes(config, lang, page)
+        if page && Octopress.multilingual? && Octopress.site.config['lang'] != lang
+          @pages << clone_page(page, lang) if page
         end
       end
 
-      def add_post_feeds(config, lang)
-        [main_feed, articles_feed, links_feed].compact.each do |template|
+      def add_post_feeds(config, lang, page)
+        if page && Octopress.multilingual? && Octopress.site.config['lang'] != lang
+          if new_page = add_post_indexes(config, lang, page)
+            new_page.data['feed_type'] = feed_type(page)
+          end
+        end
+      end
 
-          permalink = File.join(lang || '', config['permalinks'][File.basename(template.filename, '.*')])
-          add_template_page(template, {
-            'lang' => lang,
-            'permalink' => permalink
-          })
+      # Discern feed type based on filename
+      def feed_type(page)
+        if page.filename =~ /articles/
+          'articles'
+        elsif page.filename =~ /links/
+          'links'
+        elsif page.filename =~ /category/
+          'category'
+        else
+          'main'
+        end
+      end
+
+      def clone_page(page, lang)
+        new_page = page.clone({
+          'lang' => lang,
+          'permalink' => lang_permalink(lang, page.permalink)
+        })
+
+        new_page.permalink_name = nil
+        new_page
+      end
+
+      def lang_permalink(lang, permalink)
+        if lang
+          permalink.sub("/#{Octopress.site.config['lang']}", '')
+          File.join(lang, permalink)
+        else
+          permalink
+        end
+      end
+
+      def add_meta_indexes(config, lang, type, types)
+        collection = Array(config[types])
+
+        collection ||= if lang
+          Octopres::Multilingual.send("#{types}_by_language", lang).keys
+        else
+          Octopress.site.send("#{types}").keys
+        end
+
+        collection.each do |item|
+          item = item.downcase
+
+          if template = self.send("#{type}_index")
+            permalink = File.join(lang || '', config['permalinks']["#{type}-index"].sub(":#{type}", item))
+
+            add_template_page(template, {
+              'lang' => lang,
+              'permalink' => permalink
+            })
+          end
+
+          if template = self.send("#{type}_feed")
+            permalink = File.join(lang || '', config['permalinks']["#{type}-feed"].sub(":#{type}", item))
+
+            add_template_page(category_feed, {
+              'lang' => lang,
+              "#{type}" => item,
+              'permalink' => permalink
+            })
+          end
         end
       end
 
@@ -76,46 +139,13 @@ module Octopress
           #end
         #end
       #end
-
-      def add_meta_indexes(config, lang, type, types)
-        collection = Array(config[types])
-
-        collection ||= if lang
-          Octopres::Multilingual.send(":#{types}_by_language")(lang).keys
-        else
-          Octopress.site.send(":#{types}").keys
-        end
-
-        collection.each do |item|
-          item = item.downcase
-
-          if template = self.send(":#{type}_index")
-            permalink = File.join(lang || '', config['permalinks']["#{type}-index"].sub(":#{type}", item))
-
-            add_template_page(template, {
-              'lang' => lang,
-              'permalink' => permalink
-            })
-          end
-
-          if template = self.send(":#{type}_feed")
-            permalink = File.join(lang || '', config['permalinks']["#{type}-feed"].sub(":#{type}", item))
-
-            add_template_page(category_feed, {
-              'lang' => lang,
-              "#{type}" => item,
-              'permalink' => permalink
-            })
-          end
-        end
-      end
-
+      
       def post_index
-        templates.find { |t| t.filename == 'post-index.html' }
+        pages.find { |p| p.filename == 'post-index.html' }
       end
 
       def post_archive
-        templates.find { |t| t.filename == 'post-archive.html' }
+        pages.find { |p| p.filename == 'post-archive.html' }
       end
 
       def category_index
@@ -127,18 +157,18 @@ module Octopress
       end
 
       def main_feed
-        templates.find { |t| t.filename == 'main-feed.xml' }
+        templates.find { |t| t.filename == 'main.xml' }
       end
 
       def articles_feed
         if defined? Octopress::Linkblog
-          templates.find { |t| t.filename == 'articles-feed.xml' }
+          pages.find { |p| p.filename == 'articles.xml' }
         end
       end
 
       def links_feed
         if defined? Octopress::Linkblog
-          templates.find { |t| t.filename == 'links-feed.xml' }
+          pages.find { |p| p.filename == 'links.xml' }
         end
       end
 
@@ -150,17 +180,10 @@ module Octopress
         templates.find { |t| t.filename == 'tag-feed.xml' }
       end
 
-
-      def read_config
-        auto_config(super)
-      end
-
-      def auto_config(config)
+      def inject_configs
         optional_configs.each do |opt_config|
-          config = Jekyll::Utils.deep_merge_hashes(opt_config, config)
+          @config = Jekyll::Utils.deep_merge_hashes(YAML.load(opt_config), @config)
         end
-
-        config
       end
 
       def optional_configs
@@ -174,12 +197,12 @@ module Octopress
         opt_config << articles_feed_config   if articles_feed
         opt_config << category_feed_config   if category_feed
         opt_config << tag_feed_config        if tag_feed
-        
+
         opt_config
       end
 
       def post_index_config
-Yaml.load <<-CONFIG
+<<-CONFIG
 titles:
   post-index: Posts - :site_name
 
@@ -189,7 +212,7 @@ CONFIG
       end
 
       def post_archive_config
-Yaml.load <<-CONFIG
+<<-CONFIG
 titles:
   post-archive: Archive - :site_name
 
@@ -199,7 +222,7 @@ CONFIG
       end
 
       def category_index_config
-Yaml.load <<-CONFIG
+<<-CONFIG
 titles:
   category-index: Posts in :category - :site_name
 
@@ -211,20 +234,19 @@ CONFIG
       end
 
       def tag_index_config
-Yaml.load <<-CONFIG
+<<-CONFIG
 titles:
   tag-index: Posts tagged with :tag - :site_name
 
 permalinks:
   tag-index: /tags/:tag/
-  tag-feed:  /feed/tags/:tag
 
 tags: []
 CONFIG
       end
 
       def main_feed_config
-Yaml.load <<-CONFIG
+<<-CONFIG
 titles:
   main-feed: Posts - :site_name
 
@@ -234,7 +256,7 @@ CONFIG
       end
 
       def links_feed_config
-Yaml.load <<-CONFIG
+<<-CONFIG
 titles:
   links-feed: Links - :site_name
 
@@ -244,7 +266,7 @@ CONFIG
       end
 
       def articles_feed_config
-Yaml.load <<-CONFIG
+<<-CONFIG
 titles:
   articles-feed: Articles - :site_name
 
@@ -254,7 +276,7 @@ CONFIG
       end
 
       def category_feed_config
-Yaml.load <<-CONFIG
+<<-CONFIG
 titles:
   category-feed: Posts in :category - :site_name
 
@@ -266,7 +288,7 @@ CONFIG
       end
 
       def tag_feed_config
-Yaml.load <<-CONFIG
+<<-CONFIG
 titles:
   tag-feed: Posts tagged with :tag - :site_name
 

@@ -24,7 +24,7 @@ module Octopress
           message = "  - #{message}\n"
 
           self.pages.each do |page|
-            message << "     /#{page.path.sub('index.html', '')}\n"
+            message << "     #{page.url}\n"
           end
           message
         end

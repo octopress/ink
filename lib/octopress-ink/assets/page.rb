@@ -6,7 +6,7 @@ module Octopress
     module Assets
       class PageAsset < Asset
         attr_reader :filename
-        attr_accessor :data, :permalink_name
+        attr_accessor :data, :permalink_name, :cloned, :clone_of
 
         def initialize(plugin, base, file)
           @root = plugin.assets_path
@@ -32,7 +32,9 @@ module Octopress
         end
 
         def clone(data={})
+          self.cloned = true
           p = PageAsset.new(plugin, base, file)
+          p.clone_of = self
           p.data = data
           p
         end
@@ -66,15 +68,24 @@ module Octopress
             end
 
             page.data.merge!(@data)
+
             page
           end
         end
 
         def info
           message = super
-          name = permalink_name << page.ext
-          message.sub!(/#{filename}\s*/, name.ljust(35))
-          message.ljust(25) << (permalink || page.permalink || '')
+          return message if disabled?
+
+          if clone_of
+            "     #{permalink}"
+          elsif cloned
+            message << "\n     #{permalink}"
+          else
+            name = permalink_name << page.ext
+            message.sub!(/#{filename}\s*/, name.ljust(35))
+            message.ljust(25) << permalink
+          end
         end
 
         def permalink

@@ -149,17 +149,15 @@ module Octopress
       # returns: Hash of merged user and default config.yml files
       #
       def config(lang=nil)
-        @config ||= read_config
-
         if lang
-          lang_config_hash[lang] || @config
+          lang_config_hash[lang] || read_config
         else
-          @config
+          read_config
         end
       end
 
       def read_config
-        configs.first.read
+        @config ||= configs.first.read
       end
 
       # Language configurations
@@ -295,7 +293,7 @@ module Octopress
           case name
           when 'pages'
             header = "pages:".ljust(36) + "urls"
-            message << asset_list(assets, header)
+            message << asset_list(assets.sort_by(&:file), header)
           when 'config-file'
             message << asset_list(assets, 'config')
 
