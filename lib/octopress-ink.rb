@@ -26,7 +26,7 @@ module Octopress
     autoload :StaticFileContent,    'octopress-ink/jekyll/static_file_content'
     autoload :Plugins,              'octopress-ink/plugins'
     autoload :Plugin,               'octopress-ink/plugin'
-    autoload :Awesome,              'octopress-ink/plugin_bootstrap'
+    autoload :Bootstrap,            'octopress-ink/plugin_bootstrap'
     autoload :PluginAssetPipeline,  'octopress-ink/plugin_asset_pipeline'
     autoload :Tags,                 'octopress-ink/tags'
 

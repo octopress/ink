@@ -4,6 +4,8 @@ module Octopress
   module Ink
     class Plugin
 
+      include Bootstrap
+
       DEFAULT_CONFIG = {
         type: 'plugin'
       }
@@ -450,6 +452,7 @@ module Octopress
       def add_templates
         @templates = add_new_assets(@templates_dir, Assets::Template)
         add_template_pages
+        bootstrap_templates
       end
 
       def add_template_page(template, data={})

@@ -1,10 +1,10 @@
 module Octopress
   module Ink
-    class Plugin
+    module Bootstrap
 
-      def add_templates
-        super
+      def bootstrap_templates
         inject_configs
+
         if Octopress.multilingual?
           # Add pages for other languages
 
