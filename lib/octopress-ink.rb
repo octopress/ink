@@ -227,6 +227,10 @@ end
 
 Liquid::Template.register_tag('css_asset_tag', Octopress::Ink::Tags::StylesheetTag)
 Liquid::Template.register_tag('js_asset_tag', Octopress::Ink::Tags::JavascriptTag)
+Liquid::Template.register_tag('categories', Octopress::Ink::Tags::CategoryTag)
+Liquid::Template.register_tag('category_list', Octopress::Ink::Tags::CategoryTag)
+Liquid::Template.register_tag('tags', Octopress::Ink::Tags::CategoryTag)
+Liquid::Template.register_tag('tag_list', Octopress::Ink::Tags::CategoryTag)
 
 Octopress::Docs.add({
   name:        "Octopress Ink",

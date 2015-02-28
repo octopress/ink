@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
 
   if RUBY_VERSION >= "2"
     spec.add_development_dependency "bundler", "~> 1.7"
-    spec.add_development_dependency "pry-byebug"
+    spec.add_development_dependency "octopress-debugger"
   else
     spec.add_development_dependency "bundler", "~> 1.6"
   end

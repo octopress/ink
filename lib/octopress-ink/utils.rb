@@ -16,6 +16,7 @@ module Octopress
           .gsub(/,$/,'')            # remove commas from end of lines
           .gsub(/{\n/,"\n")         # remove keys with empty hashes
           .gsub(/^\s+}\n/,'')       # remove keys with empty hashes
+          .gsub(/\[\s+\]/,'[]')       # remove whitespace in empty arrays
       end
     end
   end

@@ -10,7 +10,7 @@ module Octopress
         type: 'plugin'
       }
 
-      attr_reader   :name, :type, :path, :assets_path, :local, :website, :description, :gem, :version, :source_url, :website,
+      attr_reader   :name, :type, :path, :assets_path, :local, :website, :description, :gem, :version, :source_url, :website, :bootstrap,
                     :layouts_dir, :stylesheets_dir, :javascripts_dir, :files_dir, :includes_dir, :images_dir, :templates_dir,
                     :layouts, :includes, :images, :fonts, :files, :pages, :templates, :docs
 
@@ -64,11 +64,12 @@ module Octopress
             add_includes
             add_layouts
             add_javascripts
+            add_stylesheets
             add_fonts
             add_files
             add_pages
             add_templates
-            add_stylesheets
+            bootstrap_plugin if @bootstrap
           end
         end
       end
@@ -297,7 +298,9 @@ module Octopress
             header = "pages:".ljust(36) + "urls"
             message << asset_list(assets.sort_by(&:file), header)
           when 'config-file'
-            message << asset_list(assets, 'config')
+            message << " config:\n"
+            message << Ink::Utils.pretty_print_yaml(@config)
+            message << "\n"
 
             lang_config_hash.keys.each do |lang|
               message << "\n"
@@ -452,7 +455,6 @@ module Octopress
       def add_templates
         @templates = add_new_assets(@templates_dir, Assets::Template)
         add_template_pages
-        bootstrap_templates
       end
 
       def add_template_page(template, data={})
