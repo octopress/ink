@@ -7,7 +7,8 @@ module Octopress
       include Bootstrap
 
       DEFAULT_CONFIG = {
-        type: 'plugin'
+        type: 'plugin',
+        bootstrap: true
       }
 
       attr_reader   :name, :type, :path, :assets_path, :local, :website, :description, :gem, :version, :source_url, :website, :bootstrap,

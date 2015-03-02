@@ -16,6 +16,5 @@ Octopress::Ink::Plugins.register_plugin(ThemePlugin, {
   name:        "Classic Theme",
   type:        "theme",
   description: "Test theme y'all",
-  path:         File.expand_path(File.dirname(__FILE__)),
-  bootstrap: true
+  path:         File.expand_path(File.dirname(__FILE__))
 })

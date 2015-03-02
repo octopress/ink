@@ -54,7 +54,7 @@ module Octopress
         end
 
         def item_link(page, item)
-          dir = Octopress::Ink::Bootstrap.permalink(item_name, item, page['lang'])
+          dir = Bootstrap.send(item_name, item, page['lang'])
           path = File.join(@context['site']['baseurl'], dir)
           "<a class='#{item_name}-link' href='#{path}'>#{item.capitalize}</a>"
         end
