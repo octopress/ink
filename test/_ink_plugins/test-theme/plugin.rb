@@ -12,9 +12,8 @@ class ThemePlugin < Octopress::Ink::Plugin
   end
 end
 
-Octopress::Ink::Plugins.register_plugin(ThemePlugin, {
+Octopress::Ink.register_theme(ThemePlugin, {
   name:        "Classic Theme",
-  type:        "theme",
   description: "Test theme y'all",
   path:         File.expand_path(File.dirname(__FILE__))
 })

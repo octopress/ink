@@ -36,12 +36,12 @@ module Octopress
       end
 
       def self.category(category, lang)
-        category << "_#{page.lang}" if Octopress.multilingual? && page.lang 
+        category = "#{category}_#{page.lang}" if Octopress.multilingual? && page.lang 
         @categories[category]
       end
 
       def self.tag(category, lang)
-        tag << "_#{page.lang}" if Octopress.multilingual? && page.lang 
+        tag = "#{tag}_#{page.lang}" if Octopress.multilingual? && page.lang 
         @tags[tag]
       end
 
@@ -55,11 +55,11 @@ module Octopress
             @feeds[url] = page.data['title']
           elsif key == 'tag'
             tag = page.data[key]
-            tag << "_#{page.lang}" if Octopress.multilingual? && page.lang 
+            tag = "#{tag}_#{page.lang}" if Octopress.multilingual? && page.lang 
             @tags[tag] = url
           elsif key == 'category'
             category = page.data[key]
-            category << "_#{page.lang}" if Octopress.multilingual? && page.lang 
+            category = "#{category}_#{page.lang}" if Octopress.multilingual? && page.lang 
             @categories[category] = url
           end
         end

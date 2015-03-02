@@ -1,3 +1,3 @@
 ---
 ---
-{{ page.title }}
+{% include bootstrap:post-loop.html %}

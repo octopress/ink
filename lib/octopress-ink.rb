@@ -76,12 +76,21 @@ module Octopress
       Plugins.register_plugin(plugin, options)
     end
 
+    def register_theme(plugin, options={})
+      options['type'] = 'theme'
+      Plugins.register_plugin(plugin, options)
+    end
+
     # Create a new plugin from a configuration hash
     # 
     # options - A hash of configuration options.
     #
     def add_plugin(options={})
-      Plugins.register_plugin Plugin, options
+      register_plugin Plugin, options
+    end
+
+    def add_theme(options={})
+      register_theme Plugin, options
     end
 
     def add_docs(options={})

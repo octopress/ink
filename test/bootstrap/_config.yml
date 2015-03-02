@@ -1,2 +1,7 @@
 lang: en
 name: Some Jekyll Site
+category_labels:
+  awesome: Totally Sweet
+gems:
+  - octopress-multilingual
+  - octopress-linkblog

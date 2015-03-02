@@ -1,3 +1,5 @@
 ---
 ---
-{{ page.title }}
+{{ page.title }} - {{ page.lang }}
+{% for post in site.linkposts %}{{ post.title }} - {{ post.lang }}
+{% endfor %}
