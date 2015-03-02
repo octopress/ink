@@ -185,7 +185,7 @@ module Octopress
               'plugin'    => self
             })
 
-            page.data['title'] = feed_title(page, config)
+            page.data['title'] = page_title(page, config)
 
             Bootstrap.add_page(page, "feeds")
           end
@@ -252,7 +252,7 @@ module Octopress
               'plugin'    => self
             })
 
-            page.data['title'] = feed_title(page, config)
+            page.data['title'] = page_title(page, config)
             Bootstrap.add_page(page, 'feeds')
           end
         end
@@ -271,8 +271,8 @@ module Octopress
         new_page
       end
 
-      # Pages are only cloned for multilingual sites
-      # Ensure they have language in their permalinks
+      # Ensure cloned pages have language in their permalinks
+      # Since pages are only cloned for multilingual sites
       #
       def page_permalink(lang, permalink)
         if permalink.include?(":lang")
@@ -296,13 +296,13 @@ module Octopress
       # Discern feed type based on filename
       #
       def feed_type(page)
-        if page.path    =~ /articles/
+        if page.path.include? 'articles'
           'articles'
-        elsif page.path =~ /links/
+        elsif page.path.include? 'links'
           'links'
-        elsif page.path =~ /category/
+        elsif page.path.include? 'category'
           'category'
-        elsif page.path =~ /tag/
+        elsif page.path.include? 'tag'
           'tag'
         else
           'main'
@@ -310,7 +310,9 @@ module Octopress
       end
 
       def page_type(page)
-        if page.path.include? 'post_index'
+        if page.path.include? 'feed'
+          "#{feed_type(page)}_feed"
+        elsif page.path.include? 'post_index'
           "post_index"
         elsif page.path.include? 'post_archive'
           "post_archive"
@@ -324,7 +326,9 @@ module Octopress
       def generic_title(type, config, lang=nil)
         title = config['titles'][type]
         title = title.sub(':site_name', Octopress.site.config['name'])
-        title = title.sub(':lang_name', Octopress::Multilingual.language_name(lang)) if lang && Octopress.multilingual?
+        if lang && Octopress.multilingual?
+          title = title.sub(':lang_name', Octopress::Multilingual.language_name(lang))
+        end
         title
       end
 
@@ -333,27 +337,9 @@ module Octopress
         title = generic_title(type, config, page.lang)
 
         if type.match(/(category|tag)/)
-          type.sub!('_index', '')
-          label = tag_or_category_label(page, type, config)
-          title.sub!(":#{type}", label)
-        end
-
-        title
-      end
-
-      def feed_title(page, config)
-        type = feed_type(page)
-
-        title = generic_title("#{type}_feed", config, page.lang)
-
-        if type == 'category' || type == 'tag'
-          label = page.data[type].capitalize
-
-          if labels = Octopress.site.config["#{type}_labels"]
-            label = labels[type] || label
-          end
-
-          title.sub!(":#{type}", label)
+          key = type.sub(/_index|_feed/, '')
+          label = tag_or_category_label(page, key, config)
+          title = title.sub(":#{key}", label)
         end
 
         title

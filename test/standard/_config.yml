@@ -1,0 +1,7 @@
+include_test: foo.html
+url: http://octopress.org
+timezone: America/Chicago
+markdown: redcarpet
+name: Your New Jekyll Site
+gems:
+  - octopress-ink

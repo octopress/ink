@@ -1,11 +1,14 @@
 -
   title: Simple build
+  dir: standard
   build: true
 -
   title: Compare build
+  dir: standard
   compare: _expected/standard _site
 -
   title: Should build with separate javascript and stylesheet files
+  dir: standard
   build: true
   config:
     jekyll: 
@@ -17,6 +20,7 @@
     - _expected/combine_false/asset_tag.html _site/asset_tag.html
 -
   title: Should compress stylesheets and javascripts
+  dir: standard
   build: true
   config:
     jekyll: 
@@ -27,6 +31,7 @@
     - _expected/compress_false/javascripts _site/javascripts
 -
   title: Should build with separate javascript and stylesheet files
+  dir: standard
   build: true
   config:
     jekyll: 
@@ -38,16 +43,19 @@
     - _expected/order_assets/asset_tag.html _site/asset_tag.html
 -
   title: Should copy all theme assets
+  dir: standard
   before: octopress ink copy theme --path _copy --force
   compare: _expected/copy_test _copy
   after: rm -rf _copy
 -
   title: Should copy only pages and layouts
+  dir: standard
   before: octopress ink copy theme --layouts --pages --path _copy --force
   compare: _expected/copy_layouts_pages _copy
   after: rm -rf _copy
 -
   title: Should create a plugins scaffold
+  dir: standard
   before: 
     - 'git config user.name > .git-config-user-name'
     - 'git config user.email > .git-config-user-email'
