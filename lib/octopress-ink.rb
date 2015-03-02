@@ -231,6 +231,8 @@ Liquid::Template.register_tag('categories', Octopress::Ink::Tags::CategoryTag)
 Liquid::Template.register_tag('category_list', Octopress::Ink::Tags::CategoryTag)
 Liquid::Template.register_tag('tags', Octopress::Ink::Tags::CategoryTag)
 Liquid::Template.register_tag('tag_list', Octopress::Ink::Tags::CategoryTag)
+Liquid::Template.register_tag('feeds', Octopress::Ink::Tags::FeedsTag)
+Liquid::Template.register_tag('feed_updated', Octopress::Ink::Tags::FeedUpdatedTag)
 
 Octopress::Docs.add({
   name:        "Octopress Ink",
