@@ -92,13 +92,21 @@ module Octopress
           page.url
         end
 
+        def lang
+          data['lang']
+        end
+
         def permalink=(url)
           page.data['permalink'] = url
           permalink_config = url
         end
 
         def permalink_config
-          plugin.config['permalinks'][permalink_name]
+          if Octopress.multilingual? && lang
+            plugin.config(lang)['permalinks'][permalink_name]
+          else
+            plugin.config['permalinks'][permalink_name]
+          end
         end
 
         def permalink_config=(url)

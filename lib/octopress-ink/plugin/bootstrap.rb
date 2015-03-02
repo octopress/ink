@@ -70,7 +70,7 @@ module Octopress
       def bootstrap_plugin
         reset_bootstrap
         inject_configs
-        add_page_titles
+        add_page_metadata
 
         # Add pages for other languages
         if Octopress.multilingual?
@@ -133,9 +133,12 @@ module Octopress
         opt_config
       end
 
-      def add_page_titles
+      def add_page_metadata
         [post_index, post_archive].compact.each do |page|
-          page.data['title'] ||= page_title(page.page, config)
+          page.page.data['title'] ||= page_title(page.page, config)
+          if Octopress.multilingual?
+            page.page.data['lang'] = Octopress.site.config['lang']
+          end
         end
       end
 
@@ -264,9 +267,10 @@ module Octopress
       def clone_page(page, lang)
         new_page = page.clone({
           'lang'      => lang,
-          'permalink' => page_permalink(lang, page.permalink)
+          'permalink' => page_permalink(page, lang)
         })
 
+        new_page.page.data['title'] = page_title(new_page.page, config(lang))
         new_page.permalink_name = nil
         new_page
       end
@@ -274,7 +278,9 @@ module Octopress
       # Ensure cloned pages have language in their permalinks
       # Since pages are only cloned for multilingual sites
       #
-      def page_permalink(lang, permalink)
+      def page_permalink(page, lang)
+        permalink = config(lang)['permalinks'][page.permalink_name]
+
         if permalink.include?(":lang")
           permalink.sub(":lang", lang)
         else
@@ -325,7 +331,7 @@ module Octopress
 
       def generic_title(type, config, lang=nil)
         title = config['titles'][type]
-        title = title.sub(':site_name', Octopress.site.config['name'])
+        title = title.sub(':site_name', Octopress.site.config['name'] || '')
         if lang && Octopress.multilingual?
           title = title.sub(':lang_name', Octopress::Multilingual.language_name(lang))
         end
@@ -355,6 +361,10 @@ module Octopress
         label
       end
 
+      def site_name
+        Octopress.site.config['name'] ? '- :site_name' : ''
+      end
+
 
       # Default configuration settings
       # Plugin authors can use or override these settings
@@ -362,7 +372,7 @@ module Octopress
       def post_index_config
 <<-CONFIG
 titles:
-  post_index: Posts - :site_name
+  post_index: Posts #{site_name}
 
 permalinks:
   post_index: /
@@ -372,17 +382,17 @@ CONFIG
       def post_archive_config
 <<-CONFIG
 titles:
-  post_archive: Archive - :site_name
+  post_archive: Archive #{site_name}
 
 permalinks:
-  posts_archive: /archive/
+  post_archive: /archive/
 CONFIG
       end
 
       def category_index_config
 <<-CONFIG
 titles:
-  category_index: Posts in :category - :site_name
+  category_index: Posts in :category #{site_name}
 
 permalinks:
   category_index: #{"/:lang" if Octopress.multilingual?}/categories/:category/
@@ -392,7 +402,7 @@ CONFIG
       def tag_index_config
 <<-CONFIG
 titles:
-  tag_index: Posts tagged with :tag - :site_name
+  tag_index: Posts tagged with :tag #{site_name}
 
 permalinks:
   tag_index: #{"/:lang" if Octopress.multilingual?}/tags/:tag/
@@ -402,7 +412,7 @@ CONFIG
       def main_feed_config
 <<-CONFIG
 titles:
-  main_feed: Posts - :site_name #{"(:lang_name)" if Octopress.multilingual?}
+  main_feed: Posts #{site_name} #{"(:lang_name)" if Octopress.multilingual?}
 
 permalinks:
   main_feed: #{"/:lang" if Octopress.multilingual?}/feed/
@@ -412,7 +422,7 @@ CONFIG
       def links_feed_config
 <<-CONFIG
 titles:
-  links_feed: Links - :site_name #{"(:lang_name)" if Octopress.multilingual?}
+  links_feed: Links #{site_name} #{"(:lang_name)" if Octopress.multilingual?}
 
 permalinks:
   links_feed: #{"/:lang" if Octopress.multilingual?}/feed/links/
@@ -422,7 +432,7 @@ CONFIG
       def articles_feed_config
 <<-CONFIG
 titles:
-  articles_feed: Articles - :site_name #{"(:lang_name)" if Octopress.multilingual?}
+  articles_feed: Articles #{site_name} #{"(:lang_name)" if Octopress.multilingual?}
 
 permalinks:
   articles_feed: #{"/:lang" if Octopress.multilingual?}/feed/articles/
@@ -432,7 +442,7 @@ CONFIG
       def category_feed_config
 <<-CONFIG
 titles:
-  category_feed: Posts in :category - :site_name #{"(:lang_name)" if Octopress.multilingual?}
+  category_feed: Posts in :category #{site_name} #{"(:lang_name)" if Octopress.multilingual?}
 
 permalinks:
   category_feed: #{"/:lang" if Octopress.multilingual?}/feed/categories/:category/
@@ -442,7 +452,7 @@ CONFIG
       def tag_feed_config
 <<-CONFIG
 titles:
-  tag_feed: Posts tagged with :tag - :site_name #{"(:lang_name)" if Octopress.multilingual?}
+  tag_feed: Posts tagged with :tag #{site_name} #{"(:lang_name)" if Octopress.multilingual?}
 
 permalinks:
   tag_feed: #{"/:lang" if Octopress.multilingual?}/feed/tags/:tag/
