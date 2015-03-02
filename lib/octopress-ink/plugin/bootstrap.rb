@@ -135,7 +135,7 @@ module Octopress
 
       def add_page_titles
         [post_index, post_archive].compact.each do |page|
-          page.data['title'] ||= page_title(page, config)
+          page.data['title'] ||= page_title(page.page, config)
         end
       end
 
