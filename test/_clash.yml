@@ -42,6 +42,11 @@
     - _expected/order_assets/javascripts _site/javascripts
     - _expected/order_assets/asset_tag.html _site/asset_tag.html
 -
+  title: Should allow multilingual configuration
+  dir: multilingual
+  build: true
+  compare: _expected _site
+-
   title: Should copy all theme assets
   dir: standard
   before: octopress ink copy theme --path _copy --force
