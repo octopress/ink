@@ -52,6 +52,11 @@
   build: true
   compare: _expected _site
 -
+  title: Test plugin bootstrap templates 
+  dir: bootstrap-multilingual-linkblog
+  build: true
+  compare: _expected _site
+-
   title: Should copy all theme assets
   dir: standard
   before: octopress ink copy theme --path _copy --force
