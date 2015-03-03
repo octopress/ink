@@ -1,6 +1,25 @@
 # Changelog
 
-### 1.0.0 RC47 - 2015-02-18
+### 1.0.0 RC49 - 2015-03-02
+
+- New: Plugin bootstrap allows plugins to work with templates for post indexes and RSS feeds. Each with automatic support for multilingual sites.
+
+Plugins can add pages and templates for:
+- A post index
+- A post archive
+- A post RSS feed
+- A link posts RSS feed (with octopress-linkblog)
+- An articles RSS feed (with octopress-linkblog)
+- A post RSS feed
+- Category index pages
+- Tag index pages
+- Category RSS feeds
+- Tag RSS feeds
+
+The plugin bootstrap will automatically handle page titles, permalinks and generating multiple pages for each tag and category.
+If a user installs octopress-multilingual, all pages will be replicated and filtered for each language.
+
+### 1.0.0 RC48 - 2015-02-18
 - Minor: Improved template asset info when listed with `octopress ink list [plugin]` command.
 
 ### 1.0.0 RC47 - 2015-02-18
