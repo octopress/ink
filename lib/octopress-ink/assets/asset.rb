@@ -2,10 +2,11 @@ module Octopress
   module Ink
     module Assets
       class Asset
-        attr_reader :plugin, :dir, :base, :root, :file
+        attr_reader :plugin, :dir, :base, :root, :file, :overridden
         attr_accessor :exists
 
         FRONT_MATTER = /\A(---\s*\n.*?\n?)^((---|\.\.\.)\s*$\n?)/m
+        @overridden = false
 
         def initialize(plugin, base, file)
           @file = file
@@ -19,13 +20,13 @@ module Octopress
 
         def info
           message = filename.ljust(35)
-          if disabled?
+          if @overridden
+            message += "-overridden by #{@overridden}-"
+          elsif disabled?
             message += "-disabled-"
-          elsif self.respond_to?(:url_info)
-            message += url_info
           elsif path.to_s != plugin_path
             shortpath = File.join(Plugins.custom_dir.sub(Dir.pwd,''), dir).sub('/','')
-            message += "from: #{shortpath}/#{filename}"
+            message += "from: #{File.join(shortpath,filename).sub('/./', '/')}"
           end
           "  - #{message}"
         end
@@ -35,12 +36,16 @@ module Octopress
         end
 
         def disabled?
-          is_disabled(base, filename)
+          is_disabled(base, filename) || @overridden
         end
 
         def is_disabled(base, file)
           config = @plugin.config['disable']
           config.include?(base) || config.include?(File.join(base, filename))
+        end
+
+        def override(plugin)
+          @overridden = plugin.name
         end
 
         def path

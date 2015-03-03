@@ -45,7 +45,7 @@ module Octopress
         @tags[tag]
       end
 
-      def self.add_page(page, key)
+      def self.add_page(page, key=nil)
         if @pages[page.url].nil?
           @pages[page.url] = page
 
@@ -62,13 +62,14 @@ module Octopress
             category = "#{category}_#{page.lang}" if Octopress.multilingual? && page.lang 
             @categories[category] = url
           end
+          page
         end
       end
 
       # Generate site pages from bootstrappable pages and templates
       #
       def bootstrap_plugin
-        reset_bootstrap
+        register_templates
         inject_configs
         add_page_metadata
 
@@ -80,9 +81,7 @@ module Octopress
         end
       end
 
-      def reset_bootstrap
-        Bootstrap.reset
-
+      def register_templates
         # Find pages and templates
 
         @post_index       = pages.find     { |p| p.filename == 'post_index.html' }
@@ -139,6 +138,10 @@ module Octopress
           if Octopress.multilingual?
             page.page.data['lang'] = Octopress.site.config['lang']
           end
+
+          unless Bootstrap.add_page(page)
+            page.override Bootstrap.pages[page.url].plugin
+          end
         end
       end
 
@@ -175,13 +178,17 @@ module Octopress
       end
 
       def add_indexes(config, lang, page)
-        @pages << clone_page(page, lang) if page
+        if new_page = clone_page(page, lang)
+          if Bootstrap.add_page(new_page)
+            @pages << new_page
+          end
+        end
       end
 
       def add_feeds(config, lang, feed_template)
         if feed_template
           type = feed_type(feed_template)
-          if page = add_template_page(feed_template, {
+          if page = feed_template.new_page({
               'lang'      => lang,
               'feed_type' => type,
               'permalink' => lang_permalink(lang, config['permalinks']["#{type}_feed"]),
@@ -190,7 +197,11 @@ module Octopress
 
             page.data['title'] = page_title(page, config)
 
-            Bootstrap.add_page(page, "feeds")
+            if Bootstrap.add_page(page, "feeds")
+              Octopress.site.pages << page
+            else
+              feed_template.pages.delete(page)
+            end
           end
         end
       end
@@ -230,7 +241,7 @@ module Octopress
           if page_template && config["#{type}_indexes"] != false
             permalink = lang_permalink(lang, config['permalinks']["#{type}_index"]).sub(":#{type}", item)
 
-            page = add_template_page(page_template, {
+            page = page_template.new_page({
               'lang'      => lang,
               "#{type}"   => item,
               'permalink' => permalink,
@@ -238,7 +249,11 @@ module Octopress
             })
 
             page.data['title'] = page_title(page, config)
-            Bootstrap.add_page(page, type)
+            if Bootstrap.add_page(page, type)
+              Octopress.site.pages << page
+            else
+              page_template.pages.delete(page)
+            end
           end
 
           # Only add feeds if plugin has a feed template for this item
@@ -247,7 +262,7 @@ module Octopress
           if feed_template && config["#{type}_feeds"] != false
             permalink = lang_permalink(lang, config['permalinks']["#{type}_feed"]).sub(":#{type}", item)
 
-            page = add_template_page(feed_template, {
+            page = feed_template.new_page({
               'lang'      => lang,
               "#{type}"   => item,
               'feed_type' => type,
@@ -256,7 +271,11 @@ module Octopress
             })
 
             page.data['title'] = page_title(page, config)
-            Bootstrap.add_page(page, 'feeds')
+            if Bootstrap.add_page(page, 'feeds')
+              Octopress.site.pages << page
+            else
+              feed_template.delete(page)
+            end
           end
         end
       end
@@ -265,6 +284,7 @@ module Octopress
       # configuring lang and permalink accordingly
       #
       def clone_page(page, lang)
+        return if page.nil?
         new_page = page.clone({
           'lang'      => lang,
           'permalink' => page_permalink(page, lang)

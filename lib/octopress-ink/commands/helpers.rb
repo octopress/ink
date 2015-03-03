@@ -7,6 +7,7 @@ module Octopress
           c.option "layouts", "--layouts", "#{action} only layouts"
           c.option "includes", "--includes", "#{action} only includes"
           c.option "pages", "--pages", "#{action} only pages"
+          c.option "templates", "--templates", "#{action} only pages"
           c.option "stylesheets", "--stylesheets", "#{action} only Stylesheets (.css, .scss, .sass)"
           c.option "css", "--css", "#{action} only CSS files (.css)"
           c.option "sass", "--sass", "#{action} only Sass files (.scss, .sass)"

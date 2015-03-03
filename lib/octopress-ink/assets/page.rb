@@ -91,6 +91,8 @@ module Octopress
         def permalink
           page.url
         end
+        
+        def url; permalink; end
 
         def lang
           data['lang']

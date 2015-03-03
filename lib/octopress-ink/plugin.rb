@@ -460,7 +460,7 @@ module Octopress
 
       def add_template_page(template, data={})
         template = find_template(template) if template.is_a? String
-        unless template.nil? || template.disabled?
+        unless template.nil?
           page = template.new_page(data)
           Octopress.site.pages << page
           page

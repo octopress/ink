@@ -47,6 +47,7 @@ module Octopress
         @registered = false
         @css_tags = []
         @js_tags = []
+        Bootstrap.reset
       end
 
       def register
