@@ -8,61 +8,49 @@ module Octopress
       # All with multilingual support.
       #
 
-      def self.reset
-        @pages      = {}
-        @categories = {}
-        @tags       = {}
-        @feeds      = {}
-      end
+      class << self
+        attr_reader :pages, :categories, :tags, :feeds
 
-      def self.pages
-        @pages
-      end
+        def reset
+          @pages      = {}
+          @categories = {}
+          @tags       = {}
+          @feeds      = {}
+        end
 
-      def self.categories
-        @categories
-      end
+        def page(lang, type, key)
+          @pages[type][key]
+        end
 
-      def self.tags
-        @tags
-      end
+        def category(category, lang)
+          category = "#{category}_#{page.lang}" if Octopress.multilingual? && page.lang 
+          @categories[category]
+        end
 
-      def self.feeds
-        @feeds
-      end
+        def tag(category, lang)
+          tag = "#{tag}_#{page.lang}" if Octopress.multilingual? && page.lang 
+          @tags[tag]
+        end
 
-      def self.page(lang, type, key)
-        @pages[type][key]
-      end
+        def add_page(page, key=nil)
+          if @pages[page.url].nil?
+            @pages[page.url] = page
 
-      def self.category(category, lang)
-        category = "#{category}_#{page.lang}" if Octopress.multilingual? && page.lang 
-        @categories[category]
-      end
+            url = page.url.sub(/index.(xml|html)/, '')
 
-      def self.tag(category, lang)
-        tag = "#{tag}_#{page.lang}" if Octopress.multilingual? && page.lang 
-        @tags[tag]
-      end
-
-      def self.add_page(page, key=nil)
-        if @pages[page.url].nil?
-          @pages[page.url] = page
-
-          url = page.url.sub(/index.(xml|html)/, '')
-
-          if key == 'feeds'
-            @feeds[url] = page.data['title']
-          elsif key == 'tag'
-            tag = page.data[key]
-            tag = "#{tag}_#{page.lang}" if Octopress.multilingual? && page.lang 
-            @tags[tag] = url
-          elsif key == 'category'
-            category = page.data[key]
-            category = "#{category}_#{page.lang}" if Octopress.multilingual? && page.lang 
-            @categories[category] = url
+            if key == 'feeds'
+              @feeds[url] = page.data['title']
+            elsif key == 'tag'
+              tag = page.data[key]
+              tag = "#{tag}_#{page.lang}" if Octopress.multilingual? && page.lang 
+              @tags[tag] = url
+            elsif key == 'category'
+              category = page.data[key]
+              category = "#{category}_#{page.lang}" if Octopress.multilingual? && page.lang 
+              @categories[category] = url
+            end
+            page
           end
-          page
         end
       end
 
