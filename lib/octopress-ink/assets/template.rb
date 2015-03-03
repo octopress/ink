@@ -14,7 +14,9 @@ module Octopress
         def info
           message = filename.ljust(35)
 
-          if disabled?
+          if @overridden_by
+            message += "-overridden by #{@overridden_by}-"
+          elsif disabled?
             message += "-disabled-"
           elsif path.to_s != plugin_path
             shortpath = File.join(Plugins.custom_dir.sub(Dir.pwd,''), dir).sub('/','')
@@ -33,6 +35,7 @@ module Octopress
           return if disabled?
           page = Ink::Page.new(Octopress.site, File.dirname(self.path), '.', File.basename(self.path))
           page.data.merge!(data)
+          page.plugin = plugin
 
           self.pages << page
 

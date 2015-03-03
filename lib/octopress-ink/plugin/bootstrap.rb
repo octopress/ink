@@ -71,7 +71,6 @@ module Octopress
       def bootstrap_plugin
         register_templates
         inject_configs
-        add_page_metadata
 
         # Add pages for other languages
         if Octopress.multilingual?
@@ -84,8 +83,8 @@ module Octopress
       def register_templates
         # Find pages and templates
 
-        @post_index       = pages.find     { |p| p.filename == 'post_index.html' }
-        @post_archive     = pages.find     { |p| p.filename == 'post_archive.html' }
+        @post_index       = templates.find { |p| p.filename == 'post_index.html' }
+        @post_archive     = templates.find { |p| p.filename == 'post_archive.html' }
         @main_feed        = templates.find { |p| p.filename == 'main_feed.xml' }
         @articles_feed    = templates.find { |p| p.filename == 'articles_feed.xml' }
         @links_feed       = templates.find { |p| p.filename == 'links_feed.xml' }
@@ -132,19 +131,6 @@ module Octopress
         opt_config
       end
 
-      def add_page_metadata
-        [post_index, post_archive].compact.each do |page|
-          page.page.data['title'] ||= page_title(page.page, config)
-          if Octopress.multilingual?
-            page.page.data['lang'] = Octopress.site.config['lang']
-          end
-
-          unless Bootstrap.add_page(page)
-            page.override Bootstrap.pages[page.url].plugin
-          end
-        end
-      end
-
       # Automatically clone pages or generate templates
       #
       # This will only occur if:
@@ -161,10 +147,8 @@ module Octopress
 
         # Only clone these pages for additional languages
         #
-        if Octopress.multilingual? && Octopress.site.config['lang'] != lang
-          add_indexes(config, lang, post_index)
-          add_indexes(config, lang, post_archive)
-        end
+        add_indexes(config, lang, post_index)
+        add_indexes(config, lang, post_archive)
 
         add_feeds(config, lang, main_feed)
 
@@ -177,10 +161,16 @@ module Octopress
         add_meta_indexes(config, lang, 'tag', 'tags')
       end
 
-      def add_indexes(config, lang, page)
-        if new_page = clone_page(page, lang)
-          if Bootstrap.add_page(new_page)
-            @pages << new_page
+      def add_indexes(config, lang, page_template)
+        if page_template && page = page_template.new_page({'lang'=>lang})
+          page.data['title']     = page_title(page, config)
+          page.data['permalink'] = page_permalink(page, lang)
+
+          if Bootstrap.add_page(page)
+            Octopress.site.pages << page
+          else
+            page_template.override_by Bootstrap.pages[page.url].plugin
+            page_template.pages.delete(page)
           end
         end
       end
@@ -191,15 +181,16 @@ module Octopress
           if page = feed_template.new_page({
               'lang'      => lang,
               'feed_type' => type,
-              'permalink' => lang_permalink(lang, config['permalinks']["#{type}_feed"]),
               'plugin'    => self
             })
 
-            page.data['title'] = page_title(page, config)
+            page.data['title']     = page_title(page, config)
+            page.data['permalink'] = page_permalink(page, lang)
 
             if Bootstrap.add_page(page, "feeds")
               Octopress.site.pages << page
             else
+              feed_template.override_by Bootstrap.pages[page.url].plugin
               feed_template.pages.delete(page)
             end
           end
@@ -239,20 +230,20 @@ module Octopress
           # and it hasn't been disabled in the configuration
           #
           if page_template && config["#{type}_indexes"] != false
-            permalink = lang_permalink(lang, config['permalinks']["#{type}_index"]).sub(":#{type}", item)
-
             page = page_template.new_page({
               'lang'      => lang,
               "#{type}"   => item,
-              'permalink' => permalink,
               'plugin'    => self
             })
 
-            page.data['title'] = page_title(page, config)
+            page.data['title']     = page_title(page, config)
+            page.data['permalink'] = page_permalink(page, lang).sub(":#{type}", item)
+
             if Bootstrap.add_page(page, type)
               Octopress.site.pages << page
             else
               page_template.pages.delete(page)
+              page_template.override_by Bootstrap.pages[page.url].plugin
             end
           end
 
@@ -260,59 +251,42 @@ module Octopress
           # and it hasn't been disabled in the configuration
           #
           if feed_template && config["#{type}_feeds"] != false
-            permalink = lang_permalink(lang, config['permalinks']["#{type}_feed"]).sub(":#{type}", item)
 
             page = feed_template.new_page({
               'lang'      => lang,
               "#{type}"   => item,
               'feed_type' => type,
-              'permalink' => permalink,
               'plugin'    => self
             })
 
-            page.data['title'] = page_title(page, config)
+            page.data['title']     = page_title(page, config)
+            page.data['permalink'] = page_permalink(page, lang).sub(":#{type}", item)
+
             if Bootstrap.add_page(page, 'feeds')
               Octopress.site.pages << page
             else
               feed_template.delete(page)
+              feed_template.override_by Bootstrap.pages[page.url].plugin
             end
           end
         end
       end
 
-      # Creates a copy of an Ink Page asset
-      # configuring lang and permalink accordingly
-      #
-      def clone_page(page, lang)
-        return if page.nil?
-        new_page = page.clone({
-          'lang'      => lang,
-          'permalink' => page_permalink(page, lang)
-        })
-
-        new_page.page.data['title'] = page_title(new_page.page, config(lang))
-        new_page.permalink_name = nil
-        new_page
-      end
-
-      # Ensure cloned pages have language in their permalinks
-      # Since pages are only cloned for multilingual sites
+      # Ensure pages have language in their permalinks except the primary language pages
+      # Unless the user has specified /:lang/ in their permalink config
       #
       def page_permalink(page, lang)
-        permalink = config(lang)['permalinks'][page.permalink_name]
+        permalink = config(lang)['permalinks'][page_type(page)]
 
-        if permalink.include?(":lang")
+        # Obey the permalink configuration
+        if lang && permalink.include?(":lang")
           permalink.sub(":lang", lang)
-        else
+
+        # Otherwise only add lang for secondary languages
+        elsif lang && lang != Octopress.site.config['lang']
           File.join("/#{lang}", permalink)
-        end
-      end
 
-      # Ensure language is set in permalink if language is defined
-      #
-      def lang_permalink(lang, permalink)
-        if lang
-          permalink.sub(":lang", lang)
+        # Finally strip language from url if primary language or no language defined
         else
           permalink.sub("/:lang/", '/')
         end

@@ -6,7 +6,7 @@ module Octopress
         attr_accessor :exists
 
         FRONT_MATTER = /\A(---\s*\n.*?\n?)^((---|\.\.\.)\s*$\n?)/m
-        @overridden = false
+        @overridden_by = false
 
         def initialize(plugin, base, file)
           @file = file
@@ -20,8 +20,8 @@ module Octopress
 
         def info
           message = filename.ljust(35)
-          if @overridden
-            message += "-overridden by #{@overridden}-"
+          if @overridden_by
+            message += "-overridden by #{@overridden_by}-"
           elsif disabled?
             message += "-disabled-"
           elsif path.to_s != plugin_path
@@ -36,7 +36,7 @@ module Octopress
         end
 
         def disabled?
-          is_disabled(base, filename) || @overridden
+          is_disabled(base, filename) || overridden?
         end
 
         def is_disabled(base, file)
@@ -44,8 +44,12 @@ module Octopress
           config.include?(base) || config.include?(File.join(base, filename))
         end
 
-        def override(plugin)
-          @overridden = plugin.name
+        def overridden?
+          @overridden_by
+        end
+
+        def override_by(plugin)
+          @overridden_by = plugin.name
         end
 
         def path

@@ -2,7 +2,7 @@ module Octopress
   module Ink
     class Page < Jekyll::Page
       include Ink::Convertible
-      attr_accessor :dir, :name
+      attr_accessor :dir, :name, :plugin
 
       def relative_asset_path
         site_source = Pathname.new Octopress.site.source

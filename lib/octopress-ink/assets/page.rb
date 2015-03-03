@@ -68,6 +68,7 @@ module Octopress
             end
 
             page.data.merge!(@data)
+            page.plugin = plugin
 
             page
           end
