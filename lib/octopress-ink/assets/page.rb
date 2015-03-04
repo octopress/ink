@@ -76,17 +76,20 @@ module Octopress
 
         def info
           message = super
-          return message if disabled?
 
-          if clone_of
-            "     #{permalink}"
-          elsif cloned
-            message << "\n     #{permalink}"
-          else
-            name = permalink_name << page.ext
-            message.sub!(/#{filename}\s*/, name.ljust(35))
-            message.ljust(25) << permalink
+          unless disabled?
+            if clone_of
+              "     #{permalink}"
+            elsif cloned
+              message << "\n     #{permalink}"
+            else
+              name = permalink_name << page.ext
+              message.sub!(/#{filename}\s*/, name.ljust(35))
+              message.ljust(25) << permalink
+            end
           end
+
+          message
         end
 
         def permalink

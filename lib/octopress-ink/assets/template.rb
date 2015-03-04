@@ -7,27 +7,24 @@ module Octopress
         def initialize(*args)
           super(*args)
           @pages = []
+          @existing_pages = {}
         end
 
         def add; end
 
         def info
-          message = filename.ljust(35)
+          message = "  - #{asset_info}\n"
 
-          if @overridden_by
-            message += "-overridden by #{@overridden_by}-"
-          elsif disabled?
-            message += "-disabled-"
-          elsif path.to_s != plugin_path
-            shortpath = File.join(Plugins.custom_dir.sub(Dir.pwd,''), dir).sub('/','')
-            message += "from: #{shortpath}/#{filename}"
+          unless disabled?
+            self.pages.each do |page|
+              if existing_page = @existing_pages[page.url]
+                message << "     #{page.url.ljust(33)} Disabled: /#{existing_page.path} already exists\n"
+              else
+                message << "     #{page.url}\n"
+              end
+            end
           end
 
-          message = "  - #{message}\n"
-
-          self.pages.each do |page|
-            message << "     #{page.url}\n"
-          end
           message
         end
 
@@ -36,10 +33,22 @@ module Octopress
           page = Ink::Page.new(Octopress.site, File.dirname(self.path), '.', File.basename(self.path))
           page.data.merge!(data)
           page.plugin = plugin
-
           self.pages << page
 
-          page
+          if existing_page = page_exists?(page)
+            if existing_page.respond_to?(:plugin)
+              @replacement = existing_page.plugin.name
+            else
+              @existing_pages[existing_page.url] = existing_page
+            end
+            false
+          else
+            page
+          end
+        end
+
+        def page_exists?(page)
+          Octopress.site.pages.find {|p| p.url == page.url}
         end
       end
     end

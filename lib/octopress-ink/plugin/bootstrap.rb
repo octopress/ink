@@ -149,40 +149,42 @@ module Octopress
         add_meta_indexes(config, lang, 'tag', 'tags')
       end
 
-      def add_indexes(config, lang, page_template)
-        if page_template && page = page_template.new_page({'lang'=>lang})
-          page.data['title']     = page_title(page, config)
-          page.data['permalink'] = page_permalink(page, lang)
+      def add_indexes(config, lang, template)
+        return if template.nil?
 
-          if Bootstrap.add_page(page)
-            Octopress.site.pages << page
-          else
-            page_template.override_by Bootstrap.pages[page.url].plugin
-            page_template.pages.delete(page)
-          end
+        permalink = page_permalink(template, lang)
+        title     = page_title(template, config, lang)
+
+        if page = template.new_page({
+            'lang'      => lang,
+            'title'     => title,
+            'permalink' => permalink
+          })
+
+          Bootstrap.add_page(page)
+          Octopress.site.pages << page
         end
       end
 
-      def add_feeds(config, lang, feed_template)
-        if feed_template
-          type = feed_type(feed_template)
-          if page = feed_template.new_page({
-              'lang'      => lang,
-              'feed_type' => type,
-              'plugin'    => self
-            })
+      def add_feeds(config, lang, template)
+        return if template.nil?
 
-            page.data['title']     = page_title(page, config)
-            page.data['permalink'] = page_permalink(page, lang)
+        permalink = page_permalink(template, lang)
 
-            if Bootstrap.add_page(page, "feeds")
-              Octopress.site.pages << page
-            else
-              feed_template.override_by Bootstrap.pages[page.url].plugin
-              feed_template.pages.delete(page)
-            end
-          end
+        if page = template.new_page({
+            'lang'      => lang,
+            'permalink' => permalink,
+            'title'     => page_title(template, config, lang),
+            'feed_type' => feed_type(template),
+            'plugin'    => self
+          })
+
+
+          Bootstrap.add_page(page, "feeds")
+          Octopress.site.pages << page
         end
+
+        page
       end
 
       # Generates tag or category index or feed pages for each category and language
@@ -213,25 +215,25 @@ module Octopress
 
         collection.each do |item|
           item = item.downcase
+          item_label = tag_or_category_display_label(item, config)
 
           # Only add pages if plugin has a feed template for this item
           # and it hasn't been disabled in the configuration
           #
           if page_template && config["#{type}_indexes"] != false
-            page = page_template.new_page({
-              'lang'      => lang,
-              "#{type}"   => item,
-              'plugin'    => self
-            })
 
-            page.data['title']     = page_title(page, config)
-            page.data['permalink'] = page_permalink(page, lang).sub(":#{type}", item)
+            permalink = page_permalink(page_template, lang).sub(":#{type}", item)
 
-            if Bootstrap.add_page(page, type)
+            if page = page_template.new_page({
+                'lang'      => lang,
+                "#{type}"   => item,
+                'title'     => page_title(page_template, config, lang).sub(":#{type}", item_label),
+                'permalink' => permalink,
+                'plugin'    => self
+              })
+
+              Bootstrap.add_page(page, type)
               Octopress.site.pages << page
-            else
-              page_template.pages.delete(page)
-              page_template.override_by Bootstrap.pages[page.url].plugin
             end
           end
 
@@ -240,21 +242,19 @@ module Octopress
           #
           if feed_template && config["#{type}_feeds"] != false
 
-            page = feed_template.new_page({
-              'lang'      => lang,
-              "#{type}"   => item,
-              'feed_type' => type,
-              'plugin'    => self
-            })
+            permalink = page_permalink(feed_template, lang).sub(":#{type}", item)
 
-            page.data['title']     = page_title(page, config)
-            page.data['permalink'] = page_permalink(page, lang).sub(":#{type}", item)
+            if page = feed_template.new_page({
+                'lang'      => lang,
+                "#{type}"   => item,
+                'title'     => page_title(feed_template, config, lang).sub(":#{type}", item_label),
+                'permalink' => permalink,
+                'feed_type' => type,
+                'plugin'    => self
+              })
 
-            if Bootstrap.add_page(page, 'feeds')
+              Bootstrap.add_page(page, 'feeds')
               Octopress.site.pages << page
-            else
-              feed_template.delete(page)
-              feed_template.override_by Bootstrap.pages[page.url].plugin
             end
           end
         end
@@ -267,7 +267,7 @@ module Octopress
         permalink = config(lang)['permalinks'][page_type(page)]
 
         # Obey the permalink configuration
-        if lang && permalink.include?(":lang")
+        permalink = if lang && permalink.include?(":lang")
           permalink.sub(":lang", lang)
 
         # Otherwise only add lang for secondary languages
@@ -278,6 +278,13 @@ module Octopress
         else
           permalink.sub("/:lang/", '/')
         end
+
+        if permalink.end_with?('/')
+          ext = File.extname(page.path).match('xml') ? 'xml' : 'html'
+          permalink += "index.#{ext}"
+        end
+
+        permalink
       end
 
       
@@ -311,7 +318,8 @@ module Octopress
         end
       end
 
-      def generic_title(type, config, lang=nil)
+      def page_title(page, config, lang)
+        type = page_type(page)
         title = config['titles'][type]
         title = title.sub(':site_name', Octopress.site.config['name'] || '')
         if lang && Octopress.multilingual?
@@ -320,21 +328,8 @@ module Octopress
         title
       end
 
-      def page_title(page, config)
-        type = page_type(page)
-        title = generic_title(type, config, page.lang)
-
-        if type.match(/(category|tag)/)
-          key = type.sub(/_index|_feed/, '')
-          label = tag_or_category_label(page, key, config)
-          title = title.sub(":#{key}", label)
-        end
-
-        title
-      end
-
-      def tag_or_category_label(page, type, config)
-        label = page.data[type].capitalize
+      def tag_or_category_display_label(label, config)
+        label = label.capitalize
 
         if labels = config["#{type}_labels"]
           label = labels[type] || label
