@@ -220,41 +220,48 @@ module Octopress
           # Only add pages if plugin has a feed template for this item
           # and it hasn't been disabled in the configuration
           #
-          if page_template && config["#{type}_indexes"] != false
+          if page_template
+            if config["#{type}_indexes"] == false
+              page_template.disable
+            else
+              permalink = page_permalink(page_template, lang).sub(":#{type}", item)
 
-            permalink = page_permalink(page_template, lang).sub(":#{type}", item)
+              if page = page_template.new_page({
+                  'lang'      => lang,
+                  "#{type}"   => item,
+                  'title'     => page_title(page_template, config, lang).sub(":#{type}", item_label),
+                  'permalink' => permalink,
+                  'plugin'    => self
+                })
 
-            if page = page_template.new_page({
-                'lang'      => lang,
-                "#{type}"   => item,
-                'title'     => page_title(page_template, config, lang).sub(":#{type}", item_label),
-                'permalink' => permalink,
-                'plugin'    => self
-              })
-
-              Bootstrap.add_page(page, type)
-              Octopress.site.pages << page
+                Bootstrap.add_page(page, type)
+                Octopress.site.pages << page
+              end
             end
           end
 
           # Only add feeds if plugin has a feed template for this item
           # and it hasn't been disabled in the configuration
           #
-          if feed_template && config["#{type}_feeds"] != false
+          if feed_template
 
-            permalink = page_permalink(feed_template, lang).sub(":#{type}", item)
+            if config["#{type}_feeds"] == false
+              feed_template.disable
+            else
+              permalink = page_permalink(feed_template, lang).sub(":#{type}", item)
 
-            if page = feed_template.new_page({
-                'lang'      => lang,
-                "#{type}"   => item,
-                'title'     => page_title(feed_template, config, lang).sub(":#{type}", item_label),
-                'permalink' => permalink,
-                'feed_type' => type,
-                'plugin'    => self
-              })
+              if page = feed_template.new_page({
+                  'lang'      => lang,
+                  "#{type}"   => item,
+                  'title'     => page_title(feed_template, config, lang).sub(":#{type}", item_label),
+                  'permalink' => permalink,
+                  'feed_type' => type,
+                  'plugin'    => self
+                })
 
-              Bootstrap.add_page(page, 'feeds')
-              Octopress.site.pages << page
+                Bootstrap.add_page(page, 'feeds')
+                Octopress.site.pages << page
+              end
             end
           end
         end

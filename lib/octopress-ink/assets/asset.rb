@@ -18,7 +18,7 @@ module Octopress
         end
 
         def info
-          "  - #{info_message}"
+          "  - #{asset_info}"
         end
 
         def asset_info
@@ -41,11 +41,15 @@ module Octopress
         end
 
         def disabled?
-          is_disabled(base, filename) || replaced?
+          @disabled || is_disabled(base, filename) || replaced?
         end
 
         def replaced?
           !@replacement.nil?
+        end
+
+        def disable
+          @disabled = true
         end
 
         def is_disabled(base, file)
