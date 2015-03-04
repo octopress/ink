@@ -3,7 +3,7 @@ module Octopress
     module Assets
       class Coffeescript < Javascript
         def tag
-          "<script src='#{Filters.expand_url(File.join(dir, File.basename(file, '.*') << '.js'))}'></script>"
+          %{<script src="#{Filters.expand_url(File.join(dir, File.basename(file, '.*') << '.js'))}"></script>}
         end
 
         def add

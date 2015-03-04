@@ -28,16 +28,16 @@ module Octopress
             link = item_link(page, item)
 
             if item_list?
-              link = "<li class='#{item_type}-list-item'>#{link}</li>"
+              link = %Q{<li class="#{item_type}-list-item">#{link}</li>}
             end
 
             link
           end
 
           if item_list?
-            "<ul class='#{item_name}-list'>#{items.join}</ul>"
+            %Q{<ul class="#{item_name}-list">#{items.join}</ul>}
           else
-            "<span class='#{item_name}-links'>#{items.join(', ')}</span>"
+            %Q{<span class="#{item_name}-links">#{items.join(', ')}</span>}
           end
         end
 
@@ -56,7 +56,7 @@ module Octopress
         def item_link(page, item)
           dir = Bootstrap.send(item_name, item, page['lang'])
           path = File.join(@context['site']['baseurl'], dir)
-          "<a class='#{item_name}-link' href='#{path}'>#{item.capitalize}</a>"
+          %Q{<a class="#{item_name}-link" href="#{path}">#{item.capitalize}</a>}
         end
       end
     end
