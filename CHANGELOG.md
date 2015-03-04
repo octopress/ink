@@ -1,7 +1,11 @@
 # Changelog
 
-### 1.0.0 RC49 - 2015-03-02
+### 1.0.0 RC50 - 2015-03-04
+- Improved information about disabled or overridden assets on `ink list plugin` commands
+- Reworked plugin bootstrap to use templates instead of pages
+- Removed page clone method (templates should be used for this)
 
+### 1.0.0 RC49 - 2015-03-02
 - New: Plugin bootstrap allows plugins to work with templates for post indexes and RSS feeds. Each with automatic support for multilingual sites.
 
 Plugins can add pages and templates for:
