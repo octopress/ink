@@ -11,7 +11,7 @@ module Octopress
         end
 
         def tag(url, title)
-          "<link href='#{url.sub('index.xml', '')}' title='#{title}' rel='alternate' type='application/atom+xml'>"
+          "<link href='#{File.join('/', Octopress.site.config['baseurl'], url).sub('index.xml', '')}' title='#{title}' rel='alternate' type='application/atom+xml'>"
         end
       end
     end
