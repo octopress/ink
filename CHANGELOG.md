@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.0 RC51 - 2015-03-04
+- Fix: Plugin bootstrap only fires if Site has posts.
+- Fix: Use double quotes for HTML attributes in liquid tags.
+
 ### 1.0.0 RC50 - 2015-03-04
 - Improved information about disabled or overridden assets on `ink list plugin` commands
 - Reworked plugin bootstrap to use templates instead of pages
