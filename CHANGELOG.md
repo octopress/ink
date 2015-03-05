@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.0.0 RC52 - 2015-03-05
+- Plugin Bootstrap's templates do a better job of outputting content based on site posts.
+
 ### 1.0.0 RC51 - 2015-03-04
 - Fix: Plugin bootstrap only fires if Site has posts.
 - Fix: Use double quotes for HTML attributes in liquid tags.
