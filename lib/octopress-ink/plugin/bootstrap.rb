@@ -132,7 +132,7 @@ module Octopress
       def inject_pages(lang=nil)
 
         # Save some time if there are no posts
-        if !Octopress.site.posts.empty?
+        if posts?(lang)
 
           config = self.config(lang)
 
@@ -141,14 +141,30 @@ module Octopress
 
           add_feeds(config, lang, main_feed)
 
-          if defined? Octopress::Linkblog
-            add_feeds(config, lang, links_feed) if Octopress::Linkblog
+          if linkposts?(lang)
+            add_feeds(config, lang, links_feed)
             add_feeds(config, lang, articles_feed)
           end
-        end
 
-        add_meta_indexes(config, lang, 'category', 'categories')
-        add_meta_indexes(config, lang, 'tag', 'tags')
+          add_meta_indexes(config, lang, 'category', 'categories')
+          add_meta_indexes(config, lang, 'tag', 'tags')
+        end
+      end
+
+      def posts?(lang)
+        if lang && Octopress.multilingual?
+          !Octopress.site.posts_by_language(lang).empty?
+        else
+          !Octopress.site.posts.empty?
+        end
+      end
+
+      def linkposts?(lang)
+        if defined?(Octopress::Linkblog) && lang && Octopress.multilingual?
+          !Octopress.site.linkposts_by_language(lang).empty?
+        else
+          !Octopress.site.posts.select {|p| p.data['linkpost']}.empty?
+        end
       end
 
       def add_indexes(config, lang, template)
@@ -202,10 +218,12 @@ module Octopress
         return unless page_template || feed_template
 
         collection = if lang
-          Octopress::Multilingual.send("#{types}_by_language")[lang].keys
+          Octopress.site.send("#{types}_by_language", lang).keys
         else
           Octopress.site.send("#{types}").keys
         end
+
+        require 'pry-byebug'; binding.pry if config.nil?
 
         # User configured categories or tags
         configured = Array(config[types]).map(&:downcase)
