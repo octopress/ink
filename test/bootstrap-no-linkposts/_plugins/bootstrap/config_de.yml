@@ -1,0 +1,5 @@
+titles:
+  post_index: Posts - awesome
+  post_archive: Archivieren - (:lang_name)
+permalinks:
+  post_archive: /:lang/archivieren/

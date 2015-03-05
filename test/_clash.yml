@@ -52,7 +52,17 @@
   build: true
   compare: _expected _site
 -
-  title: Test plugin bootstrap templates 
+  title: Test plugin bootstrap with no posts
+  dir: bootstrap-no-posts
+  build: true
+  compare: _expected _site
+-
+  title: Test plugin bootstrap with no linkposts
+  dir: bootstrap-no-linkposts
+  build: true
+  compare: _expected _site
+-
+  title: Test plugin bootstrap with all the toppings
   dir: bootstrap-multilingual-linkblog
   build: true
   compare: _expected _site
