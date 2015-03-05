@@ -68,9 +68,8 @@ module Octopress
         end
       end
 
+      # Find templates
       def register_templates
-        # Find pages and templates
-
         @post_index       = templates.find { |p| p.filename == 'post_index.html' }
         @post_archive     = templates.find { |p| p.filename == 'post_archive.html' }
         @main_feed        = templates.find { |p| p.filename == 'main_feed.xml' }
@@ -131,18 +130,21 @@ module Octopress
       #   - Category and tag indexes and feeds depend on post metadata and configuration
       #
       def inject_pages(lang=nil)
-        config = self.config(lang)
 
-        # Only clone these pages for additional languages
-        #
-        add_indexes(config, lang, post_index)
-        add_indexes(config, lang, post_archive)
+        # Save some time if there are no posts
+        if !Octopress.site.posts.empty?
 
-        add_feeds(config, lang, main_feed)
+          config = self.config(lang)
 
-        if defined? Octopress::Linkblog
-          add_feeds(config, lang, links_feed)
-          add_feeds(config, lang, articles_feed)
+          add_indexes(config, lang, post_index)
+          add_indexes(config, lang, post_archive)
+
+          add_feeds(config, lang, main_feed)
+
+          if defined? Octopress::Linkblog
+            add_feeds(config, lang, links_feed) if Octopress::Linkblog
+            add_feeds(config, lang, articles_feed)
+          end
         end
 
         add_meta_indexes(config, lang, 'category', 'categories')
