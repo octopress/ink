@@ -223,8 +223,6 @@ module Octopress
           Octopress.site.send("#{types}").keys
         end
 
-        require 'pry-byebug'; binding.pry if config.nil?
-
         # User configured categories or tags
         configured = Array(config[types]).map(&:downcase)
 
