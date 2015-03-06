@@ -1,6 +1,6 @@
 # Changelog
 
-### 1.0.0 RC52 - 2015-03-05
+### 1.0.0 RC53 - 2015-03-05
 - Fix: Removed reference to debugger
 
 ### 1.0.0 RC52 - 2015-03-05
