@@ -1,6 +1,9 @@
 # Changelog
 
 ### 1.0.0 RC52 - 2015-03-05
+- Fix: Removed reference to debugger
+
+### 1.0.0 RC52 - 2015-03-05
 - Plugin Bootstrap's templates do a better job of outputting content based on site posts.
 
 ### 1.0.0 RC51 - 2015-03-04
