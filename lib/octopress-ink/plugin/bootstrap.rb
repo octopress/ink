@@ -68,26 +68,17 @@ module Octopress
         end
       end
 
-      def bootstrap_template(name)
-        if local && layout = Octopress.site.layouts.values.find { |l| l.name == name }
-          @layout_dir ||= Jekyll::LayoutReader.new(Octopress.site).layout_directory
-          Assets::LocalTemplate.new(self, @layout_dir, layout)
-        else
-          find_template(name)
-        end
-      end
-
       # Find templates
       def register_templates
-        @post_index       = bootstrap_template('post_index.html')
-        @post_archive     = bootstrap_template('post_archive.html')
-        @main_feed        = bootstrap_template('main_feed.xml')
-        @articles_feed    = bootstrap_template('articles_feed.xml')
-        @links_feed       = bootstrap_template('links_feed.xml')
-        @category_index   = bootstrap_template('category_index.html')
-        @tag_index        = bootstrap_template('tag_index.html')
-        @category_feed    = bootstrap_template('category_feed.xml')
-        @tag_feed         = bootstrap_template('tag_feed.xml')
+        @post_index       = find_template('post_index.html')
+        @post_archive     = find_template('post_archive.html')
+        @main_feed        = find_template('main_feed.xml')
+        @articles_feed    = find_template('articles_feed.xml')
+        @links_feed       = find_template('links_feed.xml')
+        @category_index   = find_template('category_index.html')
+        @tag_index        = find_template('tag_index.html')
+        @category_feed    = find_template('category_feed.xml')
+        @tag_feed         = find_template('tag_feed.xml')
       end
 
       # Merge optional configurations with plugin configuration
