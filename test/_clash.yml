@@ -52,6 +52,11 @@
   build: true
   compare: _expected _site
 -
+  title: Test local plugin bootstrap
+  dir: bootstrap-local
+  build: true
+  compare: _expected/index.html _site/index.html
+-
   title: Test plugin bootstrap with no posts
   dir: bootstrap-no-posts
   build: true
