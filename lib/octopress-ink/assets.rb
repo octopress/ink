@@ -7,6 +7,7 @@ module Octopress
       autoload :FileAsset,            'octopress-ink/assets/file'
       autoload :PageAsset,            'octopress-ink/assets/page'
       autoload :Template,             'octopress-ink/assets/template'
+      autoload :LocalTemplate,        'octopress-ink/assets/local_template'
       autoload :Javascript,           'octopress-ink/assets/javascript'
       autoload :Coffeescript,         'octopress-ink/assets/coffeescript'
       autoload :Stylesheet,           'octopress-ink/assets/stylesheet'
