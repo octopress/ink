@@ -68,17 +68,25 @@ module Octopress
         end
       end
 
+      def find_template(name)
+        if local
+          Octopress.site.layouts.find { |l| l.name == name }
+        else
+          templates.find { |t| t.filename == name }
+        end
+      end
+
       # Find templates
       def register_templates
-        @post_index       = templates.find { |p| p.filename == 'post_index.html' }
-        @post_archive     = templates.find { |p| p.filename == 'post_archive.html' }
-        @main_feed        = templates.find { |p| p.filename == 'main_feed.xml' }
-        @articles_feed    = templates.find { |p| p.filename == 'articles_feed.xml' }
-        @links_feed       = templates.find { |p| p.filename == 'links_feed.xml' }
-        @category_index   = templates.find { |t| t.filename == 'category_index.html' }
-        @tag_index        = templates.find { |t| t.filename == 'tag_index.html' }
-        @category_feed    = templates.find { |t| t.filename == 'category_feed.xml' }
-        @tag_feed         = templates.find { |t| t.filename == 'tag_feed.xml' }
+        @post_index       = find_template('post_index.html')
+        @post_archive     = find_template('post_archive.html')
+        @main_feed        = find_template('main_feed.xml')
+        @articles_feed    = find_template('articles_feed.xml')
+        @links_feed       = find_template('links_feed.xml')
+        @category_index   = find_template('category_index.html')
+        @tag_index        = find_template('tag_index.html')
+        @category_feed    = find_template('category_feed.xml')
+        @tag_feed         = find_template('tag_feed.xml')
       end
 
       # Merge optional configurations with plugin configuration

@@ -58,9 +58,7 @@ module Octopress
         end
 
         def path
-          if @found_file
-            @found_file
-          else
+          @path ||= begin
             files = []
             files << user_path
             files << plugin_path
@@ -69,7 +67,8 @@ module Octopress
             if files.empty?
               raise IOError.new "Could not find #{File.basename(file)} at #{file}"
             end
-            @found_file = files[0]
+
+            files[0]
           end
         end
 
