@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.0 RC54 - 2015-03-10
+- Added `new_page` method to page assets to mirror template functionality.
+- Generated pages can now reference the asset instance that generated them.
+
 ### 1.0.0 RC53 - 2015-03-05
 - Fix: Removed reference to debugger
 
