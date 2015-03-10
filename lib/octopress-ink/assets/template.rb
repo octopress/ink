@@ -33,6 +33,7 @@ module Octopress
           page = Ink::Page.new(Octopress.site, File.dirname(self.path), '.', File.basename(self.path))
           page.data.merge!(data)
           page.plugin = plugin
+          page.asset = self
           self.pages << page
 
           if existing_page = page_exists?(page)

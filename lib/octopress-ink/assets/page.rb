@@ -39,6 +39,14 @@ module Octopress
           Jekyll::Utils.deep_merge_hashes(page.data, data)
         end
 
+        def new_page(data={})
+          page = Ink::Page.new(Octopress.site, File.dirname(self.path), '.', File.basename(self.path))
+          page.data.merge!(data)
+          page.plugin = plugin
+          page.asset = self
+          page
+        end
+
         def find_page(page)
           site_dir = Octopress.site.dest
           dest = page.destination(site_dir)
@@ -61,6 +69,7 @@ module Octopress
 
             page.data.merge!(@data)
             page.plugin = plugin
+            page.asset = self
 
             page
           end
