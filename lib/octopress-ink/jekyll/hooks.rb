@@ -3,6 +3,7 @@ module Octopress
     class SiteHook < Hooks::Site
 
       def reset(site)
+        Ink.watch_assets(site)
         if Plugins.registered
           Plugins.reset
         end

@@ -97,6 +97,12 @@ module Octopress
       Docs.register_docs options
     end
 
+    def watch_assets(site)
+      if site.config['ink_watch']
+        require 'octopress-ink/watch'
+      end
+    end
+
     def config
       @config ||= Configuration.config
     end
@@ -109,7 +115,6 @@ module Octopress
       begin
         Plugins.plugin(name)
       rescue
-        return false
       end
     end
 
