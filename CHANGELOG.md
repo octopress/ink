@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.0.0 RC55 - 2015-03-14
+- Added `ink_watch` site configuration, allowing plugin authors to add their plugin assets directory to Jekyll's watch list.
+
 ### 1.0.0 RC54 - 2015-03-10
 - Added `new_page` method to page assets to mirror template functionality.
 - Generated pages can now reference the asset instance that generated them.
