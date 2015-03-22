@@ -1,5 +1,13 @@
 # Changelog
 
+### 1.0.0 RC56 - 2015-03-22
+- Fix: Tag links and lists weren't being ouput
+- Fix: Tags and categories would throw errors if tags were used but plugin
+  didn't have tag/category templates installed.
+- Change: tag names:
+  from {% tags %} -> {% tag_links %}
+  from {% categories %} -> {% category_links %}
+
 ### 1.0.0 RC55 - 2015-03-14
 - Added `ink_watch` site configuration, allowing plugin authors to add their plugin assets directory to Jekyll's watch list.
 
