@@ -27,7 +27,7 @@ module Octopress
           @categories[category]
         end
 
-        def tag(category, lang)
+        def tag(tag, lang)
           tag = "#{tag}_#{page.lang}" if Octopress.multilingual? && page.lang 
           @tags[tag]
         end

@@ -13,26 +13,21 @@ module Octopress
         def render(context)
           @context = context
 
-
-          # If no input is passed, render in context of current page
-          # This allows the tag to be used without input on post templates
-          # But in a page loop it should be told passed the post item
-          #
-
-          page = context[@input] || context['page']
+          # Check to see if post loop is active, otherwise default to current page
+          page = context['post'] || context['page']
           items = page[item_name_plural]
 
           return '' if items.nil? || items.empty?
 
-          items = items.sort.map do |item|
-            link = item_link(page, item)
-
+          items = items.sort.map { |i| item_link(page, i) }.compact.map do |link|
             if item_list?
-              link = %Q{<li class="#{item_type}-list-item">#{link}</li>}
+              link = %Q{<li class="#{item_name}-list-item">#{link}</li>}
             end
 
             link
           end
+
+          return '' if items.empty?
 
           if item_list?
             %Q{<ul class="#{item_name}-list">#{items.join}</ul>}
@@ -54,9 +49,10 @@ module Octopress
         end
 
         def item_link(page, item)
-          dir = Bootstrap.send(item_name, item, page['lang'])
-          path = File.join(@context['site']['baseurl'], dir)
-          %Q{<a class="#{item_name}-link" href="#{path}">#{item.capitalize}</a>}
+          if dir = Bootstrap.send(item_name, item, page['lang'])
+            path = File.join(@context['site']['baseurl'] || '', dir)
+            %Q{<a class="#{item_name}-link" href="#{path}">#{item.capitalize}</a>}
+          end
         end
       end
     end
