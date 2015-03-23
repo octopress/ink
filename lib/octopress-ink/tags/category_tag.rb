@@ -15,9 +15,23 @@ module Octopress
 
           # Check to see if post loop is active, otherwise default to current page
           page = context['post'] || context['page']
+
+          tags = Bootstrap.send(@tag)[page['url']]
+
+          if tags.nil?
+            if tags = item_tags(page)
+              # Cache tags to speed up multiple references for the same post
+              Bootstrap.send(@tag)[page['url']] = tags
+            end
+          end
+
+          tags
+        end
+
+        def item_tags(page)
           items = page[item_name_plural]
 
-          return '' if items.nil? || items.empty?
+          return nil if items.nil? || items.empty?
 
           items = items.sort.map { |i| item_link(page, i) }.compact.map do |link|
             if item_list?
@@ -27,7 +41,7 @@ module Octopress
             link
           end
 
-          return '' if items.empty?
+          return nil if items.empty?
 
           if item_list?
             %Q{<ul class="#{item_name}-list">#{items.join}</ul>}

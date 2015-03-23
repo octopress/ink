@@ -10,12 +10,17 @@ module Octopress
 
       class << self
         attr_reader :pages, :categories, :tags, :feeds
+        attr_accessor :tag_links, :category_links, :tag_list, :category_list
 
         def reset
-          @pages      = {}
-          @categories = {}
-          @tags       = {}
-          @feeds      = {}
+          @pages           = {}
+          @categories      = {}
+          @tags            = {}
+          @feeds           = {}
+          @tag_links       = {}
+          @tag_list        = {}
+          @category_links  = {}
+          @category_list   = {}
         end
 
         def page(lang, type, key)
