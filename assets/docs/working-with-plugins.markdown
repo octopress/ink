@@ -10,10 +10,10 @@ If you were going to install the [octopress-codefence](https://github.com/octopr
 
 #### Using Bundler
 
-If you are using [Bundler](http://bundler.io), simply add it to your Gemfile in the `:octopress` group and run `bundle`. Octopress will automatically load the plugin when you build your site.
+If you are using [Bundler](http://bundler.io), simply add it to your Gemfile in the `:jekyll_plugins` group and run `bundle`. Octopress will automatically load the plugin when you build your site.
 
 ```ruby
-group :octopress do
+group :jekyll_plugins do
   gem 'octopress-codefence'
 end
 ```
