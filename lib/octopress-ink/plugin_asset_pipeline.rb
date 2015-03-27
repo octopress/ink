@@ -11,6 +11,8 @@ module Octopress
         @uglify_settings = nil
         @combined_js = ''
         @combined_stylesheets = nil
+        @stylesheet_fingerprint = {}
+        @javascript_fingerprint = nil
       end
 
       # Compile CSS to take advantage of Sass's compression settings
@@ -104,7 +106,6 @@ module Octopress
       end
 
       def stylesheet_fingerprint(media)
-        @stylesheet_fingerprint ||= {}
         @stylesheet_fingerprint[media] ||=
           fingerprint(stylesheets[media].clone.map(&:path))
       end
