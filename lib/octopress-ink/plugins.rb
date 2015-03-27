@@ -1,8 +1,8 @@
 module Octopress
   module Ink
     module Plugins
-      extend self
       attr_reader :registered
+      extend self
 
       @registered = false
       @plugins = []
@@ -43,16 +43,19 @@ module Octopress
       end
 
       def reset
-        @static_files = []
         @registered = false
-        @css_tags = []
-        @js_tags = []
-        Bootstrap.reset
       end
 
       def register
         unless @registered
           @registered = true
+          @static_files = []
+          @css_tags = []
+          @js_tags = []
+          Bootstrap.reset
+          PluginAssetPipeline.reset
+
+          puts 'registering'
           plugins.each(&:register) 
         end
       end

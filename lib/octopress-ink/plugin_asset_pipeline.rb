@@ -1,10 +1,21 @@
 module Octopress
   module Ink
     module PluginAssetPipeline
+      extend self
+
+      def reset
+        @sass_converter = nil
+        @combined_stylesheets = nil
+        @stylesheets = nil
+        @javascripts = nil
+        @uglify_settings = nil
+        @combined_js = ''
+        @combined_stylesheets = nil
+      end
 
       # Compile CSS to take advantage of Sass's compression settings
       #
-      def self.compile_css(content)
+      def compile_css(content)
         configs = sass_converter.sass_configs
         configs[:syntax] = :scss
         configs[:style] ||= :compressed if Ink.configuration['asset_pipeline']['compress_css']
@@ -12,13 +23,13 @@ module Octopress
         Sass.compile(content, configs)
       end
 
-      def self.compile_sass(sass)
+      def compile_sass(sass)
         Sass.compile(sass.render, sass_configs(sass))
       end
 
       # Gets default Sass configuration hash from Jekyll
       #
-      def self.sass_configs(sass)
+      def sass_configs(sass)
         configs = sass_converter.sass_configs
 
         configs[:syntax] = sass.ext.sub(/^\./,'').to_sym
@@ -32,20 +43,17 @@ module Octopress
       
       # Access Jekyll's built in Sass converter
       #
-      def self.sass_converter
-        if @sass_converter
-          @sass_converter
-        else
-          Octopress.site.converters.each do |c|
-            @sass_converter = c if c.kind_of?(Jekyll::Converters::Sass) 
+      def sass_converter
+        @sass_converter ||= begin
+          Octopress.site.converters.find do |c|
+            c.kind_of?(Jekyll::Converters::Sass) 
           end
-          @sass_converter
         end
       end
 
       # Return a link tag, for all plugins' stylesheets
       #
-      def self.combined_stylesheet_tag
+      def combined_stylesheet_tag
         tags = ''
         combine_stylesheets.keys.each do |media|
           tags.concat "<link href='#{Filters.expand_url(combined_stylesheet_path(media))}' media='#{media}' rel='stylesheet' type='text/css'>"
@@ -53,7 +61,7 @@ module Octopress
         tags
       end
 
-      def self.combined_javascript_tag
+      def combined_javascript_tag
         unless @combined_js == ''
           "<script src='#{Filters.expand_url(combined_javascript_path)}'></script>"
         end
@@ -66,10 +74,8 @@ module Octopress
       #
       #   output: { 'screen' => 'body { background... }' }
       #
-      def self.combine_stylesheets
-        if @combined_stylesheets
-          @combined_stylesheets
-        else
+      def combine_stylesheets
+        @combined_stylesheets ||= begin
           combined = {}
 
           stylesheets.clone.each do |media,files|
@@ -81,12 +87,11 @@ module Octopress
             end
           end
 
-          @combined_stylesheets = combined
+          combined
         end
       end
 
-      def self.write_combined_stylesheet
-        @combined_stylesheets = nil
+      def write_combined_stylesheet
         css = combine_stylesheets
         css.keys.each do |media|
           contents = compile_css(css[media])
@@ -94,11 +99,11 @@ module Octopress
         end
       end
 
-      def self.combined_stylesheet_path(media)
+      def combined_stylesheet_path(media)
         File.join('stylesheets', "#{media}-#{stylesheet_fingerprint(media)}.css")
       end
 
-      def self.stylesheet_fingerprint(media)
+      def stylesheet_fingerprint(media)
         @stylesheet_fingerprint ||= {}
         @stylesheet_fingerprint[media] ||=
           fingerprint(stylesheets[media].clone.map(&:path))
@@ -110,10 +115,8 @@ module Octopress
       #
       #   output: { 'screen' => [Octopress::Ink::Assets::Stylesheet, ..]
       #
-      def self.stylesheets
-        if @stylesheets
-          @stylesheets
-        else
+      def stylesheets
+       @stylesheets ||= begin
           files = {}
           Plugins.plugins.clone.each do |plugin| 
             plugin.stylesheets.each do |file|
@@ -121,27 +124,25 @@ module Octopress
               files[file.media] << file
             end
           end
-          @stylesheets = files
+          files
         end
       end
 
-      def self.javascripts
+      def javascripts
         @javascripts ||=
           Plugins.plugins.clone.map(&:javascripts).flatten
       end
 
-      def self.javascript_fingerprint
+      def javascript_fingerprint
         @javascript_fingerprint ||=
           fingerprint(javascripts.clone.map(&:path))
       end
 
-      def self.combined_javascript_path
+      def combined_javascript_path
         File.join('javascripts', "all-#{javascript_fingerprint}.js")
       end
 
-      def self.write_combined_javascript
-        @combined_js = ''
-
+      def write_combined_javascript
         if Ink.configuration['asset_pipeline']['combine_js']
           javascripts.each do |file|
 
@@ -170,15 +171,15 @@ module Octopress
         end
       end
 
-      def self.compress_js?(file)
+      def compress_js?(file)
         Ink.configuration['asset_pipeline']['compress_js'] && !file.path.end_with?('.min.js')
       end
 
-      def self.write_files(source, dest)
+      def write_files(source, dest)
         Plugins.static_files << StaticFileContent.new(source, dest)
       end
 
-      def self.fingerprint(paths)
+      def fingerprint(paths)
         return '' if ENV['JEKYLL_ENV'] == 'test'
         paths = [paths] unless paths.is_a? Array
         Digest::MD5.hexdigest(paths.clone.map! { |path| "#{File.mtime(path).to_i}" }.join)
