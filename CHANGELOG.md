@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.0.0 RC59 - 2015-03-27
+- Fix: Properly clean asset cache during Jekyll watch.
+
 ### 1.0.0 RC58 - 2015-03-27
 - Fix: When assets are recompiled during Jekyll watch, their file fingerprints are refreshed.
 
