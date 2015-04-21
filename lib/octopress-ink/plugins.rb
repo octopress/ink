@@ -52,6 +52,7 @@ module Octopress
           @static_files = []
           @css_tags = []
           @js_tags = []
+          Cache.reset
           Bootstrap.reset
           PluginAssetPipeline.reset
 

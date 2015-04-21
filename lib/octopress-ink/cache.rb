@@ -4,7 +4,10 @@ module Octopress
       extend self
 
       INK_CACHE_DIR = '.ink-cache'
-      @cache_files = []
+
+      def reset
+        @cache_files = []
+      end
 
       def read_cache(asset, options)
         path = get_cache_path(INK_CACHE_DIR, cache_label(asset), options.to_s << asset.content)
