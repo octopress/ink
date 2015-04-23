@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.0 RC60 - 2015-04-24
+- Fix: New plugin gemspec has a proper regex for adding files.
+- Fix: Plugins created when passing --path option get proper correct names.
+
 ### 1.0.0 RC59 - 2015-03-27
 - Fix: Properly clean asset cache during Jekyll watch.
 
