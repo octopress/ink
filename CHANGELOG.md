@@ -15,7 +15,7 @@
 - Minor: Added caching to speed up category and tag liquid tags.
 
 ### 1.0.0 RC56 - 2015-03-22
-- Fix: Tag links and lists weren't being ouput
+- Fix: Tag links and lists weren't being output
 - Fix: Tags and categories would throw errors if tags were used but plugin
   didn't have tag/category templates installed.
 - Change: tag names:
