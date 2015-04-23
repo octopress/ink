@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.0.0 RC62 - 2015-04-25
+- Fix: octopress-autoprefixer is a runtime dependencies, not a development dependency.
+
 ### 1.0.0 RC61 - 2015-04-25
 - New: Added octopress-autoprefixer to runtime dependencies. Now plugins can expect prefix-free CSS.
 
