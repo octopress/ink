@@ -6,6 +6,7 @@ require 'octopress'
 require 'octopress-hooks'
 require 'octopress-filters'
 require 'octopress-include-tag'
+require 'octopress-autoprefixer'
 
 require 'octopress-ink/version'
 require 'octopress-ink/configuration'

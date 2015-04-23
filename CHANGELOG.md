@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.0.0 RC61 - 2015-04-25
+- New: Added octopress-autoprefixer to runtime dependencies. Now plugins can expect prefix-free CSS.
+
 ### 1.0.0 RC60 - 2015-04-24
 - Fix: New plugin gemspec has a proper regex for adding files.
 - Fix: Plugins created when passing --path option get proper correct names.
