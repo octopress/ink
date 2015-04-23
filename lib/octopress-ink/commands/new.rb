@@ -26,21 +26,21 @@ module Octopress
           gem_name = @options['name']
           path_to_gem = File.join(path, gem_name)
 
-          if !Dir.exist?(path)
+          if !File.exist?(path)
             raise "Directory not found: #{File.expand_path(path)}."
           end
 
-          if !Dir["#{path_to_gem}/*"].empty?
-            raise "Directory not empty: #{File.expand_path(path_to_gem)}."
-          end
+          Dir.chdir(path) do
+            if Dir.exist?(gem_name) && !Dir["#{gem_name}/*"].empty?
+              raise "Directory not empty: #{File.expand_path(gem_name)}."
+            end
 
-          FileUtils.cd path do
             name = gem_name.gsub(/-/,'_')
             create_gem(name)
 
-            fix_name(path) if name != gem_name
+            fix_name(gem_name) if name != gem_name
 
-            @settings = gem_settings(path_to_gem)
+            @settings = gem_settings(gem_name)
             @settings[:type] = @options['theme'] ? 'theme' : 'plugin'
 
             fix_spec_files
@@ -53,7 +53,7 @@ module Octopress
 
         def self.fix_name(path)
           name = @options['name'].gsub(/-/,'_')
-          path = rename(path, name)
+          path = rename('./', name)
 
           rename(path, "lib/#{name}")
 
@@ -87,7 +87,7 @@ module Octopress
 
         def self.fix_spec_files
           @settings[:gemspec].sub! /(#{@settings[:spec_var]}\.files\s+=\s+)(.+)$/ do
-            $1+"`git ls-files -z`.split(\"\\x0\").grep(/^(bin\/|lib\/|assets\/|changelog|readme|license)/i)"
+            $1+"`git ls-files -z`.split(\"\\x0\").grep(%r{^(bin/|lib/|assets/|changelog|readme|license)}i)"
           end.sub!(/\s*#{@settings[:spec_var]}\.test_files.+$/, '') 
         end
 

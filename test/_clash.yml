@@ -87,14 +87,15 @@
   title: Should create a plugins scaffold
   dir: standard
   before: 
+    - 'rm -rf _site/test-theme'
     - 'git config user.name > .git-config-user-name'
     - 'git config user.email > .git-config-user-email'
     - 'git config user.name ""'
     - 'git config user.email ""'
-    - 'octopress ink new test-theme --theme'
-    - 'rm -rf test-theme/.git'
-  compare: _expected/test-theme test-theme
+    - 'octopress ink new test-theme --theme --path _site'
+    - 'rm -rf _site/test-theme/.git'
+  compare: _expected/test-theme _site/test-theme
   after:
     - 'cat .git-config-user-name | tr -d "\n" | xargs -0 git config user.name'
     - 'cat .git-config-user-email | tr -d "\n" | xargs -0 git config user.email'
-    - 'rm -rf test-theme .git-config-user-name .git-config-user-email'
+    - 'rm -rf .git-config-user-name .git-config-user-email'
