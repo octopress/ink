@@ -10,6 +10,15 @@ module Octopress
         page_source.relative_path_from(site_source).to_s
       end
 
+      def render(layouts, site_payload)
+        site_payload = {
+          'plugin' => plugin.config(data['lang'])
+        }.merge(site_payload)
+
+        super(layouts, site_payload)
+      end
+      
+
       # Allow pages to read url from plugin configuration
       #
       def url

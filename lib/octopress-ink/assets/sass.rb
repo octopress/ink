@@ -39,8 +39,8 @@ module Octopress
         def content
           @render ||= begin
             contents = super
-            if asset_payload = payload
-              Liquid::Template.parse(contents).render!(payload)
+            if payload
+              Liquid::Template.parse(contents).render!({ 'plugin' => @plugin.config }.merge(payload))
             else
               contents
             end

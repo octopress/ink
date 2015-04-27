@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.0.0 RC63 - 2015-04-26
+- New: Pages and Sass assets can read plugin config at {{ plugin.config_label }} instead of {{ plugins.plugin-name.config_label }}.
+
 ### 1.0.0 RC62 - 2015-04-25
 - Fix: octopress-autoprefixer is a runtime dependencies, not a development dependency.
 
