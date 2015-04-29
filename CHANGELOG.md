@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.0.0 RC64 - 2015-04-28
+- Minor: Improved bundler integration
+- Minor: Added short flags for ink list and ink copy subcommands.
+
 ### 1.0.0 RC63 - 2015-04-26
 - New: Pages and Sass assets can read plugin config at {{ plugin.config_label }} instead of {{ plugins.plugin-name.config_label }}.
 
