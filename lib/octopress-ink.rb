@@ -36,10 +36,6 @@ module Octopress
       require 'octopress-ink/commands'
     end
 
-    if ENV['OCTODEV']
-      require 'octopress-debugger'
-    end
-
     @load_plugin_assets = true
 
     Plugins.reset

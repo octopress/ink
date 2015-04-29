@@ -107,13 +107,14 @@ _site
         #
         def self.create_gem(name)
           begin
+            require 'bundler'
             require 'bundler/cli'
-            bundler = Bundler::CLI.new
+            Bundler::CLI.start(['gem', name])
+
           rescue LoadError
-            raise "To use this feautre you'll need to install the bundler gem with `gem install bundler`."
+            raise "To use this feature you'll need to install the bundler gem with `gem install bundler`."
           end
 
-          bundler.gem(name)
         end
 
         # Add Octopress Ink dependency to Gemspec
