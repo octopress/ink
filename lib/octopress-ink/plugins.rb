@@ -56,7 +56,6 @@ module Octopress
           Bootstrap.reset
           PluginAssetPipeline.reset
 
-          puts 'registering'
           plugins.each(&:register) 
         end
       end
