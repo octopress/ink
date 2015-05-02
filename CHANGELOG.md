@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.0 - 2015-05-02
+- Minor: Improved styling for Octopress Ink list command output.
+- Minor: Fixed issue where changelog couldn't be processed by Octopress Docs.
+
 ### 1.0.0 RC64 - 2015-04-28
 - Minor: Improved bundler integration
 - Minor: Added short flags for ink list and ink copy subcommands.
@@ -32,8 +36,8 @@
 - Fix: Tags and categories would throw errors if tags were used but plugin
   didn't have tag/category templates installed.
 - Change: tag names:
-  from {% tags %} -> {% tag_links %}
-  from {% categories %} -> {% category_links %}
+  from `{% tags %}` -> `{% tag_links %}`
+  from `{% categories %}` -> `{% category_links %}`
 
 ### 1.0.0 RC55 - 2015-03-14
 - Added `ink_watch` site configuration, allowing plugin authors to add their plugin assets directory to Jekyll's watch list.
@@ -232,7 +236,7 @@ If a user installs octopress-multilingual, all pages will be replicated and filt
 
 ### 1.0.0 RC10 - 2014-06-26
 
-- Render tag does a better job of preserving {% raw %} escaped content.
+- Render tag does a better job of preserving `{% raw %}` escaped content.
 
 ### 1.0.0 RC9 - 2014-06-21
 
