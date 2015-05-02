@@ -74,6 +74,7 @@ module Octopress
     # plugin - A subclass of Plugin
     #
     def register_plugin(plugin, options={})
+      options['type'] ||= 'plugin'
       Plugins.register_plugin(plugin, options)
     end
 
