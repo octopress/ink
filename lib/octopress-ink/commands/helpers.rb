@@ -14,7 +14,7 @@ module Octopress
           c.option "javascripts", "-j", "--javascripts", "#{action} only Javascripts (.js and .coffee)"
           c.option "js", "--js", "#{action} only Javascript files (.js)"
           c.option "coffee", "--coffee", "#{action} only Coffeescript files (.coffee)"
-          c.option "images", "-img", "--images", "#{action} only images"
+          c.option "images", "-I", "--images", "#{action} only images"
           c.option "fonts", "--fonts", "#{action} only fonts"
           c.option "files", "--files", "#{action} only files"
         end

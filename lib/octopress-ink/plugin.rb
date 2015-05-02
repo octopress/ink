@@ -296,16 +296,16 @@ module Octopress
 
           case name
           when 'pages'
-            header = "pages:".ljust(36) + "urls"
+            header = "pages:".ljust(36).bold + "urls"
             message << asset_list(assets.sort_by(&:file), header)
           when 'config-file'
-            message << " config:\n"
+            message << " config:\n".bold
             message << Ink::Utils.pretty_print_yaml(@config)
             message << "\n"
 
             lang_config_hash.keys.each do |lang|
               message << "\n"
-              message << " config_#{lang}:\n"
+              message << " config_#{lang}:\n".bold
               message << Ink::Utils.pretty_print_yaml(config(lang))
             end
 
@@ -325,7 +325,7 @@ module Octopress
       end
 
       def asset_list(assets, heading)
-        list = " #{heading}:\n"
+        list = " #{heading}:\n".bold
         assets.each do |asset|
           list << "#{asset.info.rstrip}\n"
         end
@@ -334,11 +334,11 @@ module Octopress
       end
 
       def minimal_list
-        message = " #{@name}"
-        message += " (#{slug})"
-        message += " - v#{@version}" if @version
+        message = "#{@name.bold}"
+        message += ", v#{@version}" if @version
+        message += " (slug: #{slug})"
         if @description && !@description.empty?
-          message = "#{message.ljust(30)}\n#{@description}"
+          message = %Q{\n  #{message.ljust(30)}\n    "#{@description}"}
         end
         message += "\n"
       end
@@ -347,19 +347,19 @@ module Octopress
         list = assets_list(options)
         return '' if list.empty?
 
-        name = "Plugin: #{@name}"
+        name = "Plugin: #{@name.bold}"
         name += " (theme)" if @type == 'theme'
         name += " - v#{@version}" if @version
         name  = name
         message = name
         message += "\nSlug: #{slug}"
 
-        if @description && !@description.empty?
-          message += "\n#{@description}"
-        end
-
         if @website && !@website.empty?
           message += "\n#{@website}"
+        end
+
+        if @description && !@description.empty?
+          message += %Q{\n"#{@description}"}
         end
 
         lines = ''
