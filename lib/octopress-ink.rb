@@ -13,9 +13,6 @@ require 'octopress-ink/configuration'
 require 'octopress-ink/jekyll/hooks'
 require 'octopress-ink/tags/set_lang'
 require 'octopress-ink/cache'
-begin
-  require 'octopress-debugger'
-rescue; end
 
 module Octopress
   module Ink
