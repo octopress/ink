@@ -42,6 +42,16 @@
     - _expected/order_assets/javascripts _site/javascripts
     - _expected/order_assets/asset_tag.html _site/asset_tag.html
 -
+  title: Should build with asynchronous CSS loading via loadCSS.js
+  dir: standard
+  build: true
+  config:
+    jekyll: 
+      - _config.yml
+      - _async_css.yml
+  compare:
+    - _expected/async_css/asset_tag.html _site/asset_tag.html
+-
   title: Should allow multilingual configuration
   dir: multilingual
   build: true
