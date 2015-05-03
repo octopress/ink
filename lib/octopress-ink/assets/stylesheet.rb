@@ -27,7 +27,11 @@ module Octopress
         end
 
         def tag
-          %Q{<link href="#{Filters.expand_url(File.join(dir, output_file_name))}" media="#{media}" rel="stylesheet" type="text/css">}
+          %Q{<link href="#{tag_path}" media="#{media}" rel="stylesheet" type="text/css">}
+        end
+
+        def tag_path
+          Filters.expand_url(File.join(dir, output_file_name))
         end
 
         def add

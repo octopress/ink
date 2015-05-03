@@ -1,7 +1,7 @@
 module Octopress
   module Ink
     module Plugins
-      attr_reader :registered
+      attr_reader :registered, :css_asset_paths, :js_asset_paths
       extend self
 
       @registered = false
@@ -150,7 +150,7 @@ module Octopress
 
       def css_tags
         if Ink.configuration['asset_pipeline']['combine_css']
-          PluginAssetPipeline.combined_stylesheet_tag
+          PluginAssetPipeline.stylesheet_tag
         else
           @css_tags.join('')
         end
@@ -158,7 +158,7 @@ module Octopress
 
       def js_tags
         if Ink.configuration['asset_pipeline']['combine_js']
-          PluginAssetPipeline.combined_javascript_tag
+          PluginAssetPipeline.javascript_tag
         else
           @js_tags.join('')
         end
