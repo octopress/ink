@@ -54,7 +54,7 @@ module Octopress
         'plugins'   => config['plugins'],
         'theme'     => config['theme'],
         'octopress' => {
-          'version' => version
+          'version' => version,
         }
       }
 

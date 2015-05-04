@@ -2,8 +2,9 @@ module Octopress
   module Ink
     module Assets
       class Coffeescript < Javascript
-        def tag
-          %{<script src="#{Filters.expand_url(File.join(dir, File.basename(file, '.*') << '.js'))}"></script>}
+
+        def tag_path
+          Filters.expand_url(File.join(dir, File.basename(file, '.*') << '.js'))
         end
 
         def add

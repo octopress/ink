@@ -10,9 +10,9 @@ module Octopress
         @javascripts = nil
         @uglify_settings = nil
         @combined_js = ''
-        @combined_stylesheets = nil
         @stylesheet_fingerprint = {}
         @javascript_fingerprint = nil
+        @uglify_settings ||= Jekyll::Utils.symbolize_hash_keys(Ink.configuration['asset_pipeline']['uglifier'])
       end
 
       # Compile CSS to take advantage of Sass's compression settings
@@ -55,20 +55,60 @@ module Octopress
 
       # Return a link tag, for all plugins' stylesheets
       #
+      def stylesheet_tag
+        if Ink.configuration['asset_pipeline']['async_css']
+          async_stylesheet_tag
+        else
+          combined_stylesheet_tag
+        end
+      end
+
       def combined_stylesheet_tag
         tags = ''
-        combine_stylesheets.keys.each do |media|
-          tags.concat "<link href='#{Filters.expand_url(combined_stylesheet_path(media))}' media='#{media}' rel='stylesheet' type='text/css'>"
+        combined_stylesheet_urls.each do |media, url|
+          tags.concat "<link href='#{url}' media='#{media}' rel='stylesheet' type='text/css'>"
         end
         tags
       end
 
-      def combined_javascript_tag
+      def async_stylesheet_tag
+        js = uglify(File.read(Ink.gem_dir('assets','js','loadCSS.js')))
+        %Q{<script>#{js}\n#{load_css}\n</script>\n<noscript>#{combined_stylesheet_tag}</noscript>}
+      end
+
+      def load_css
+        script = ''
+        combined_stylesheet_urls.each do |media, url|
+          script << %Q{loadCSS("#{url}", null, "#{media}")\n}
+        end
+        script
+      end
+
+      def combined_stylesheet_urls
+        urls = {}
+        combine_stylesheets.keys.each do |media|
+          urls[media] = combined_stylesheet_url(media)
+        end
+        urls
+      end
+
+      def combined_stylesheet_url(media)
+        Filters.expand_url(combined_stylesheet_path(media))
+      end
+
+      def javascript_tag
         unless @combined_js == ''
-          "<script src='#{Filters.expand_url(combined_javascript_path)}'></script>"
+          if Ink.configuration['asset_pipeline']['async_js']
+            "<script async src='#{combined_javascript_url}'></script>"
+          else
+            "<script src='#{combined_javascript_url}'></script>"
+          end
         end
       end
 
+      def combined_javascript_url
+        Filters.expand_url(combined_javascript_path)
+      end
 
       # Combine stylesheets from each plugin
       #
@@ -79,6 +119,7 @@ module Octopress
       def combine_stylesheets
         @combined_stylesheets ||= begin
           combined = {}
+
 
           stylesheets.clone.each do |media,files|
             files.each do |file|
@@ -148,12 +189,10 @@ module Octopress
           javascripts.each do |file|
 
             js = if compress_js?(file)
-              @uglify_settings ||= Jekyll::Utils.symbolize_hash_keys(Ink.configuration['asset_pipeline']['uglifier'])
-
               if cached = Cache.read_cache(file, @uglify_settings)
                 cached
               else
-                js = Uglifier.new(@uglify_settings).compile(file.content)
+                js = uglify(file.content)
                 Cache.write_to_cache(file, js, @uglify_settings)
               end
             else
@@ -170,6 +209,10 @@ module Octopress
             write_files(@combined_js, combined_javascript_path)
           end
         end
+      end
+
+      def uglify(js)
+        Uglifier.new(@uglify_settings).compile(js)
       end
 
       def compress_js?(file)

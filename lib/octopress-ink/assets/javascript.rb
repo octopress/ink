@@ -3,7 +3,11 @@ module Octopress
     module Assets
       class Javascript < Asset
         def tag
-          %Q{<script src="#{Filters.expand_url(File.join(dir, file))}"></script>}
+          %Q{<script src="#{tag_path}"></script>}
+        end
+
+        def tag_path
+          Filters.expand_url(File.join(dir, file))
         end
 
         def add
