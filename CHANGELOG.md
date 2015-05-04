@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.1.0 (2015-05-03)
+- New: Added support for asynchronous stylesheet loading. [#56](https://github.com/octopress/ink/pull/56)
+- New: Now loading combined javascripts asynchronously by default.
+
 ## 1.0.0 - 2015-05-02
 - Minor: Improved styling for Octopress Ink list command output.
 - Minor: Fixed issue where changelog couldn't be processed by Octopress Docs.
