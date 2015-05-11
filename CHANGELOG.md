@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.1.1 (2015-05-11)
+- Minor: Gemspec dependency updates.
+
 ### 1.1.0 (2015-05-03)
 - New: Added support for asynchronous stylesheet loading. [#56](https://github.com/octopress/ink/pull/56)
 - New: Now loading combined javascripts asynchronously by default.
