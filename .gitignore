@@ -21,3 +21,4 @@ test/site
 .code-highlighter-cache
 _site
 .ink-cache
+.jekyll-metadata
