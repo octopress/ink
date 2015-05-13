@@ -1,5 +1,10 @@
 # Changelog
 
+### 1.1.2 (2015-05-12)
+- Use Jekyll Hooks if you got 'em.
+- Now supporting Jekyll 2 & 3
+- In Jekyll 3 Coffeescript is optional - Added a request to install the gem if a plugin uses it but it is not present.
+
 ### 1.1.1 (2015-05-11)
 - Minor: Gemspec dependency updates.
 

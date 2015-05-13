@@ -13,6 +13,11 @@ module Octopress
         end
 
         def content
+          begin
+            require 'jekyll-coffeescript'
+          rescue LoadError
+            raise "Add gem jekyll-coffeescript to Gemfile (or gemspec)."
+          end
           ::CoffeeScript.compile(super)
         end
 
