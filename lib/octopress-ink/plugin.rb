@@ -513,7 +513,7 @@ module Octopress
       def glob_assets(dir)
         return [] unless Dir.exist? dir
         Find.find(dir).to_a.reject do |file|
-          File.directory?(file) || File.basename(file).start_with?('.')
+          File.directory?(file) || File.basename(file).start_with?('.') || File.basename(file).end_with?('~') || File.basename(file).start_with?('#')
         end
       end
 
