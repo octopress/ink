@@ -34,10 +34,12 @@ module Octopress
       def sass_configs(sass)
         configs = sass_converter.sass_configs
 
-        configs[:syntax] = sass.ext.sub(/^\./,'').to_sym
+        configs[:syntax] = sass.ext.sub(/^\.$/,'').to_sym
 
         if sass.respond_to? :load_paths
           configs[:load_paths] = sass.load_paths
+        elsif sass.respond_to? :sass_load_paths
+          configs[:load_paths] = sass.sass_load_paths
         end
 
         configs
