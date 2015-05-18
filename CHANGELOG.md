@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.1.3 (2015-05-17)
+- Fix: Ink assets filters files which shouldn't be included like .hidden_file, emacs.backup~, etc
+
 ### 1.1.2 (2015-05-12)
 - Use Jekyll Hooks if you got 'em.
 - Now supporting Jekyll 2 & 3
