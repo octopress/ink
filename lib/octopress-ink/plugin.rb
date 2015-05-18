@@ -513,7 +513,10 @@ module Octopress
       def glob_assets(dir)
         return [] unless Dir.exist? dir
         Find.find(dir).to_a.reject do |file|
-          File.directory?(file) || File.basename(file).start_with?('.')
+          # Don't match directories or
+          # Files which begin or end with non-alpha characters
+          # like: .hidden_file or emacs.backup~
+          File.directory?(file) || !File.basename(file).match(/^\w.+?\w$/)
         end
       end
 
