@@ -26,6 +26,7 @@ module Octopress
           f.write(site.dest)
         end
 
+        Octopress::Ink::Cache.write
         Octopress::Ink::Cache.clean
       end
     else
@@ -52,6 +53,7 @@ module Octopress
             f.write(site.dest)
           end
 
+          Octopress::Ink::Cache.write
           Octopress::Ink::Cache.clean
         end
       end

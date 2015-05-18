@@ -7,6 +7,7 @@ module Octopress
 
       def reset
         @cache_files = []
+        @write_cache = {}
       end
 
       def read_cache(asset, options)
@@ -18,9 +19,7 @@ module Octopress
       def write_to_cache(asset, content, options)
         FileUtils.mkdir_p(INK_CACHE_DIR) unless File.directory?(INK_CACHE_DIR)
         path = get_cache_path(INK_CACHE_DIR, cache_label(asset), options.to_s << asset.content)
-        File.open(path, 'w') do |f|
-          f.print(content)
-        end
+        @write_cache[path] = content
         content
       end
 
@@ -29,7 +28,16 @@ module Octopress
       end
 
       def get_cache_path(dir, label, str)
-        File.join(dir, "#{label}#{Digest::MD5.hexdigest(str)}.js")
+        File.join(dir, ".#{label}#{Digest::MD5.hexdigest(str)}.js")
+      end
+
+      def write
+        @write_cache.each do |path, contents|
+          File.open(path, 'w') do |f|
+            f.print(contents)
+          end
+        end
+        @write_cache = {}
       end
 
       def clean

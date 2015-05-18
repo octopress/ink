@@ -1,5 +1,9 @@
 # Changelog
 
+### 1.1.4 (2015-05-18)
+- Fix: Cache writes no longer trigger Jekyll watch.
+- Fix: Cache writes happen after site builds.
+
 ### 1.1.3 (2015-05-17)
 - Fix: Ink assets filters files which shouldn't be included like .hidden_file, emacs.backup~, etc
 
