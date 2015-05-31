@@ -2,8 +2,8 @@
 
 Use Ink to help you build themes and plugins for Jekyll.
 
-[![Gem Version](https://badge.fury.io/rb/octopress-ink.png)](http://badge.fury.io/rb/octopress-ink)
-[![Build Status](https://travis-ci.org/octopress/ink.png?branch=master)](https://travis-ci.org/octopress/ink)
+[![Gem Version](https://badge.fury.io/rb/octopress-ink.svg)](http://badge.fury.io/rb/octopress-ink)
+[![Build Status](https://travis-ci.org/octopress/ink.svg?branch=master)](https://travis-ci.org/octopress/ink)
 
 ## Installation
 
