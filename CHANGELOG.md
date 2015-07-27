@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.2.0 (2015-06-26)
+- New: you can configure output destinations for asset pipeline stylesheets and javascripts.
+
 ### 1.1.4 (2015-05-18)
 - Fix: Cache writes no longer trigger Jekyll watch.
 - Fix: Cache writes happen after site builds.
