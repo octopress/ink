@@ -62,6 +62,7 @@
   compare:
     - _expected/configure_asset_destination/css _site/css
     - _expected/configure_asset_destination/js _site/js
+    - _expected/configure_asset_destination/asset_tag.html _site/asset_tag.html
 -
   title: Should allow multilingual configuration
   dir: multilingual
