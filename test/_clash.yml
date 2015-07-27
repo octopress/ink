@@ -104,7 +104,8 @@
     - 'git config user.email ""'
     - 'octopress ink new test-theme --theme --path _site'
     - 'rm -rf _site/test-theme/.git'
-  compare: _expected/test-theme _site/test-theme
+  compare: 
+    - _expected/test-theme/lib _site/test-theme/lib
   after:
     - 'cat .git-config-user-name | tr -d "\n" | xargs -0 git config user.name'
     - 'cat .git-config-user-email | tr -d "\n" | xargs -0 git config user.email'
