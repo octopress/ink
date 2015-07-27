@@ -13,6 +13,8 @@ module Octopress
         @stylesheet_fingerprint = {}
         @javascript_fingerprint = nil
         @uglify_settings ||= Jekyll::Utils.symbolize_hash_keys(Ink.configuration['asset_pipeline']['uglifier'])
+        @css_dir = Ink.configuration['asset_pipeline']['stylesheets_destination']
+        @js_dir  = Ink.configuration['asset_pipeline']['javascripts_destination']
       end
 
       # Compile CSS to take advantage of Sass's compression settings
@@ -143,7 +145,7 @@ module Octopress
       end
 
       def combined_stylesheet_path(media)
-        File.join('stylesheets', "#{media}-#{stylesheet_fingerprint(media)}.css")
+        File.join(@css_dir, "#{media}-#{stylesheet_fingerprint(media)}.css")
       end
 
       def stylesheet_fingerprint(media)
@@ -181,7 +183,7 @@ module Octopress
       end
 
       def combined_javascript_path
-        File.join('javascripts', "all-#{javascript_fingerprint}.js")
+        File.join(@js_dir, "all-#{javascript_fingerprint}.js")
       end
 
       def write_combined_javascript

@@ -52,6 +52,17 @@
   compare:
     - _expected/async_css/asset_tag.html _site/asset_tag.html
 -
+  title: Should build stylesheets and javascripts to css and js directories
+  dir: standard
+  build: true
+  config:
+    jekyll: 
+      - _config.yml
+      - _configure_asset_destination.yml
+  compare:
+    - _expected/configure_asset_destination/css _site/css
+    - _expected/configure_asset_destination/js _site/js
+-
   title: Should allow multilingual configuration
   dir: multilingual
   build: true

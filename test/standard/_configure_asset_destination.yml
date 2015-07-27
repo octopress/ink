@@ -1,0 +1,3 @@
+asset_pipeline:
+  javascripts_destination: js
+  stylesheets_destination: css
