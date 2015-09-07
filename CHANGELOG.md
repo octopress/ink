@@ -1,5 +1,8 @@
 # Changelog
 
+### 1.2.1 (2015-09-07)
+- Fix: For bootstrap pages, titles no longer include site url. That should be handled by templates.
+
 ### 1.2.0 (2015-06-26)
 - New: you can configure output destinations for asset pipeline stylesheets and javascripts.
 
