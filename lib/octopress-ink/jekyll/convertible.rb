@@ -2,7 +2,7 @@ module Octopress
   module Ink
     module Convertible
       include Jekyll::Convertible
-
+      include Jekyll::Utils
       # Read the YAML frontmatter.
       #
       # base - The String path to the dir containing the file.
@@ -12,7 +12,7 @@ module Octopress
       # Returns nothing.
       def read_yaml(base, name, opts = {})
         begin
-          self.content = File.read(File.join(base, name), merged_file_read_opts(opts))
+          self.content = File.read(File.join(base, name), merged_file_read_opts(site, opts))
           if content =~ /\A(---\s*\n.*?\n?)^((---|\.\.\.)\s*$\n?)/m
             self.content = $POSTMATCH
             self.data = SafeYAML.load($1)
