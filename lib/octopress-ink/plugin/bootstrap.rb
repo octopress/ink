@@ -160,7 +160,7 @@ module Octopress
         if lang && Octopress.multilingual?
           !Octopress.site.posts_by_language(lang).empty?
         else
-          !Octopress.site.posts.empty?
+          !Octopress.site.posts.docs.empty?
         end
       end
 
@@ -168,7 +168,7 @@ module Octopress
         if defined?(Octopress::Linkblog) && lang && Octopress.multilingual?
           !Octopress.site.linkposts_by_language(lang).empty?
         else
-          !Octopress.site.posts.select {|p| p.data['linkpost']}.empty?
+          !Octopress.site.posts.docs.select {|p| p.data['linkpost']}.empty?
         end
       end
 
